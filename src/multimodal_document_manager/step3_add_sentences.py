@@ -17,7 +17,7 @@ from src.embedder.mmembed import MMEmbed
 
 def parse_arguments():
     
-    CONFIG_PATH = "config/document_parser/a.yaml"
+    CONFIG_PATH = "/root/LILaC/config/document_parser/a.yaml"
     with open(CONFIG_PATH, "r") as f:
         config = yaml.safe_load(f)
     
@@ -49,9 +49,8 @@ def main():
 class SentenceAdder:
 
     def __init__(self, args, config):
-        project_root = os.getcwd()
-
-        dataset_directory             = os.path.join(project_root, config["dataset_subpath"], config["dataset_metadata"][args.target_data]["name"])
+        
+        dataset_directory             = os.path.join(config["root_path"], config["dataset_subpath"], config["dataset_metadata"][args.target_data]["name"])
         self._parsed_documents_path   = os.path.join(dataset_directory,   config["directory_alias"]["parsed_documents_dirname"], "dev")
         
         self._text_component_path     = os.path.join(dataset_directory,   config["directory_alias"]["component_dirname"], "text.json")
