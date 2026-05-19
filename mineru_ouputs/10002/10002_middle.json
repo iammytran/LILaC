@@ -1,0 +1,813 @@
+{
+    "pdf_info": [
+        {
+            "preproc_blocks": [
+                {
+                    "type": "image",
+                    "bbox": [
+                        0,
+                        41,
+                        163,
+                        128
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                0,
+                                41,
+                                163,
+                                128
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        0,
+                                        41,
+                                        163,
+                                        128
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                0,
+                                                41,
+                                                163,
+                                                128
+                                            ],
+                                            "type": "image",
+                                            "content": "Microscopic view of a biological structure with red and blue components, no visible text or symbols",
+                                            "image_path": "2dcdfabe988dbe98553fd34ddd0c8e0dcfb6ad59acb643f1be5432f16c62b26a.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 2
+                        }
+                    ],
+                    "index": 2,
+                    "sub_type": "natural_image"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        165,
+                        42,
+                        339,
+                        128
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                165,
+                                42,
+                                339,
+                                128
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        165,
+                                        42,
+                                        339,
+                                        128
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                165,
+                                                42,
+                                                339,
+                                                128
+                                            ],
+                                            "type": "image",
+                                            "content": "WHAT IS\ncontact tracing?",
+                                            "image_path": "595329f5f51978b43bce8044b3bda2da415e8101d7a4ef814d240ab0d2c2e2f5.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 3
+                        }
+                    ],
+                    "index": 3,
+                    "sub_type": "text_image"
+                },
+                {
+                    "bbox": [
+                        21,
+                        143,
+                        326,
+                        185
+                    ],
+                    "type": "text",
+                    "angle": 0,
+                    "lines": [
+                        {
+                            "bbox": [
+                                21,
+                                143,
+                                326,
+                                185
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        21,
+                                        143,
+                                        326,
+                                        185
+                                    ],
+                                    "type": "text",
+                                    "content": "Contact tracing is a fundamental part of outbreak control that's used by public health professionals around the world to prevent the spread of infections"
+                                }
+                            ]
+                        }
+                    ],
+                    "index": 4,
+                    "merge_prev": false
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        0,
+                        195,
+                        353,
+                        656
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                0,
+                                195,
+                                353,
+                                656
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        0,
+                                        195,
+                                        353,
+                                        656
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                0,
+                                                195,
+                                                353,
+                                                656
+                                            ],
+                                            "type": "image",
+                                            "content": "```mermaid\ngraph TD\n    A[\"Person tests positive for coronavirus (COVID-19)\"] --> B[\"Who has had close contact\"]\n    B --> C{Speak to the patient to identify anyone who has had close contact with them during the time they are infectious}\n    C --> D[\"Following this assessment, we can categorise them into low or high risk and contact them to provide advice on what they should do\"]\n    D --> E{Low risk contact doesn't require self-isolation}\n    E --> F[\"14 days of contact on passive follow up which means person being monitored but we don't necessarily contact them every day\"]\n    F --> G{If we believe a contact is at higher risk of infection they may be asked to self-isolate, remaining in their home for 14 days and staying away from work, school or public places}\n    G --> H{We contact them daily provide them with advice on what to do if they become unwell until they can be given all-clear}\n```",
+                                            "image_path": "bf37b62bdb00c423981c018e1b4952756a5c10d8f85c7932e6dd7d6449b28717.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 5
+                        }
+                    ],
+                    "index": 5,
+                    "sub_type": "flowchart"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        0,
+                        657,
+                        331,
+                        757
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                0,
+                                657,
+                                331,
+                                757
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        0,
+                                        657,
+                                        331,
+                                        757
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                0,
+                                                657,
+                                                331,
+                                                757
+                                            ],
+                                            "type": "image",
+                                            "content": "If the person does develop symptoms, we would test them and provide them with specialist care if they have the novel coronavirus (COVID-19)",
+                                            "image_path": "9f1b9369c4ff0571dae7ca848d229fa5a42f8600c5179e51a74d5bbdadbd4e8f.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 6
+                        }
+                    ],
+                    "index": 6,
+                    "sub_type": "text_image"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        88,
+                        757,
+                        173,
+                        896
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                88,
+                                757,
+                                173,
+                                896
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        88,
+                                        757,
+                                        173,
+                                        896
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                88,
+                                                757,
+                                                173,
+                                                896
+                                            ],
+                                            "type": "image",
+                                            "content": "Recovery\ntime\nConta\nof con\nthe pat\nthey ca\nnormal",
+                                            "image_path": "4e66962f9361b9cc3568e894f54d89b90fffcd3b663c945e397982df87367315.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 7
+                        }
+                    ],
+                    "index": 7,
+                    "sub_type": "text_image"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        210,
+                        665,
+                        298,
+                        748
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                210,
+                                665,
+                                298,
+                                748
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        210,
+                                        665,
+                                        298,
+                                        748
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                210,
+                                                665,
+                                                298,
+                                                748
+                                            ],
+                                            "type": "image",
+                                            "content": "Infographic with scientific icons and charts, including a red 'O', EKG line, and bar graphs",
+                                            "image_path": "63d93c58ff0f37c6288f00ab8fa02143b463fad503a7a8ad09f839a904e59e6a.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 8
+                        }
+                    ],
+                    "index": 8,
+                    "sub_type": "text_image"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        0,
+                        757,
+                        353,
+                        920
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                0,
+                                757,
+                                353,
+                                920
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        0,
+                                        757,
+                                        353,
+                                        920
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                0,
+                                                757,
+                                                353,
+                                                920
+                                            ],
+                                            "type": "image",
+                                            "content": "Recovery\ntime\nContact displays no symptoms\nof coronavirus (COVID-19)\nthe patient makes a full recovery,\nthey can go back to daily lives as\nnormal and pose no risk to others",
+                                            "image_path": "ea1cea8f9fd5a7b8ee4d5511203eab9be21aa6ea5fdf6ee280c370b4763c3c9f.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 9
+                        }
+                    ],
+                    "index": 9,
+                    "sub_type": "text_image"
+                }
+            ],
+            "discarded_blocks": [
+                {
+                    "bbox": [
+                        18,
+                        13,
+                        34,
+                        28
+                    ],
+                    "type": "header",
+                    "angle": 0,
+                    "lines": [
+                        {
+                            "bbox": [
+                                18,
+                                13,
+                                34,
+                                28
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        18,
+                                        13,
+                                        34,
+                                        28
+                                    ],
+                                    "type": "text",
+                                    "content": "[No text]"
+                                }
+                            ]
+                        }
+                    ],
+                    "index": 0
+                },
+                {
+                    "bbox": [
+                        36,
+                        15,
+                        121,
+                        27
+                    ],
+                    "type": "header",
+                    "angle": 0,
+                    "lines": [
+                        {
+                            "bbox": [
+                                36,
+                                15,
+                                121,
+                                27
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        36,
+                                        15,
+                                        121,
+                                        27
+                                    ],
+                                    "type": "text",
+                                    "content": "Public Health England"
+                                }
+                            ]
+                        }
+                    ],
+                    "index": 1
+                }
+            ],
+            "page_size": [
+                354,
+                921
+            ],
+            "page_idx": 0,
+            "para_blocks": [
+                {
+                    "type": "image",
+                    "bbox": [
+                        0,
+                        41,
+                        163,
+                        128
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                0,
+                                41,
+                                163,
+                                128
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        0,
+                                        41,
+                                        163,
+                                        128
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                0,
+                                                41,
+                                                163,
+                                                128
+                                            ],
+                                            "type": "image",
+                                            "content": "Microscopic view of a biological structure with red and blue components, no visible text or symbols",
+                                            "image_path": "2dcdfabe988dbe98553fd34ddd0c8e0dcfb6ad59acb643f1be5432f16c62b26a.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 2
+                        }
+                    ],
+                    "index": 2,
+                    "sub_type": "natural_image"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        165,
+                        42,
+                        339,
+                        128
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                165,
+                                42,
+                                339,
+                                128
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        165,
+                                        42,
+                                        339,
+                                        128
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                165,
+                                                42,
+                                                339,
+                                                128
+                                            ],
+                                            "type": "image",
+                                            "content": "WHAT IS\ncontact tracing?",
+                                            "image_path": "595329f5f51978b43bce8044b3bda2da415e8101d7a4ef814d240ab0d2c2e2f5.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 3
+                        }
+                    ],
+                    "index": 3,
+                    "sub_type": "text_image"
+                },
+                {
+                    "bbox": [
+                        21,
+                        143,
+                        326,
+                        185
+                    ],
+                    "type": "text",
+                    "angle": 0,
+                    "lines": [
+                        {
+                            "bbox": [
+                                21,
+                                143,
+                                326,
+                                185
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        21,
+                                        143,
+                                        326,
+                                        185
+                                    ],
+                                    "type": "text",
+                                    "content": "Contact tracing is a fundamental part of outbreak control that's used by public health professionals around the world to prevent the spread of infections"
+                                }
+                            ]
+                        }
+                    ],
+                    "index": 4,
+                    "merge_prev": false
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        0,
+                        195,
+                        353,
+                        656
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                0,
+                                195,
+                                353,
+                                656
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        0,
+                                        195,
+                                        353,
+                                        656
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                0,
+                                                195,
+                                                353,
+                                                656
+                                            ],
+                                            "type": "image",
+                                            "content": "```mermaid\ngraph TD\n    A[\"Person tests positive for coronavirus (COVID-19)\"] --> B[\"Who has had close contact\"]\n    B --> C{Speak to the patient to identify anyone who has had close contact with them during the time they are infectious}\n    C --> D[\"Following this assessment, we can categorise them into low or high risk and contact them to provide advice on what they should do\"]\n    D --> E{Low risk contact doesn't require self-isolation}\n    E --> F[\"14 days of contact on passive follow up which means person being monitored but we don't necessarily contact them every day\"]\n    F --> G{If we believe a contact is at higher risk of infection they may be asked to self-isolate, remaining in their home for 14 days and staying away from work, school or public places}\n    G --> H{We contact them daily provide them with advice on what to do if they become unwell until they can be given all-clear}\n```",
+                                            "image_path": "bf37b62bdb00c423981c018e1b4952756a5c10d8f85c7932e6dd7d6449b28717.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 5
+                        }
+                    ],
+                    "index": 5,
+                    "sub_type": "flowchart"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        0,
+                        657,
+                        331,
+                        757
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                0,
+                                657,
+                                331,
+                                757
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        0,
+                                        657,
+                                        331,
+                                        757
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                0,
+                                                657,
+                                                331,
+                                                757
+                                            ],
+                                            "type": "image",
+                                            "content": "If the person does develop symptoms, we would test them and provide them with specialist care if they have the novel coronavirus (COVID-19)",
+                                            "image_path": "9f1b9369c4ff0571dae7ca848d229fa5a42f8600c5179e51a74d5bbdadbd4e8f.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 6
+                        }
+                    ],
+                    "index": 6,
+                    "sub_type": "text_image"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        88,
+                        757,
+                        173,
+                        896
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                88,
+                                757,
+                                173,
+                                896
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        88,
+                                        757,
+                                        173,
+                                        896
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                88,
+                                                757,
+                                                173,
+                                                896
+                                            ],
+                                            "type": "image",
+                                            "content": "Recovery\ntime\nConta\nof con\nthe pat\nthey ca\nnormal",
+                                            "image_path": "4e66962f9361b9cc3568e894f54d89b90fffcd3b663c945e397982df87367315.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 7
+                        }
+                    ],
+                    "index": 7,
+                    "sub_type": "text_image"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        210,
+                        665,
+                        298,
+                        748
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                210,
+                                665,
+                                298,
+                                748
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        210,
+                                        665,
+                                        298,
+                                        748
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                210,
+                                                665,
+                                                298,
+                                                748
+                                            ],
+                                            "type": "image",
+                                            "content": "Infographic with scientific icons and charts, including a red 'O', EKG line, and bar graphs",
+                                            "image_path": "63d93c58ff0f37c6288f00ab8fa02143b463fad503a7a8ad09f839a904e59e6a.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 8
+                        }
+                    ],
+                    "index": 8,
+                    "sub_type": "text_image"
+                },
+                {
+                    "type": "image",
+                    "bbox": [
+                        0,
+                        757,
+                        353,
+                        920
+                    ],
+                    "blocks": [
+                        {
+                            "bbox": [
+                                0,
+                                757,
+                                353,
+                                920
+                            ],
+                            "type": "image_body",
+                            "angle": 0,
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        0,
+                                        757,
+                                        353,
+                                        920
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                0,
+                                                757,
+                                                353,
+                                                920
+                                            ],
+                                            "type": "image",
+                                            "content": "Recovery\ntime\nContact displays no symptoms\nof coronavirus (COVID-19)\nthe patient makes a full recovery,\nthey can go back to daily lives as\nnormal and pose no risk to others",
+                                            "image_path": "ea1cea8f9fd5a7b8ee4d5511203eab9be21aa6ea5fdf6ee280c370b4763c3c9f.jpg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "index": 9
+                        }
+                    ],
+                    "index": 9,
+                    "sub_type": "text_image"
+                }
+            ]
+        }
+    ],
+    "_backend": "hybrid",
+    "_ocr_enable": true,
+    "_vlm_ocr_enable": true,
+    "_version_name": "3.1.11"
+}

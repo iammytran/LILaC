@@ -1,0 +1,408 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "COVID-19 CASES AND DEATHS "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                38,
+                7,
+                957,
+                44
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "TOTAL CASES "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                45,
+                79,
+                294,
+                101
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "1,59,45,037 "
+                    }
+                ]
+            },
+            "bbox": [
+                22,
+                112,
+                343,
+                151
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "DEATHS "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                449,
+                79,
+                598,
+                101
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "6,42,775 "
+                    }
+                ]
+            },
+            "bbox": [
+                394,
+                112,
+                637,
+                151
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "RECOVERED "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                715,
+                79,
+                941,
+                101
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "97,42,879 "
+                    }
+                ]
+            },
+            "bbox": [
+                705,
+                112,
+                948,
+                151
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "ACTIVE CASES "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                35,
+                174,
+                304,
+                196
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "55,59,383 "
+                    }
+                ]
+            },
+            "bbox": [
+                42,
+                207,
+                313,
+                246
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "MILD CONDITION "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                362,
+                174,
+                647,
+                196
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "54,93,158 "
+                    }
+                ]
+            },
+            "bbox": [
+                365,
+                207,
+                640,
+                246
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "CRITICAL "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                744,
+                174,
+                912,
+                196
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "66,225 "
+                    }
+                ]
+            },
+            "bbox": [
+                731,
+                207,
+                922,
+                246
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "COVID-19 IN INDIA "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                297,
+                262,
+                699,
+                288
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "ACTIVE CASES "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                51,
+                300,
+                320,
+                320
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "4,56,071 "
+                    }
+                ]
+            },
+            "bbox": [
+                32,
+                333,
+                313,
+                372
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "DEATHS "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                449,
+                300,
+                598,
+                320
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "31,358 "
+                    }
+                ]
+            },
+            "bbox": [
+                391,
+                333,
+                640,
+                375
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "RECOVERED "
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                715,
+                300,
+                941,
+                320
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "8,49,431 "
+                    }
+                ]
+            },
+            "bbox": [
+                682,
+                333,
+                961,
+                372
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/bcd8471ac3af8c08be35c13b1e9e0a73542622b515f0d73ac8ab52e4c9e9a0d8.jpg"
+                },
+                "table_caption": [],
+                "table_footnote": [],
+                "html": "<table><tr><td>COUNTRY</td><td>TOTAL CASES</td><td>NEW CASES</td><td>TOTAL DEATHS</td><td>RECOVERED</td><td>ACTIVE CASES</td><td>CRITICAL</td></tr><tr><td>USA</td><td>4,248,327</td><td></td><td>148,490</td><td>2,028,074</td><td>2,071,763</td><td>19,098</td></tr><tr><td>BRAZIL</td><td>2,348,200</td><td></td><td>85,385</td><td>1,592,281</td><td>670,534</td><td>8,318</td></tr><tr><td>RUSSIA</td><td>800,849</td><td></td><td>13,046</td><td>588,774</td><td>199,029</td><td>2,300</td></tr><tr><td>SOUTH AFRICA</td><td>421,996</td><td></td><td>6,343</td><td>245,771</td><td>169,882</td><td>539</td></tr><tr><td>MEXICO</td><td>378,285</td><td>+7,573</td><td>42,645</td><td>242,692</td><td>92,948</td><td>3,889</td></tr><tr><td>PERU</td><td>375,961</td><td></td><td>17,843</td><td>259,423</td><td>98,695</td><td>1,389</td></tr><tr><td>CHILE</td><td>341,304</td><td></td><td>8,914</td><td>313,696</td><td>18,694</td><td>1,636</td></tr><tr><td>SPAIN</td><td>319,501</td><td></td><td>28,432</td><td>N/A</td><td>N/A</td><td>617</td></tr><tr><td>UK</td><td>297,914</td><td></td><td>45,677</td><td>N/A</td><td>N/A</td><td>110</td></tr><tr><td>IRAN</td><td>286,523</td><td></td><td>15,289</td><td>249,212</td><td>22,022</td><td>3,653</td></tr><tr><td>PAKISTAN</td><td>271,887</td><td>+1,487</td><td>5,787</td><td>236,596</td><td>29,504</td><td>1,294</td></tr><tr><td>SAUDI ARABIA</td><td>262,772</td><td></td><td>2,672</td><td>215,731</td><td>44,369</td><td>2,143</td></tr><tr><td>ITALY</td><td>245,590</td><td></td><td>35,097</td><td>198,192</td><td>12,301</td><td>46</td></tr><tr><td>COLOMBIA</td><td>233,541</td><td></td><td>7,975</td><td>113,864</td><td>111,702</td><td>1,493</td></tr><tr><td>TURKEY</td><td>224,252</td><td></td><td>5,580</td><td>207,374</td><td>11,298</td><td>1,248</td></tr><tr><td>BANGLADESH</td><td>218,658</td><td></td><td>2,836</td><td>120,976</td><td>94,846</td><td>1</td></tr><tr><td>GERMANY</td><td>205,960</td><td></td><td>9,201</td><td>190,400</td><td>6,359</td><td>237</td></tr><tr><td>FRANCE</td><td>180,528</td><td></td><td>30,192</td><td>80,815</td><td>69,521</td><td>410</td></tr><tr><td>ARGENTINA</td><td>153,520</td><td></td><td>2,807</td><td>65,447</td><td>85,266</td><td>902</td></tr><tr><td>CANADA</td><td>113,206</td><td></td><td>8,881</td><td>98,873</td><td>5,452</td><td>2,221</td></tr><tr><td>QATAR</td><td>108,638</td><td></td><td>164</td><td>105,420</td><td>3,054</td><td>101</td></tr><tr><td>IRAQ</td><td>104,711</td><td></td><td>4,212</td><td>71,268</td><td>29,231</td><td>456</td></tr><tr><td>INDONESIA</td><td>95,418</td><td></td><td>4,665</td><td>53,945</td><td>36,808</td><td></td></tr><tr><td>EGYPT</td><td>91,072</td><td></td><td>4,518</td><td>31,970</td><td>5,000 HEUS</td><td>41</td></tr><tr><td>CHINA</td><td>83,784</td><td>+34</td><td>4,634</td><td>78,889</td><td>X1</td><td>6</td></tr><tr><td>KAZAKHSTAN</td><td>80,226</td><td>+1,740</td><td>585</td><td>51,260</td><td>28,381</td><td>221</td></tr><tr><td>ECUADOR</td><td>79,049</td><td></td><td>5,468</td><td>34,544</td><td>39,037</td><td>346</td></tr><tr><td>SWEDEN</td><td>78,997</td><td></td><td>5,697</td><td>N/A</td><td>N/A</td><td>50</td></tr><tr><td>PHILIPPINES</td><td>76,444</td><td></td><td>1,879</td><td>24,502</td><td>50,063</td><td>351</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                22,
+                379,
+                977,
+                961
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "Source: www.worldometers.info "
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                970,
+                343,
+                983
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "IANS GRAPHICS "
+                    }
+                ]
+            },
+            "bbox": [
+                786,
+                968,
+                970,
+                987
+            ]
+        }
+    ]
+]
