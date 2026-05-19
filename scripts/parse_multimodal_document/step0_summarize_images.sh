@@ -41,7 +41,7 @@ nvidia-smi --query-gpu=index,memory.free,memory.used --format=csv,noheader,nouni
 
 for DS in "${BENCHMARKS[@]}"; do
     echo "==> step0 $DS"
-    python3 \
-        src/lilac/lcg_constructor/image_parser/summarize_images.py \
+    CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" python3 \
+       -m src.lilac.lcg_constructor.image_parser.summarize_images \
         --target_data "$DS" "${EXTRA[@]}"
 done

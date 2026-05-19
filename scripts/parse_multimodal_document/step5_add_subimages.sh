@@ -52,7 +52,7 @@ echo "[step5] CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-<unset>}"
 nvidia-smi --query-gpu=index,memory.free,memory.used --format=csv,noheader,nounits | sed 's/^/[step5][nvidia-smi] /'
 
 for DS in "${BENCHMARKS[@]}"; do
-    echo "==> step5 $DS [mode=$MODE${ANALYZER:+ analyzer=$ANALYZER}]"
-    python3 src/lilac/lcg_constructor/step5_add_subimages.py \
-        --target_data "$DS" --mode "$MODE" "${ANALYZER_ARGS[@]}" "${EXTRA[@]}"
+    echo "==> step5 $DS [$MODE]"
+    python3 -m src.lilac.lcg_constructor.step5_add_subimages \
+        --target_data "$DS" --mode "$MODE"
 done

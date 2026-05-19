@@ -29,7 +29,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$EXPLICIT" -eq 1 ]]; then
-    python3 src/lilac/lcg_constructor/step7_serialize_components.py --target_data "${BENCHMARKS[@]}"
+    python3 -m src.lilac.lcg_constructor.step7_serialize_components --target_data "${BENCHMARKS[@]}"
 else
-    python3 src/lilac/lcg_constructor/step7_serialize_components.py
+    python3 -m src.lilac.lcg_constructor.step7_serialize_components
 fi
