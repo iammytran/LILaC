@@ -30,6 +30,6 @@ done
 
 for DS in "${BENCHMARKS[@]}"; do
     echo "==> step5 $DS [$MODE]"
-    python3 src/lilac/lcg_constructor/step5_add_subimages.py \
+    python3 -m src.lilac.lcg_constructor.step5_add_subimages \
         --target_data "$DS" --mode "$MODE"
 done

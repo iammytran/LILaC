@@ -27,5 +27,5 @@ done
 
 for DS in "${BENCHMARKS[@]}"; do
     echo "==> step6 $DS"
-    python3 src/lilac/lcg_constructor/step6_add_edges.py --target_data "$DS"
+    python3 -m src.lilac.lcg_constructor.step6_add_edges --target_data "$DS"
 done

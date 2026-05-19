@@ -30,6 +30,6 @@ done
 for DS in "${BENCHMARKS[@]}"; do
     echo "==> step0 $DS"
     CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" python3 \
-        src/lilac/lcg_constructor/image_parser/summarize_images.py \
+       -m src.lilac.lcg_constructor.image_parser.summarize_images \
         --target_data "$DS" "${EXTRA[@]}"
 done
