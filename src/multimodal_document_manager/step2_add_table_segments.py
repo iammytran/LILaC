@@ -12,7 +12,7 @@ from src.utils.utils import read_json_or_jsonl
 
 def parse_arguments():
     
-    CONFIG_PATH = "/root/LILaC/config/document_parser/a.yaml"
+    CONFIG_PATH = "config/document_parser/a.yaml"
     with open(CONFIG_PATH, "r") as f:
         config = yaml.safe_load(f)
     
@@ -38,7 +38,10 @@ class TableSegmentAdder:
 
     def __init__(self, args, config):
         
-        dataset_directory           = os.path.join(config["root_path"], config["dataset_subpath"], config["dataset_metadata"][args.target_data]["name"])
+        # Determine project root dynamically. Assumes the script is run from the project root.
+        project_root = os.getcwd()
+
+        dataset_directory           = os.path.join(project_root, config["dataset_subpath"], config["dataset_metadata"][args.target_data]["name"])
         self._parsed_documents_path = os.path.join(dataset_directory,   config["directory_alias"]["parsed_documents_dirname"], "dev")
         self._output_documents_path = os.path.join(dataset_directory,   config["directory_alias"]["temp_dirname"], "dev")
         if not os.path.exists(self._output_documents_path):
