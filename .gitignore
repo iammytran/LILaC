@@ -10,6 +10,7 @@
 node_modules/
 dist/
 
+datasets/
 
 # Compiled Java class files
 *.class
