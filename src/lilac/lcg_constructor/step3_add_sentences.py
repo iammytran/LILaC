@@ -123,7 +123,7 @@ class SentenceAdder:
             for component_id in text_component_ids:
         
                 component = parsed_document["text"][component_id]
-                text_component = Text(doc_title, hierarchy_dict, component_id, component)
+                text_component = Text(filename, doc_title, hierarchy_dict, component_id, component)
                 filename_to_id_to_obj[filename][component_id] = text_component.get_text_object_for_split()
         
         with open(self._text_component_path, "w") as f:
