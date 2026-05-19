@@ -35,6 +35,6 @@ done
 
 for DS in "${BENCHMARKS[@]}"; do
     echo "==> step3 $DS [$MODE]"
-    python3 src/lilac/lcg_constructor/step3_add_sentences.py \
+    python3 -m src.lilac.lcg_constructor.step3_add_sentences.py \
         --target_data "$DS" --mode "$MODE"
 done

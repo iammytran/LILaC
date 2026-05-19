@@ -1,0 +1,94 @@
+{
+  "title": "10002.jpeg",
+  "url": "placeholder",
+  "hierarchy": "{}",
+  "text": {
+    "p_1": {
+      "text": "Contact tracing is a fundamental part of outbreak control that's used by public health professionals around the world to prevent the spread of infections ",
+      "edges": []
+    },
+    "p_2": {
+      "text": "[No text] ",
+      "edges": []
+    },
+    "p_3": {
+      "text": "Public Health England ",
+      "edges": []
+    }
+  },
+  "sentence": {},
+  "table": {},
+  "table_segment": {},
+  "image": {
+    "i_1": {
+      "content": "",
+      "bbox": [
+        0,
+        44,
+        460,
+        138
+      ],
+      "metadata": ""
+    },
+    "i_2": {
+      "content": "",
+      "bbox": [
+        466,
+        45,
+        957,
+        138
+      ],
+      "metadata": ""
+    },
+    "i_3": {
+      "content": "",
+      "bbox": [
+        0,
+        211,
+        997,
+        712
+      ],
+      "metadata": ""
+    },
+    "i_4": {
+      "content": "",
+      "bbox": [
+        0,
+        713,
+        935,
+        821
+      ],
+      "metadata": ""
+    },
+    "i_5": {
+      "content": "",
+      "bbox": [
+        248,
+        821,
+        488,
+        972
+      ],
+      "metadata": ""
+    },
+    "i_6": {
+      "content": "",
+      "bbox": [
+        593,
+        722,
+        841,
+        812
+      ],
+      "metadata": ""
+    },
+    "i_7": {
+      "content": "",
+      "bbox": [
+        0,
+        821,
+        997,
+        998
+      ],
+      "metadata": ""
+    }
+  }
+}

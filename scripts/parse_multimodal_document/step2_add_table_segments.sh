@@ -29,5 +29,5 @@ done
 
 for DS in "${BENCHMARKS[@]}"; do
     echo "==> step2 $DS"
-    python3 src/lilac/lcg_constructor/step2_add_table_segments.py --target_data "$DS"
+    python3 -m src.lilac.lcg_constructor.step2_add_table_segments --target_data "$DS"
 done
