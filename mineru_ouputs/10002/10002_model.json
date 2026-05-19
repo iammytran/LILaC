@@ -1,0 +1,122 @@
+[
+    [
+        {
+            "type": "header",
+            "bbox": [
+                0.051,
+                0.015,
+                0.097,
+                0.031
+            ],
+            "angle": 0,
+            "content": "[No text]"
+        },
+        {
+            "type": "header",
+            "bbox": [
+                0.102,
+                0.017,
+                0.342,
+                0.03
+            ],
+            "angle": 0,
+            "content": "Public Health England"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.0,
+                0.045,
+                0.463,
+                0.14
+            ],
+            "angle": 0,
+            "content": "Microscopic view of a biological structure with red and blue components, no visible text or symbols",
+            "sub_type": "natural_image"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.468,
+                0.046,
+                0.958,
+                0.14
+            ],
+            "angle": 0,
+            "content": "WHAT IS\ncontact tracing?",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.062,
+                0.156,
+                0.921,
+                0.201
+            ],
+            "angle": 0,
+            "content": "Contact tracing is a fundamental part of outbreak control that's used by public health professionals around the world to prevent the spread of infections",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.0,
+                0.212,
+                0.999,
+                0.713
+            ],
+            "angle": 0,
+            "content": "```mermaid\ngraph TD\n    A[\"Person tests positive for coronavirus (COVID-19)\"] --> B[\"Who has had close contact\"]\n    B --> C{Speak to the patient to identify anyone who has had close contact with them during the time they are infectious}\n    C --> D[\"Following this assessment, we can categorise them into low or high risk and contact them to provide advice on what they should do\"]\n    D --> E{Low risk contact doesn't require self-isolation}\n    E --> F[\"14 days of contact on passive follow up which means person being monitored but we don't necessarily contact them every day\"]\n    F --> G{If we believe a contact is at higher risk of infection they may be asked to self-isolate, remaining in their home for 14 days and staying away from work, school or public places}\n    G --> H{We contact them daily provide them with advice on what to do if they become unwell until they can be given all-clear}\n```",
+            "sub_type": "flowchart"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.0,
+                0.714,
+                0.936,
+                0.823
+            ],
+            "angle": 0,
+            "content": "If the person does develop symptoms, we would test them and provide them with specialist care if they have the novel coronavirus (COVID-19)",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.25,
+                0.823,
+                0.489,
+                0.973
+            ],
+            "angle": 0,
+            "content": "Recovery\ntime\nConta\nof con\nthe pat\nthey ca\nnormal",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.594,
+                0.723,
+                0.843,
+                0.813
+            ],
+            "angle": 0,
+            "content": "Infographic with scientific icons and charts, including a red 'O', EKG line, and bar graphs",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.0,
+                0.823,
+                0.999,
+                0.999
+            ],
+            "angle": 0,
+            "content": "Recovery\ntime\nContact displays no symptoms\nof coronavirus (COVID-19)\nthe patient makes a full recovery,\nthey can go back to daily lives as\nnormal and pose no risk to others",
+            "sub_type": "text_image"
+        }
+    ]
+]
