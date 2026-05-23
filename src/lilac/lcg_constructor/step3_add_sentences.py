@@ -135,7 +135,7 @@ class SentenceAdder:
     
     
 
-    def parallel_sentence_split(self, num_gpus = 4, models_per_gpu = 1):
+    def parallel_sentence_split(self, num_gpus = 2, models_per_gpu = 1):
         # Load input JSON
         nested_paragraph_dict = read_json_or_jsonl(self._text_component_path)
 

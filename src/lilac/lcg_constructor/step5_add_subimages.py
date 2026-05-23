@@ -138,7 +138,7 @@ class SubimageAdder:
         model = Qwen2_5_VL(
             model_name_or_path = QWEN2_5_VL_7B_PATH,
             device = "cuda",
-            batch_size = batch_size,
+            # batch_size = batch_size,
             limit_mm_per_prompt = {"image": 10, "video": 0},
         )
 
