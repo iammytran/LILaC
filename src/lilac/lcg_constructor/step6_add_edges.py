@@ -168,27 +168,27 @@ class EdgeAdder:
         # ------------------------------------------------------------------
         # 4. FILL PROPOSITION-LEVEL HYPERLINKS
         # ------------------------------------------------------------------
-        def normalize(s):
-            """lower-case, strip punctuation → list of words"""
-            return re.findall(r"[a-z0-9]+", s.lower())
+        # def normalize(s):
+        #     """lower-case, strip punctuation → list of words"""
+        #     return re.findall(r"[a-z0-9]+", s.lower())
 
-        for pid, pdata in propositions.items():
-            para_id = "_".join(pid.split("_")[:2])            # e.g. po_5
-            para_edges = text[para_id]["edges"]
+        # for pid, pdata in propositions.items():
+        #     para_id = "_".join(pid.split("_")[:2])            # e.g. po_5
+        #     para_edges = text[para_id]["edges"]
 
-            prop_tokens = normalize(pdata["text"])
+        #     prop_tokens = normalize(pdata["text"])
 
-            for h in para_edges:
-                anchor_tokens = normalize(h["text"])
-                # check bag-of-words containment
-                if all(tok in prop_tokens for tok in anchor_tokens):
-                    propositions[pid]["edges"].append(
-                        {
-                            "text": h["text"], 
-                            "edge": h["edge"],
-                            "hyperlink": h["hyperlink"],
-                        }
-                    )
+        #     for h in para_edges:
+        #         anchor_tokens = normalize(h["text"])
+        #         # check bag-of-words containment
+        #         if all(tok in prop_tokens for tok in anchor_tokens):
+        #             propositions[pid]["edges"].append(
+        #                 {
+        #                     "text": h["text"], 
+        #                     "edge": h["edge"],
+        #                     "hyperlink": h["hyperlink"],
+        #                 }
+        #             )
 
 
         return
