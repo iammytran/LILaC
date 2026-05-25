@@ -106,29 +106,29 @@ class SentenceAdder:
     
     
     def extract_texts(self):
-        
+
         filenames = os.listdir(self._parsed_documents_path)
-        
+
         filename_to_id_to_obj = {}
-        
+
         for filename in tqdm(filenames):
             filename_to_id_to_obj[filename] = {}
-            
+
             parsed_document = read_json_or_jsonl(os.path.join(self._parsed_documents_path, filename))
-            
+
             doc_title = parsed_document["title"]
             text_component_ids = parsed_document["text"]
             hierarchy_dict = parsed_document["hierarchy"]
-            
+
             for component_id in text_component_ids:
-        
+
                 component = parsed_document["text"][component_id]
-                text_component = Text(doc_title, hierarchy_dict, component_id, component)
+                text_component = Text(filename, doc_title, hierarchy_dict, component_id, component)
                 filename_to_id_to_obj[filename][component_id] = text_component.get_text_object_for_split()
-        
+
         with open(self._text_component_path, "w") as f:
             json.dump(filename_to_id_to_obj, f, indent=2)
-            
+
         return
     
     
@@ -288,9 +288,9 @@ class SentenceAdder:
             
             for component_id in sentence_component_ids:
                 id = [filename, component_id]
-        
+
                 component       = parsed_doc_with_sentences["sentence"][component_id]
-                text_component  = Text(doc_title, hierarchy_dict, component_id, component)
+                text_component  = Text(filename, doc_title, hierarchy_dict, component_id, component)
                 target          = text_component.serialize("text")
                 
                 embedding_list.append({

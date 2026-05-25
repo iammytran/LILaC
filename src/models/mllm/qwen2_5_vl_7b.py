@@ -39,11 +39,15 @@ class Qwen2_5_VL:
         if device == "cpu" or not torch.cuda.is_available():
             self._tensor_device = torch.device("cpu")
         else:
-            first_cuda = next(
-                (d for d in self.model.hf_device_map.values() if "cuda" in str(d)),
-                "cuda:0",
-            )
-            self._tensor_device = torch.device(first_cuda)
+            try:
+                dev_map = getattr(self.model, "hf_device_map", None) or {}
+                first_cuda = next(
+                    (d for d in dev_map.values() if "cuda" in str(d)),
+                    "cuda:0",
+                )
+                self._tensor_device = torch.device(first_cuda)
+            except Exception:
+                self._tensor_device = torch.device("cuda:0")
 
     # ------------------------------------------------------------------ #
     # public API (unchanged)                                             #

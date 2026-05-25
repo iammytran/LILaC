@@ -86,6 +86,17 @@ class ComponentSerializer:
         self._summaries_dir    = artifact_subpath(config, dataset_name, "image_summaries_dirname", "dev")
         self._subsummaries_dir = artifact_subpath(config, dataset_name, "image_subsummaries_dirname", "dev")
         self._subimages_dir    = artifact_subpath(config, dataset_name, "subimage_components_dirname", "dev")
+
+        # Subimage summary convention:
+        #   • multimodalqa-type (MMCoQA, MultimodalQA): no per-subimage summary;
+        #     every subimage reuses the parent page's summary.
+        #   • vqa-type (InfoVQA, MP-DocVQA, SlideVQA, …): a separate Qwen-VL
+        #     caption pass writes per-subimage sidecars under image_summaries_sub/.
+        dataset_type = config["dataset_metadata"][dataset_name].get("type", "")
+        if dataset_type == "vqa":
+            self._subimage_summary_dir = self._subsummaries_dir
+        else:
+            self._subimage_summary_dir = self._summaries_dir
         
         
         print(dataset_name)
@@ -190,7 +201,7 @@ class ComponentSerializer:
                     for component_id in subimage_component_ids:
                         component = parsed_document["subimage"][component_id]
                         subimage_component = Image(filename, doc_title, hierarchy_dict, component_id, component,
-                                                   images_dir = self._subimages_dir, image_summaries_dir = self._summaries_dir)
+                                                   images_dir = self._subimages_dir, image_summaries_dir = self._subimage_summary_dir)
                         subimage_serializations.append(subimage_component.serialize(mode))
                 write_json_file(subimage_serializations, target_path)
                 print(f"Subimage components serialized to {target_path}")

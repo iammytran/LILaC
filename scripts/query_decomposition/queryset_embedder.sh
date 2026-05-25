@@ -15,13 +15,16 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
+source "$REPO_ROOT/scripts/_lilac_preamble.sh" lilac-mmembed 10000
+
 EMBEDDER=""
+PASSTHROUGH=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --embedder) EMBEDDER="$2"; shift 2;;
         -h|--help)
             sed -n '2,12p' "$0" | sed 's/^# \?//'; exit 0;;
-        *) echo "unknown arg: $1" >&2; exit 1;;
+        *) PASSTHROUGH+=("$1"); shift;;
     esac
 done
 
@@ -33,4 +36,4 @@ case "$EMBEDDER" in
     *)       echo "unknown embedder: $EMBEDDER" >&2; exit 1;;
 esac
 
-CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3}" python3 "$SCRIPT"
+python3 "$SCRIPT" "${PASSTHROUGH[@]}"

@@ -96,21 +96,28 @@ class Image(Component):
         # ── 1) Canonicalise the incoming path ────────────────────────────
         p = Path(image_filename)
         if p.parent == Path("."):               # e.g. "foo.jpg" (no folder)
-            stem = p.stem                       # "foo"
+            raw_stem = p.stem                   # "foo" or "foo___i_3"
         else:
-            stem = p.parent.name                # take folder name only
+            raw_stem = p.parent.name            # take folder name only
 
-        target_txt = f"{stem}.txt"              # e.g. "SomeDir.png"
+        # ── 2) Try direct lookup first ───────────────────────────────────
+        summaries_dir = Path(self._image_summaries_dir)
+        primary = summaries_dir / f"{raw_stem}.txt"
+        if primary.exists():
+            with primary.open("r", encoding="utf-8") as fh:
+                return fh.read()
 
-        # ── 2) Build the summary file path ───────────────────────────────
-        summary_path = Path(self._image_summaries_dir) / target_txt
-    
-        if not summary_path.exists():
-            return None
+        # ── 3) Fallback: subimage filenames look like "<page>___i_<N>".
+        # When no per-subimage summary exists (MMCoQA / MultimodalQA
+        # convention), fall back to the parent page's summary.
+        if "___" in raw_stem:
+            page_stem = raw_stem.split("___", 1)[0]
+            fallback = summaries_dir / f"{page_stem}.txt"
+            if fallback.exists():
+                with fallback.open("r", encoding="utf-8") as fh:
+                    return fh.read()
 
-        # ── 3) Read & return contents ────────────────────────────────────
-        with summary_path.open("r", encoding="utf-8") as fh:
-            return fh.read()    
+        return None
     
     
     def serialize_into_chunks(self, mode = "", chunk_size = 512):

@@ -13,6 +13,8 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
+source "$REPO_ROOT/scripts/_lilac_preamble.sh" lilac-mmembed 10000
+
 ALL_EMBEDDERS=(MM-Embed MMe5 UniME)
 ALL_BENCHMARKS=(MP-DocVQA SlideVQA InfoVQA MultimodalQA MMCoQA)
 EMBEDDERS=("${ALL_EMBEDDERS[@]}")
@@ -36,7 +38,7 @@ for EMB in "${EMBEDDERS[@]}"; do
     esac
     for DS in "${BENCHMARKS[@]}"; do
         echo "==> retrieval $EMB $DS ($RUN_TAG)"
-        CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" python3 src/lilac/retriever/retriever.py \
+        python3 src/lilac/retriever/retriever.py \
             --target_dataset "$DS" \
             --run_name "$RUN_TAG" \
             --run_mode iterative_late_interaction \

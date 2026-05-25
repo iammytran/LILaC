@@ -10,5 +10,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
-CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3}" \
+source "$REPO_ROOT/scripts/_lilac_preamble.sh" lilac-qwen 16000
+
+\
     python3 src/lilac/retriever/query_decomposer/modality_estimator.py "$@"

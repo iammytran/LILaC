@@ -7,6 +7,11 @@
 #   1. embedders.<EMB>.per_dataset.<DS>.<input_component>          (override)
 #   2. embedders.<EMB>.params_by_type.<dataset_type>.<input_component>  (default)
 #
+# Component names below use the {in: <serialization_basename>, out: <pt_basename>}
+# form so the on-disk corpus produced by step 7
+# (e.g. ``table+image+summary.json``) maps to a clean tensor name (``table.pt``).
+# When a component name is given as a plain string, in == out.
+#
 # To add a new dataset that uses the default settings, you usually need 0 lines
 # of YAML here — just register the dataset under retriever_metadata.yaml with
 # the right `type` (`vqa` or `multimodalqa`).
@@ -18,44 +23,42 @@ embedders:
 
   # ── MM-Embed ───────────────────────────────────────────────────────────────
   MM-Embed:
-    # Components to embed per dataset type.
-    # Each entry can be a string (same in/out filename) or {in: …, out: …}.
     components_by_type:
       vqa:
         - text
         - sentence
-        - table
-        - table_segment+image
-        - image
-        - subimage
+        - {in: table+image+summary,         out: table}
+        - {in: table_segment+image+summary, out: table_segment}
+        - {in: image+image+summary,         out: image}
+        - {in: subimage+image+summary,      out: subimage}
         - page
       multimodalqa:
         - text
         - sentence
-        - table
-        - image
-        - subimage
+        - {in: table+image+summary,         out: table}
+        - {in: table_segment+image+summary, out: table_segment}
+        - {in: image+image+summary,         out: image}
+        - {in: subimage+image+summary,      out: subimage}
         - page
 
-    # Default (max_length, batch_size) per type × component.
     params_by_type:
       vqa:
-        text:                {max_length: 256,  batch_size: 32}
-        sentence:            {max_length: 128,  batch_size: 32}
-        table:               {max_length: 256,  batch_size: 32}
-        table_segment+image: {max_length: 128,  batch_size: 32}
-        image:               {max_length: 4096, batch_size: 1}
-        subimage:            {max_length: 256,  batch_size: 8}
-        page:                {max_length: 4096, batch_size: 1}
+        text:                          {max_length: 256,  batch_size: 32}
+        sentence:                      {max_length: 128,  batch_size: 32}
+        table+image+summary:           {max_length: 256,  batch_size: 32}
+        table_segment+image+summary:   {max_length: 128,  batch_size: 32}
+        image+image+summary:           {max_length: 4096, batch_size: 1}
+        subimage+image+summary:        {max_length: 256,  batch_size: 8}
+        page:                          {max_length: 4096, batch_size: 1}
       multimodalqa:
-        text:     {max_length: 1024, batch_size: 16}
-        sentence: {max_length: 128,  batch_size: 64}
-        table:    {max_length: 512,  batch_size: 10}
-        image:    {max_length: 256,  batch_size: 8}
-        subimage: {max_length: 256,  batch_size: 8}
-        page:     {max_length: 4096, batch_size: 1}
+        text:                          {max_length: 1024, batch_size: 16}
+        sentence:                      {max_length: 128,  batch_size: 64}
+        table+image+summary:           {max_length: 512,  batch_size: 10}
+        table_segment+image+summary:   {max_length: 256,  batch_size: 16}
+        image+image+summary:           {max_length: 256,  batch_size: 8}
+        subimage+image+summary:        {max_length: 256,  batch_size: 8}
+        page:                          {max_length: 4096, batch_size: 1}
 
-    # Per-dataset overrides. Empty = inherit type defaults.
     per_dataset: {}
 
   # ── UniME ──────────────────────────────────────────────────────────────────
@@ -64,78 +67,70 @@ embedders:
       vqa:
         - text
         - sentence
-        - table
-        - table_segment+image
-        - image
-        - subimage
+        - {in: table+image+summary,         out: table}
+        - {in: table_segment+image+summary, out: table_segment}
+        - {in: image+image+summary,         out: image}
+        - {in: subimage+image+summary,      out: subimage}
         - page
       multimodalqa:
         - text
         - sentence
-        - table
-        - image
-        - subimage
+        - {in: table+image+summary,         out: table}
+        - {in: table_segment+image+summary, out: table_segment}
+        - {in: image+image+summary,         out: image}
+        - {in: subimage+image+summary,      out: subimage}
         - page
 
     params_by_type:
       vqa:
-        text:                {max_length: 256,  batch_size: 32}
-        sentence:            {max_length: 128,  batch_size: 32}
-        table:               {max_length: 256,  batch_size: 32}
-        table_segment+image: {max_length: 128,  batch_size: 32}
-        image:               {max_length: 4096, batch_size: 1}
-        subimage:            {max_length: 256,  batch_size: 8}
-        page:                {max_length: 4096, batch_size: 1}
+        text:                          {max_length: 256,  batch_size: 32}
+        sentence:                      {max_length: 128,  batch_size: 32}
+        table+image+summary:           {max_length: 256,  batch_size: 32}
+        table_segment+image+summary:   {max_length: 128,  batch_size: 32}
+        image+image+summary:           {max_length: 4096, batch_size: 1}
+        subimage+image+summary:        {max_length: 256,  batch_size: 8}
+        page:                          {max_length: 4096, batch_size: 1}
       multimodalqa:
-        text:     {max_length: 1024, batch_size: 16}
-        sentence: {max_length: 128,  batch_size: 64}
-        table:    {max_length: 512,  batch_size: 10}
-        image:    {max_length: 256,  batch_size: 8}
-        subimage: {max_length: 256,  batch_size: 8}
-        page:     {max_length: 4096, batch_size: 1}
+        text:                          {max_length: 1024, batch_size: 16}
+        sentence:                      {max_length: 128,  batch_size: 64}
+        table+image+summary:           {max_length: 512,  batch_size: 10}
+        table_segment+image+summary:   {max_length: 256,  batch_size: 16}
+        image+image+summary:           {max_length: 256,  batch_size: 8}
+        subimage+image+summary:        {max_length: 256,  batch_size: 8}
+        page:                          {max_length: 4096, batch_size: 1}
 
     per_dataset: {}
 
   # ── mmE5 ───────────────────────────────────────────────────────────────────
-  # mmE5 reads "table_segment+summary" for VQA-style benchmarks (instead of
-  # "table_segment+image") and writes it as the "table" tensor.
   MMe5:
     components_by_type:
       vqa:
-        - image
+        - {in: image+image+summary,    out: image}
         - sentence
-        - {in: table_segment+summary, out: table}
-        - subimage
+        - {in: table_segment+summary,  out: table}
+        - {in: subimage+image+summary, out: subimage}
         - page
       multimodalqa:
         - text
         - sentence
-        - table
-        - image
-        - subimage
+        - {in: table+image+summary,    out: table}
+        - {in: image+image+summary,    out: image}
+        - {in: subimage+image+summary, out: subimage}
         - page
 
-    # max_length only — mmE5 ignores batch_size in the shipped scripts, so we
-    # leave batch_size off and let the embedder use its own default.
     params_by_type:
       vqa:
-        image:                 {max_length: 256,  batch_size: 12}   # use embedder defaults
-        sentence:              {max_length: 256,  batch_size: 12}
-        table_segment+summary: {max_length: 256,  batch_size: 12}
-        subimage:              {max_length: 256,  batch_size: 12}
-        page:                  {max_length: 4096, batch_size: 12}
+        image+image+summary:           {max_length: 256,  batch_size: 12}
+        sentence:                      {max_length: 256,  batch_size: 12}
+        table_segment+summary:         {max_length: 256,  batch_size: 12}
+        subimage+image+summary:        {max_length: 256,  batch_size: 12}
+        page:                          {max_length: 4096, batch_size: 12}
       multimodalqa:
-        text:     {max_length: 2048, batch_size: 12}
-        sentence: {max_length: 2048, batch_size: 12}
-        table:    {max_length: 4096, batch_size: 12}
-        image:    {max_length: 4096, batch_size: 12}
-        subimage: {max_length: 4096, batch_size: 12}
-        page:     {max_length: 4096, batch_size: 12}
+        text:                          {max_length: 2048, batch_size: 12}
+        sentence:                      {max_length: 2048, batch_size: 12}
+        table+image+summary:           {max_length: 4096, batch_size: 12}
+        image+image+summary:           {max_length: 4096, batch_size: 12}
+        subimage+image+summary:        {max_length: 4096, batch_size: 12}
+        page:                          {max_length: 4096, batch_size: 12}
 
-    per_dataset:
-      SlideVQA:
-        image:                 {max_length: 1024, batch_size: 12}
-        sentence:              {max_length: 1024, batch_size: 12}
-        table_segment+summary: {max_length: 2048, batch_size: 12}
-        subimage:              {max_length: 2048, batch_size: 12}
-        page:                  {max_length: 4096, batch_size: 12}
+    per_dataset: {}

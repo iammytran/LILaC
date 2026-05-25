@@ -39,9 +39,20 @@ class MMEmbed(Embedder):
     def load_model(self):
 
         from transformers import AutoModel
-        
-        self.model = AutoModel.from_pretrained(self.model_path, trust_remote_code = True)
-        self.model.to('cuda:' + str(self.cuda_num))
+        import torch
+
+        # Load in fp16 for ~2× speed/memory savings (retrieval ranking is
+        # unchanged vs fp32). Avoid low_cpu_mem_usage=True — combined with a
+        # size-mismatched vocab embedding it can leave params on the meta
+        # device, which then crashes on .to(device).
+        device = f"cuda:{self.cuda_num}"
+        self.model = AutoModel.from_pretrained(
+            self.model_path,
+            trust_remote_code = True,
+            torch_dtype = torch.float16,
+        )
+        self.model.to(device)
+        self.model.eval()
         print("Model loaded successfully.")
 
         return

@@ -15,4 +15,6 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
+source "$REPO_ROOT/scripts/_lilac_preamble.sh" lilac-mmembed 10000
+
 python3 src/lilac/lcg_constructor/step8_embed_mme5.py "$@"

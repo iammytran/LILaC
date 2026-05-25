@@ -10,6 +10,8 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
+source "$REPO_ROOT/scripts/_lilac_preamble.sh" lilac-baseline 0
+
 if [[ $# -ne 1 ]]; then
     echo "Usage: $0 <DS>" >&2
     exit 2

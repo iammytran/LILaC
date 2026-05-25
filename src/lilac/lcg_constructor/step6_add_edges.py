@@ -68,8 +68,17 @@ class EdgeAdder:
             propositions = parsed_document["proposition"]
             sentences = parsed_document["sentence"]
             text = parsed_document["text"]
-            
-            self.transplant_edges(text, sentences, propositions)
+
+            # transplant_edges propagates edges from text-component paragraphs
+            # down to sentence rows by reconstructing the parent paragraph id
+            # from the sentence id (e.g. po_2_s3 → po_2). For vqa-type variants
+            # the sentences come straight from layout-detected regions and
+            # have no text-paragraph parent (text is empty); the reconstructed
+            # parent id would point at an image (i_1) and the lookup KeyErrors.
+            # Skip the transplant in that case — sentence.edges stays empty,
+            # which matches shipped MP-DocVQA behaviour.
+            if text and sentences:
+                self.transplant_edges(text, sentences, propositions)
 
 
             with open(os.path.join(self._output_documents_path, filename), "w") as f:

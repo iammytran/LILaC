@@ -1,322 +1,440 @@
-import os
-import json
-import yaml
-import argparse
+#!/usr/bin/env python3
+"""
+Step 5 — populate `parsed_documents[...]["subimage"]` for every page.
 
-from tqdm import tqdm
+This is a **dispatcher** that picks the subimage-extraction path based on
+``retriever_metadata.yaml`` `type`:
+
+    type: multimodalqa  →  Qwen-VL bbox-detect + crop (`qwen_bbox` path)
+                            Used for inline-image documents (MMCoQA,
+                            MultimodalQA) where figures are embedded inside
+                            a text-document and need bbox detection per image.
+    type: vqa           →  Layout-analyzer + adapter (`mineru` or `doclayout_yolo`)
+                            Used for page-image documents (MP-DocVQA, SlideVQA,
+                            InfoVQA) where the page IS the image and every
+                            detected region becomes a subimage.
+
+Override the type-based default with ``--analyzer {qwen_bbox|doclayout_yolo|mineru}``.
+
+Both paths fill `parsed_documents[...]["subimage"][<sid>]["caption"]["text"]`
+with a VLM/structured-text summary (single insertion — no duplicate writes
+to `caption.summary` or external `image_summaries_sub/` files).
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
 from copy import deepcopy
 from pathlib import Path
-
-from PIL import Image, ImageDraw  
-from PIL import Image, UnidentifiedImageError
-from src.models.mllm.qwen2_5_vl_7b import Qwen2_5_VL
+from typing import Dict, List
 
 from src.utils.utils import (
     read_json_or_jsonl, read_yaml, REPO_ROOT,
     input_subpath, artifact_subpath, ensure_artifact_parsed_documents,
 )
 
-QWEN2_5_VL_7B_PATH = f"{REPO_ROOT}/models/Qwen2.5-VL-7B-Instruct"
+LCG_CONFIG_PATH = f"{REPO_ROOT}/config/lcg_constructor/a.yaml"
+RETRIEVER_METADATA_PATH = f"{REPO_ROOT}/config/retriever/retriever_metadata.yaml"
+
+# Conda env hosting each analyzer.
+ANALYZER_ENV = {
+    "doclayout_yolo": "lilac-doclayout-yolo",
+    "mineru": "lilac-mineru",
+}
+ANALYZER_MODULE = {
+    "doclayout_yolo": "src.lilac.lcg_constructor.preprocessing.layout_doclayout_yolo",
+    "mineru":         "src.lilac.lcg_constructor.preprocessing.layout_mineru",
+}
+ADAPTER_MODULE = {
+    "doclayout_yolo": "src.lilac.lcg_constructor.preprocessing.doclayout_yolo_to_lilac",
+    "mineru":         "src.lilac.lcg_constructor.preprocessing.mineru_to_lilac",
+}
+
+
+def _conda_python(env_name: str) -> str:
+    p = f"/opt/miniconda3/envs/{env_name}/bin/python"
+    if not os.path.exists(p):
+        raise FileNotFoundError(f"conda env python not found: {p}")
+    return p
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Dispatcher entry point
+# ─────────────────────────────────────────────────────────────────────────────
 
 def parse_arguments():
-
-    CONFIG_PATH = f"{REPO_ROOT}/config/lcg_constructor/a.yaml"
-    config = read_yaml(CONFIG_PATH)
-    
-    parser = argparse.ArgumentParser(description="Parse HTML documents and generate embeddings.")
-    parser.add_argument("--target_data", type=str, choices = config["type_to_dataset"]["multimodalqa"] + config["type_to_dataset"]["vqa"])
-    parser.add_argument(
-        "--mode",
-        type=str,
-        choices=["all", "split", "add_to_parsed_documents", "prepare_for_embedding", "embed"],
-        default="all",
-        help="Mode of operation. 'all' (default) chains split → add_to_parsed_documents. "
-             "Use prepare_for_embedding/embed only if you want to embed sub-images without running step 7/8.",
+    lcg_config = read_yaml(LCG_CONFIG_PATH)
+    valid_targets = (
+        lcg_config["type_to_dataset"]["multimodalqa"]
+        + lcg_config["type_to_dataset"]["vqa"]
     )
-    parser.add_argument("--start_idx", type=int, default=0, help="Start index for processing.")
-    parser.add_argument("--end_idx",   type=int, default=0, help="End index for processing.")
-    
-    args = parser.parse_args()
-    
-    return args, config
+    parser = argparse.ArgumentParser(description="Step 5 — extract subimages.")
+    parser.add_argument("--target_data", type=str, required=True,
+                        help=f"One of {valid_targets} (or a registered "
+                             f"dataset suffixed with an analyzer tag).")
+    parser.add_argument(
+        "--analyzer", choices=["auto", "qwen_bbox", "doclayout_yolo", "mineru"],
+        default="auto",
+        help="auto = decide by retriever_metadata.yaml type "
+             "(multimodalqa→qwen_bbox, vqa→mineru). "
+             "Override to use a different path.",
+    )
+    parser.add_argument(
+        "--mode", choices=["all", "split", "add_to_parsed_documents"],
+        default="all",
+        help="Sub-mode for the qwen_bbox path (kept for backwards compat).",
+    )
+    parser.add_argument("--start_idx", type=int, default=0)
+    parser.add_argument("--end_idx", type=int, default=0)
+    parser.add_argument("--num_gpus", type=int, default=0,
+                        help="Cap on parallel GPU workers in caption pass (0 = all visible)")
+    return parser.parse_args(), lcg_config
 
+
+def _resolve_type(target_data: str) -> str:
+    meta = read_yaml(RETRIEVER_METADATA_PATH)
+    dm = meta.get("dataset_metadata", {})
+    if target_data in dm:
+        return dm[target_data].get("type", "")
+    # Analyzer-suffixed dataset name: fall back to base name lookup.
+    base = target_data.rsplit("-", 1)[0]
+    if base in dm:
+        return dm[base].get("type", "")
+    return ""
 
 
 def main():
-    args, config = parse_arguments()
-    
-    subimage_adder = SubimageAdder(args, config)
-    
-    subimage_adder.run(args, config)
-    
-    return 
-        
+    args, lcg_config = parse_arguments()
+    target = args.target_data
+    type_ = _resolve_type(target)
 
-class SubimageAdder:
+    if args.analyzer == "auto":
+        analyzer = "qwen_bbox" if type_ == "multimodalqa" else "mineru"
+    else:
+        analyzer = args.analyzer
 
-    def __init__(self, args, config):
+    print(f"[step5] target={target} type={type_!r} analyzer={analyzer}")
 
-        ds_name = args.target_data
-        self._parsed_documents_path = ensure_artifact_parsed_documents(config, ds_name)
-        self._output_documents_path = artifact_subpath(config, ds_name, "temp_dirname", "dev")
-        os.makedirs(self._output_documents_path, exist_ok=True)
+    if analyzer == "qwen_bbox":
+        run_qwen_bbox_path(args, lcg_config)
+    elif analyzer in ("doclayout_yolo", "mineru"):
+        run_layout_analyzer_path(args, analyzer)
+    else:
+        raise ValueError(f"Unknown analyzer: {analyzer!r}")
 
-        # image_components is a read-only input; subimage crops are an artifact.
-        self._images_dir    = input_subpath(config, ds_name, "image_components_dirname", "dev")
-        self._subimages_dir = artifact_subpath(config, ds_name, "subimage_components_dirname", "dev")
-        os.makedirs(self._subimages_dir, exist_ok=True)
 
-        self._subimages_to_embed = None
+# ─────────────────────────────────────────────────────────────────────────────
+# Path 1: Qwen-VL bbox detection (multimodalqa-type datasets)
+# ─────────────────────────────────────────────────────────────────────────────
 
-        return
-    
-    
-    def run(self, args, config):
+def run_qwen_bbox_path(args, lcg_config):
+    """Qwen-VL bbox detect-and-crop, then Qwen-VL summarize each crop into
+    parsed_documents.subimage[<sid>].caption.text."""
+    target = args.target_data
+    parsed_documents_path = ensure_artifact_parsed_documents(lcg_config, target)
+    output_documents_path = artifact_subpath(lcg_config, target, "temp_dirname", "dev")
+    images_dir = input_subpath(lcg_config, target, "image_components_dirname", "dev")
+    subimages_dir = artifact_subpath(lcg_config, target, "subimage_components_dirname", "dev")
 
-        mode = args.mode
+    os.makedirs(output_documents_path, exist_ok=True)
+    os.makedirs(subimages_dir, exist_ok=True)
 
-        if mode == "all":
-            self.detect_subimages()
-            self.add_to_parsed_documents()
-        elif mode == "split":
-            self.detect_subimages()
-        elif mode == "add_to_parsed_documents":
-            self.add_to_parsed_documents()
-        elif mode == "prepare_for_embedding":
-            self.prepare_for_embedding()
-        elif mode == "embed":
-            self.embed_sentences(args, config)
-        else:
-            raise ValueError(f"Invalid mode: {mode!r}")
+    mode = args.mode
 
-        return
-    
-    
-    def detect_subimages(self):
-        
-        image_filenames = os.listdir(self._images_dir)
-        image_filenames.sort()
-        
-        print(len(image_filenames))
-        
-        out_directory       = self._subimages_dir
-        image_basefilenames = [os.path.splitext(f)[0] for f in image_filenames]
-        done_filenames      = os.listdir(out_directory)
-        
-        to_do_indices = [f for f in image_basefilenames if f not in done_filenames]
-        todo_image_filenames = []
-        for i, f in enumerate(image_basefilenames):
-            if f in to_do_indices:
-                todo_image_filenames.append(image_filenames[i])
-        image_filenames = todo_image_filenames
-        
-        
-        image_filepaths = [os.path.join(self._images_dir, f) for f in image_filenames]    
-        # List your images
-        image_objects_list = []
-        for image_filepath in tqdm(image_filepaths):
-            
-            try:
-                # Attempt to load the image
-                with Image.open(image_filepath) as img:
-                    img.load()
-            except (UnidentifiedImageError, OSError) as e:
-                print(f"⚠️ Skipping unreadable image {image_filepath}: {e}")
-                continue
-            
-            # Load image
-            image_objects_list.append({
-                "path": image_filepath,
-                "caption": f"Image {image_filepath}",
-            })
-        # end = min(len(image_objects_list), args.offset + args.size)
-        # image_objects_list = image_objects_list[args.offset : end]
-        
-        print(len(image_objects_list))
-        
-        batch_size = 10
-        model = Qwen2_5_VL(
-            model_name_or_path = QWEN2_5_VL_7B_PATH,
-            device = "cuda",
-            batch_size = batch_size,
-            limit_mm_per_prompt = {"image": 10, "video": 0},
+    if mode in ("all", "split"):
+        _qwen_detect_and_crop(images_dir, subimages_dir, args)
+        _qwen_caption_crops(subimages_dir, args)
+
+    if mode in ("all", "add_to_parsed_documents"):
+        _qwen_inject_into_parsed_documents(
+            parsed_documents_path, output_documents_path, subimages_dir,
         )
 
-        self.detect_and_crop(model, image_objects_list, output_root = out_directory)
 
+DETECT_PROMPT = ("Detect all objects in the image and return ONLY a JSON list "
+                 "of {class, bbox_2d:[x1,y1,x2,y2]}. Do NOT include markdown or extra text.")
+
+
+def _detect_worker(gpu_id: int, slice_paths: List[str], subimages_dir: str,
+                   show_progress: bool) -> None:
+    """One-GPU worker: load Qwen-VL, detect+crop per image, write detections.json + crops."""
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+    from src.models.mllm.qwen2_5_vl_7b import Qwen2_5_VL
+    from PIL import Image
+    from tqdm import tqdm
+
+    model = Qwen2_5_VL()
+    iterator = tqdm(slice_paths, desc=f"step5/detect gpu={gpu_id}", disable=not show_progress)
+    for img_path in iterator:
+        base = Path(img_path).stem
+        out_dir = Path(subimages_dir) / base
+        det_json = out_dir / "detections.json"
+        if det_json.exists():
+            continue
+        try:
+            raw_outputs = model.infer(
+                [{"text": DETECT_PROMPT, "images": [img_path]}],
+                batch_size=1, max_tokens=2048,
+            )
+            out_str = raw_outputs[0] if raw_outputs else ""
+        except Exception as e:
+            print(f"[step5/detect gpu={gpu_id}] infer error on {img_path}: {e}")
+            continue
+        detections = _extract_json_objects(out_str)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        # Atomic-ish write of detections.json.
+        tmp = det_json.with_suffix(".json.tmp")
+        with open(tmp, "w") as f:
+            json.dump(detections, f, indent=2)
+        tmp.replace(det_json)
+        try:
+            orig = Image.open(img_path).convert("RGB")
+        except Exception as e:
+            print(f"[step5/detect gpu={gpu_id}] cannot open {img_path}: {e}")
+            continue
+        for i, det in enumerate(detections, start=1):
+            cls = det.get("class", "object")
+            box = det.get("bbox_2d") or det.get("bbox")
+            if not box or len(box) != 4:
+                continue
+            try:
+                x1, y1, x2, y2 = (int(v) for v in box)
+                if x2 <= x1 or y2 <= y1:
+                    continue
+                crop = orig.crop((x1, y1, x2, y2))
+                crop.save(out_dir / f"{i}_{cls}.png")
+            except Exception as e:
+                print(f"[step5/detect gpu={gpu_id}] crop error {img_path}: {e}")
+
+
+def _qwen_detect_and_crop(images_dir: str, subimages_dir: str, args) -> None:
+    """Multi-GPU sharded Qwen-VL bbox detection + crop. Resumable per-image."""
+    import multiprocessing as mp
+    from PIL import Image, UnidentifiedImageError
+
+    image_filenames = sorted(os.listdir(images_dir))
+    s = args.start_idx
+    e = args.end_idx if args.end_idx > 0 else len(image_filenames)
+    image_filenames = image_filenames[s:e]
+
+    todo = []
+    for f in image_filenames:
+        stem = os.path.splitext(f)[0]
+        det_json = os.path.join(subimages_dir, stem, "detections.json")
+        if os.path.exists(det_json):
+            continue
+        p = os.path.join(images_dir, f)
+        try:
+            with Image.open(p) as img:
+                img.load()
+        except (UnidentifiedImageError, OSError) as ex:
+            print(f"[step5/qwen_bbox] skip unreadable {p}: {ex}")
+            continue
+        todo.append(p)
+
+    if not todo:
+        print(f"[step5/qwen_bbox] all detections present (skip {len(image_filenames)})")
         return
 
+    # Multi-GPU shard.
+    cvd = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+    if cvd.strip():
+        gpus = [int(t) for t in cvd.split(",") if t.strip().isdigit()] or [0]
+    else:
+        gpus = [0]
+    if args.num_gpus:
+        gpus = gpus[:args.num_gpus]
+    print(f"[step5/qwen_bbox] detecting on {len(todo)} pages across GPUs {gpus}")
+
+    if len(gpus) == 1:
+        _detect_worker(gpus[0], todo, subimages_dir, show_progress=True)
+        return
+
+    try:
+        mp.set_start_method("spawn", force=True)
+    except RuntimeError:
+        pass
+    import math
+    per_gpu = math.ceil(len(todo) / len(gpus))
+    procs = []
+    for rank, gpu in enumerate(gpus):
+        a, b = rank * per_gpu, min((rank + 1) * per_gpu, len(todo))
+        if a >= b:
+            continue
+        slice_paths = todo[a:b]
+        p = mp.Process(
+            target=_detect_worker,
+            args=(gpu, slice_paths, subimages_dir, rank == 0),
+        )
+        p.start()
+        procs.append(p)
+    for p in procs:
+        p.join()
+        if p.exitcode != 0:
+            print(f"[step5/qwen_bbox] worker pid={p.pid} exit={p.exitcode}")
 
 
-    def detect_and_crop(
-        self,
-        model: Qwen2_5_VL,
-        image_entries: list[dict],  # each {'path': str, 'caption': str}
-        output_root: str = "./detections"
-    ) -> None:
-        """
-        1. Runs open-vocabulary detection on each image using its caption.
-        2. Draws boxes on the image and saves to output_root/{basename}/boxed.png.
-        3. Crops each bbox region and saves as separate files.
-
-        image_entries: list of dicts with keys:
-        - 'path': image file path
-        - 'caption': descriptive caption
-        """
-        os.makedirs(output_root, exist_ok=True)
-
-            # Build inference objects with captions (convert to paths-only for qwen2_5_vl)
-        objects = []
-        for entry in image_entries:
-            img_path = entry['path']
-            caption = entry.get('caption', '')
-            # text = (
-            #     f"Caption: {caption}. Detect all objects in the image and return ONLY a JSON list "
-            #     f"of {{class, bbox_2d:[x1,y1,x2,y2]}}. Do NOT include markdown or extra text."
-            # )
-            text = (
-                f"Detect all objects in the image and return ONLY a JSON list "
-                f"of {{class, bbox_2d:[x1,y1,x2,y2]}}. Do NOT include markdown or extra text."
-            )
-            objects.append({
-                "text": text,
-                "images": [img_path],  # qwen2_5_vl expects list of paths
-            })
-
-        # Run batched detection
-        raw_outputs = model.infer(objects)
+def _extract_json_objects(s: str) -> List[Dict]:
+    """Scan a string for balanced {...} JSON objects and return them as dicts."""
+    objs = []
+    stack = []
+    start_idx = None
+    for i, ch in enumerate(s):
+        if ch == '{':
+            if not stack:
+                start_idx = i
+            stack.append('{')
+        elif ch == '}':
+            if stack:
+                stack.pop()
+                if not stack and start_idx is not None:
+                    try:
+                        objs.append(json.loads(s[start_idx:i+1]))
+                    except json.JSONDecodeError:
+                        pass
+                    start_idx = None
+    return objs
 
 
-        # Process each image with its detections
-        for entry, out_str in tqdm(zip(image_entries, raw_outputs), total=len(image_entries), desc="Processing Images"):
-            
-            detections = self.extract_json_objects(out_str)
-            img_path = entry['path']
+def _qwen_caption_crops(subimages_dir: str, args) -> None:
+    """Caption every cropped PNG under subimages_dir/<page>/*.png via Qwen-VL."""
+    from src.lilac.lcg_constructor.preprocessing._caption_via_qwen_vl import caption_images
 
-                    # Load original image (for clean crops) and create a working copy for drawing boxes
-            orig_img = Image.open(img_path).convert("RGB")
-            img = orig_img.copy()
-            draw = ImageDraw.Draw(img)
+    sub_root = Path(subimages_dir)
+    crop_paths: List[Path] = []
+    for page_dir in sorted(sub_root.iterdir()):
+        if not page_dir.is_dir():
+            continue
+        for crop in sorted(page_dir.glob("*.png")):
+            if crop.name in ("boxed.png", "BOXED.png"):
+                continue
+            crop_paths.append(crop)
 
-            # Prepare output directory
-            base = Path(img_path).stem
-            dir_out = Path(output_root) / base
-            dir_out.mkdir(exist_ok=True, parents=True)
-            dir_out = str(dir_out)
-            
-            with open(dir_out + "/detections.json", "w") as f:
-                json.dump(detections, f, indent=2)
+    if not crop_paths:
+        print("[step5/qwen_bbox] no crops to caption")
+        return
 
-            # Draw boxes and crop subimages
-            for i, det in enumerate(detections, start=1):
-                try:
-                    predicted_class = det["class"]
-                except:
-                    predicted_class = "object"
-                x1, y1, x2, y2 = det["bbox_2d"]  # contentReference[oaicite:5]{index=5}
-                try:
-                    draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
-
-                                # Crop region from original image (without box overlays)
-                    subimg = orig_img.crop((x1, y1, x2, y2))  # contentReference[oaicite:6]{index=6}
-                
-                    subimg.save(dir_out + "/" + str(i) + "_" + predicted_class + ".png")
-                except:
-                    print("Passing here")
-                    pass
-
-            # Save the image with boxes
-            try:
-                img.save(dir_out + "/boxed.png")
-            except:
-                pass
-            
-            
+    img_paths = [str(p) for p in crop_paths]
+    out_paths = [str(p.with_suffix(".txt")) for p in crop_paths]
+    caption_images(
+        image_paths=img_paths,
+        output_paths=out_paths,
+        prompt=("Generate a summary of the given image region. "
+                "Include all the texts within it."),
+        max_tokens=512,
+        num_gpus=(args.num_gpus or None),
+    )
 
 
-    def extract_json_objects(self, s: str) -> list[dict]:
-        """
-        Scan the string s and return a list of all fully-balanced JSON object dicts.
-        Any incomplete trailing object is skipped.
-        """
-        objs = []
-        stack = []
-        start_idx = None
-
-        for i, ch in enumerate(s):
-            if ch == '{':
-                if not stack:
-                    start_idx = i
-                stack.append('{')
-            elif ch == '}':
-                if stack:
-                    stack.pop()
-                    if not stack and start_idx is not None:
-                        candidate = s[start_idx : i + 1]
-                        try:
-                            objs.append(json.loads(candidate))
-                        except json.JSONDecodeError:
-                            pass
-                        start_idx = None
-        return objs
-    
-
-    def add_to_parsed_documents(self):
-    
-        filenames = os.listdir(self._parsed_documents_path)
-        filenames.sort()
-        for filename in tqdm(filenames):
-        
-            file_path = os.path.join(self._parsed_documents_path, filename)
-            parsed_document = read_json_or_jsonl(file_path)
-
-            for image_id in parsed_document["image"]:
-                image_obj = parsed_document["image"][image_id]
-                if not ("filename" in image_obj and image_obj["filename"] != None):
+def _qwen_inject_into_parsed_documents(
+    parsed_documents_path: str,
+    output_documents_path: str,
+    subimages_dir: str,
+) -> None:
+    """Walk parsed_documents, append subimage entries from each page's
+    image_components_sub/<stem>/*.png and merge caption.txt sidecars."""
+    from tqdm import tqdm
+    filenames = sorted(os.listdir(parsed_documents_path))
+    for filename in tqdm(filenames, desc="step5 inject"):
+        file_path = os.path.join(parsed_documents_path, filename)
+        parsed_document = read_json_or_jsonl(file_path)
+        # Make sure subimage key exists.
+        parsed_document.setdefault("subimage", {})
+        for image_id in parsed_document.get("image", {}):
+            image_obj = parsed_document["image"][image_id]
+            if not image_obj.get("filename"):
+                continue
+            stem = os.path.splitext(image_obj["filename"])[0]
+            sub_dir = Path(subimages_dir) / stem
+            if not sub_dir.is_dir():
+                continue
+            for crop_path in sorted(sub_dir.glob("*.png")):
+                if crop_path.name in ("boxed.png", "BOXED.png"):
                     continue
-                image_filename = image_obj["filename"]
-                filename_without_ext = os.path.splitext(image_filename)[0]
-                
-                subimages_dir = os.path.join(self._subimages_dir, filename_without_ext)
-                try: 
-                    subimages_filenames = os.listdir(subimages_dir)
-                except:
+                # Index from filename prefix: "1_class.png" → "1"
+                idx_part = crop_path.name.split("_", 1)[0]
+                sid = f"{image_id}_s{idx_part}"
+                if sid in parsed_document["subimage"]:
                     continue
-                subimages_filenames = [it for it in subimages_filenames if it not in ["BOXED.png", "boxed.png", "detections.json"]]
-                
-                for subimage_filename in subimages_filenames:
-                    full_path = os.path.join(subimages_dir, subimage_filename)
-                    
-                    p = Path(full_path)
-                    # Grab the last two path parts:
-                    parent, s_filename = p.parts[-2], p.parts[-1]
-                    relative_path = f"{parent}/{s_filename}"
-                    
-                    # Derive a subimage index from the filename (before the first underscore)
-                    subimage_idx = s_filename.split("_", 1)[0]
-                    subimage_id = f"{image_id}_s{subimage_idx}"
-                    
-                    # Deep-copy the template image entry
-                    parsed_document["subimage"][subimage_id] = deepcopy(parsed_document["image"][image_id])
-                    # Store the new concatenated path
-                    parsed_document["subimage"][subimage_id]["filename"] = relative_path
+                rel_path = f"{stem}/{crop_path.name}"
+                entry = deepcopy(parsed_document["image"][image_id])
+                entry["filename"] = rel_path
+                # Merge caption text from sidecar.
+                txt_sidecar = crop_path.with_suffix(".txt")
+                caption_text = ""
+                if txt_sidecar.exists():
+                    caption_text = txt_sidecar.read_text(encoding="utf-8").strip()
+                entry["caption"] = {"text": caption_text, "edges": []}
+                parsed_document["subimage"][sid] = entry
+        with open(os.path.join(output_documents_path, filename), "w") as f:
+            json.dump(parsed_document, f, indent=4)
 
-            with open(os.path.join(self._output_documents_path, filename), "w") as f:
-                json.dump(parsed_document, f, indent = 4)
-                
-        parsed_parent = os.path.dirname(self._parsed_documents_path)
-        output_parent = os.path.dirname(self._output_documents_path)
+    # Atomic swap: parsed_documents <-> temp.
+    parsed_parent = os.path.dirname(parsed_documents_path)
+    output_parent = os.path.dirname(output_documents_path)
+    swap_parent = parsed_parent + "__swap__"
+    if os.path.exists(swap_parent):
+        import shutil; shutil.rmtree(swap_parent)
+    os.rename(parsed_parent, swap_parent)
+    os.rename(output_parent, parsed_parent)
+    os.rename(swap_parent, output_parent)
 
-        # pick a temp name that won't collide
-        swap_parent = parsed_parent + "__swap__"
 
-        # 1) rename parsed  → swap
-        os.rename(parsed_parent, swap_parent)
-        # 2) rename output  → parsed
-        os.rename(output_parent, parsed_parent)
-        # 3) rename swap    → output
-        os.rename(swap_parent, output_parent)
+# ─────────────────────────────────────────────────────────────────────────────
+# Path 2: Layout analyzer (vqa-type datasets)
+# ─────────────────────────────────────────────────────────────────────────────
 
-        
+def run_layout_analyzer_path(args, analyzer: str):
+    """Run DocLayoutYOLO or MinerU on page images → adapter → parsed_documents."""
+    target = args.target_data
+    images_dir = f"{REPO_ROOT}/datasets/{target}/image_components/dev"
+    layout_out = f"{REPO_ROOT}/artifacts/{target}/layout_{analyzer}/dev"
+    pd_out = f"{REPO_ROOT}/datasets/{target}/parsed_documents/dev"
+    crops_out = f"{REPO_ROOT}/datasets/{target}/image_components_sub"
+
+    if not os.path.isdir(images_dir):
+        raise FileNotFoundError(f"Page images not found: {images_dir}")
+
+    Path(layout_out).mkdir(parents=True, exist_ok=True)
+    Path(pd_out).mkdir(parents=True, exist_ok=True)
+    Path(crops_out).mkdir(parents=True, exist_ok=True)
+
+    env_name = ANALYZER_ENV[analyzer]
+    analyzer_module = ANALYZER_MODULE[analyzer]
+    adapter_module = ADAPTER_MODULE[analyzer]
+
+    # ── Stage A: run analyzer in its own conda env ──────────────────────────
+    print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
+    subprocess.run(
+        [
+            _conda_python(env_name),
+            "-m", analyzer_module,
+            "--input_dir",  images_dir,
+            "--output_dir", layout_out,
+        ],
+        check=True,
+        cwd=REPO_ROOT,
+    )
+
+    # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
+    print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")
+    subprocess.run(
+        [
+            sys.executable,
+            "-m", adapter_module,
+            "--layout",    layout_out,
+            "--images",    images_dir,
+            "--output",    pd_out,
+            "--crops_out", crops_out,
+            "--num_gpus",  str(args.num_gpus),
+        ],
+        check=True,
+        cwd=REPO_ROOT,
+    )
+
+
 if __name__ == "__main__":
     main()

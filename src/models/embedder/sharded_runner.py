@@ -57,9 +57,15 @@ def _worker(
     max_length: int,
     batch_size: int,
     delete_model_after: bool,
+    physical_gpu: str = "",
 ) -> None:
-    """Encode ``data_slice`` on a single GPU and write a shard to ``tmp_dir``."""
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+    """Encode ``data_slice`` on a single GPU and write a shard to ``tmp_dir``.
+
+    ``physical_gpu`` is the actual CUDA index this worker should use, taken
+    from the outer ``CUDA_VISIBLE_DEVICES`` if it was set. If empty, we fall
+    back to using the worker index directly (legacy behaviour).
+    """
+    os.environ["CUDA_VISIBLE_DEVICES"] = physical_gpu if physical_gpu else str(gpu_id)
 
     enc = embedder_cls(cuda_num=0, show_progress=(gpu_id == 0))
     enc.load_model()
@@ -149,6 +155,21 @@ def encode_one_corpus(
     with open(corpus_in_filepath) as f:
         corpus: List[Dict[str, Any]] = json.load(f)
 
+    if not corpus:
+        print(f"⚠️  Empty corpus at {corpus_in_filepath} — skipping encode.")
+        return
+
+    # Respect an outer CUDA_VISIBLE_DEVICES if it was set; each worker gets a
+    # single physical-GPU id from the list. Falls back to "0,1,…" if no
+    # CUDA_VISIBLE_DEVICES is set.
+    cvd = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+    if cvd.strip():
+        physical_ids = [tok.strip() for tok in cvd.split(",") if tok.strip()]
+    else:
+        physical_ids = [str(i) for i in range(num_gpus)]
+    # Cap num_gpus to whatever we actually have available.
+    num_gpus = min(num_gpus, len(physical_ids))
+
     total = len(corpus)
     per_gpu = math.ceil(total / num_gpus)
     tmp_dir = tempfile.mkdtemp(prefix=tmp_prefix)
@@ -169,6 +190,7 @@ def encode_one_corpus(
                 max_length,
                 batch_size,
                 delete_model_after,
+                physical_ids[g],
             ),
         )
         p.start()

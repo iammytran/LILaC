@@ -190,8 +190,16 @@ class Retriever:
             (os.path.join(emb_dir, self._run_config["top_level_embeddings"]["image"] + ".pt"),
              os.path.join(emb_dir, self._run_config["top_level_embeddings"]["image"] + ".json"))
         ]
+        # filter by existence — datasets like MP-DocVQA only have a subset
+        # of component types (e.g. only image at the top level).
+        existing_top_level_pairs = []
+        for pair in top_level_pairs:
+            if os.path.exists(pair[0]) and os.path.exists(pair[1]):
+                existing_top_level_pairs.append(pair)
+            else:
+                print(f"[Retriever] Top-level embedding pair not found: {pair[0]}")
+        top_level_pairs = existing_top_level_pairs
 
-        
         self.level_to_indexer["top"].load_embeddings(top_level_pairs, show_progress = True)
         gpu_num = self._run_config["top_level_embeddings"].get("gpu_num", -1)
         self.level_to_indexer["top"].create_index(gpu_id = gpu_num)

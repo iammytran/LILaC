@@ -58,20 +58,28 @@ RUN_CONFIG_PATH          = f"{REPO_ROOT}/config/retriever/retriever_config.yaml"
 
 
 def main():
-    modality_estimator = ModalityEstimator()
+    parser = argparse.ArgumentParser(description="Estimate modality per sub-query.")
+    parser.add_argument("--target_data", type=str, default=None,
+                        help="If set, only run on this benchmark.")
+    args = parser.parse_args()
+    modality_estimator = ModalityEstimator(target_data=args.target_data)
     modality_estimator.run()
     return
-        
+
 
 class ModalityEstimator:
 
-    def __init__(self):
-        
+    def __init__(self, target_data: str | None = None):
+
         self._metadata_config       = read_yaml(METADATA_CONFIG_PATH)
         self._run_config            = read_yaml(RUN_CONFIG_PATH)
-        
+
         self._root_path             = self._metadata_config["root_path"]
         self.dataset_names          = [it["name"] for it in self._metadata_config["dataset_metadata"].values()]
+        if target_data is not None:
+            if target_data not in self.dataset_names:
+                raise ValueError(f"target_data {target_data!r} not in retriever_metadata.yaml dataset list {self.dataset_names}")
+            self.dataset_names = [target_data]
 
         self.qwen_batch_size        = 4
         self._qwen                  = Qwen2_5_72B()

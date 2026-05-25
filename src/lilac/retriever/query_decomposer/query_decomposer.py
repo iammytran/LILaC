@@ -99,25 +99,33 @@ def parse_arguments():
         "--limit", type=int, default=None,
         help="If set, decompose at most this many queries per benchmark. Default: no limit.",
     )
+    parser.add_argument(
+        "--target_data", type=str, default=None,
+        help="If set, only decompose this benchmark (must match a key in retriever_metadata.yaml).",
+    )
     return parser.parse_args()
 
 
 def main():
     args = parse_arguments()
-    query_decomposer = QueryDecomposer(limit=args.limit)
+    query_decomposer = QueryDecomposer(limit=args.limit, target_data=args.target_data)
     query_decomposer.run()
     return
 
 
 class QueryDecomposer:
 
-    def __init__(self, limit: int | None = None):
+    def __init__(self, limit: int | None = None, target_data: str | None = None):
 
         self._metadata_config       = read_yaml(METADATA_CONFIG_PATH)
         self._run_config            = read_yaml(RUN_CONFIG_PATH)
 
         self._root_path             = self._metadata_config["root_path"]
         self.dataset_names          = [it["name"] for it in self._metadata_config["dataset_metadata"].values()]
+        if target_data is not None:
+            if target_data not in self.dataset_names:
+                raise ValueError(f"target_data {target_data!r} not in retriever_metadata.yaml dataset list {self.dataset_names}")
+            self.dataset_names = [target_data]
         self._limit                 = limit
 
         self.qwen_batch_size = 1

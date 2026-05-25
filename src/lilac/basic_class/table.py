@@ -54,16 +54,27 @@ class Table(Component):
             f"{self.get_serialized_hierarchy_path()} [SEP] "
         )
         header_imgs: List[int] = []
-        if self.component_obj["table"]:
+
+        # vqa-type variants (Phase 4) store table_segments as a single OCR'd
+        # text blob in component_obj["text"] (from MinerU's table_body or
+        # DocLayoutYOLO+VLM OCR). They have no structured row list. Fall back
+        # to that text when "table" is missing or empty.
+        structured_rows = self.component_obj.get("table") or []
+        if not structured_rows:
+            text_blob = (self.component_obj.get("text") or "").strip()
+            if text_blob:
+                serialized_text += text_blob + " [SEP] "
+
+        if structured_rows:
             hdr_txt, hdr_imgs = self.serialize_row(
-                self.component_obj["table"][0],
+                structured_rows[0],
                 self.component_obj,
                 in_table_image_filepaths
             )
             serialized_text += hdr_txt + " [SEP] "
 
         # 3) serialize remaining rows
-        for row in self.component_obj["table"][1:]:
+        for row in structured_rows[1:]:
             row_txt, _row_imgs = self.serialize_row(
                 row,
                 self.component_obj,

@@ -14,6 +14,8 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
+source "$REPO_ROOT/scripts/_lilac_preamble.sh" lilac-baseline 0
+
 ALL_BENCHMARKS=(MP-DocVQA SlideVQA InfoVQA MultimodalQA MMCoQA)
 BENCHMARKS=("${ALL_BENCHMARKS[@]}")
 EXPLICIT=0

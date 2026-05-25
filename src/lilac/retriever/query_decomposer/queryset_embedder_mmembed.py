@@ -51,9 +51,13 @@ MODALITY_TO_PROMPT = {
 # ═══════════════════════════════════════════════════════════════════════════════
 class QueryEmbedder:
     # ------------------------------------------------------------------
-    def __init__(self, max_len: int = 512):
+    def __init__(self, max_len: int = 512, target_data: str | None = None):
         self._meta             = _load_yaml(METADATA_CONFIG)
         self._datasets         = [d["name"] for d in self._meta["dataset_metadata"].values()]
+        if target_data is not None:
+            if target_data not in self._datasets:
+                raise ValueError(f"target_data {target_data!r} not in retriever_metadata.yaml dataset list {self._datasets}")
+            self._datasets = [target_data]
         self._mconf            = self._meta["metadata_files"]
         self._max_len          = max_len
 
@@ -84,6 +88,8 @@ class QueryEmbedder:
             "ag_js": os.path.join(embed_dir, self._mconf["subqueries_modality_agnostic_index"]),
             "aw_pt": os.path.join(embed_dir, self._mconf["subqueries_modality_aware"]),
             "aw_js": os.path.join(embed_dir, self._mconf["subqueries_modality_aware_index"]),
+            "q_pt":  os.path.join(embed_dir, self._mconf["query_embeddings"]),
+            "q_js":  os.path.join(embed_dir, self._mconf["query_embeddings_index"]),
         }
         if all(map(check_file_exists, out_paths.values())):
             print(f"✅  {dname}: embeddings already present – skip")
@@ -124,7 +130,33 @@ class QueryEmbedder:
         self._merge_shards(tmp_dir, out_paths)
 
         shutil.rmtree(tmp_dir)
+
+        # ---------- full-query embeddings (qid → original question) ----
+        # Needed by retriever.py which loads query.pt alongside the
+        # sub-query embeddings. Single-process pass; same encoder & instruction
+        # as the modality-agnostic sub-query path.
+        if not (check_file_exists(out_paths["q_pt"]) and check_file_exists(out_paths["q_js"])):
+            self._encode_full_queries(subq_path, out_paths)
+
         print(f"✅  {dname}: saved embeddings → {embed_dir}")
+
+    # ------------------------------------------------------------------
+    def _encode_full_queries(self, subq_path: str, out_paths: Dict[str, str]) -> None:
+        js = read_json_or_jsonl(subq_path)
+        qids   = list(js.keys())
+        texts  = [js[q]["question"] for q in qids]
+        if not texts:
+            return
+
+        os.environ["CUDA_VISIBLE_DEVICES"] = str(self.gpu_ids[0])
+        enc = MMEmbed(cuda_num = 0, show_progress = True)
+        enc.load_model()
+        emb = enc.encode_queries(texts, instruction = AG_INSTR, max_length = self._max_len)
+        enc.delete_model()
+
+        torch.save(emb, out_paths["q_pt"])
+        idx = {str(i): qids[i] for i in range(len(qids))}
+        write_json_file(idx, out_paths["q_js"])
 
     # ------------------------------------------------------------------
     # util: read + flatten sub-query JSON
@@ -231,4 +263,9 @@ def _load_yaml(path: str) -> Dict[str, Any]:
 
 # ═══════════════════════════════════════════════════════════════════════════════
 if __name__ == "__main__":
-    QueryEmbedder().run()
+    import argparse
+    _ap = argparse.ArgumentParser()
+    _ap.add_argument("--target_data", type=str, default=None,
+                     help="If set, embed sub-queries only for this benchmark.")
+    _args = _ap.parse_args()
+    QueryEmbedder(target_data=_args.target_data).run()

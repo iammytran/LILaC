@@ -119,11 +119,49 @@ Each shell script's header lists which env it expects. You're responsible for ac
 ### 1‑2. Download model checkpoints
 
 ```bash
-./models/download_generator.sh    # Qwen2.5-VL-7B + Qwen2.5-72B-Instruct
-./models/download_embedders.sh    # MM-Embed, UniME, mmE5
+./models/download_generator.sh           # Qwen2.5-VL-7B + Qwen2.5-72B-Instruct
+./models/download_embedders.sh           # MM-Embed, UniME, mmE5
+./models/download_layout_analyzers.sh    # (optional) DocLayout-YOLO + MinerU, for preprocessing
 ```
 
 Checkpoints land under `models/<model_name>/`. Paths are repo-relative (`${REPO_ROOT}/models/...`), so they're portable across clones.
+
+</details>
+
+<details>
+<summary><b>1.5 (Optional) Layout analysis for raw images / PDFs</b> — when you start from un-parsed pages and need to build <code>parsed_documents/dev/*.json</code> yourself.</summary>
+
+Skip this step if your dataset already ships `parsed_documents/dev/*.json` (i.e. the components are already segmented). Otherwise use one of the two integrated layout analyzers.
+
+#### DocLayout-YOLO (lightweight)
+
+Detects 10 layout classes (title / text / figure / table / caption / formula / …) and writes per-image crops + `boxes.json`.
+
+```bash
+./models/download_layout_analyzers.sh --only doclayout      # one-time
+
+./scripts/preprocessing/layout_doclayout_yolo.sh \
+    --input  datasets/MyDataset/raw_pages/dev \
+    --output artifacts/MyDataset/layout/dev
+```
+
+Source: [`src/lilac/lcg_constructor/preprocessing/layout_doclayout_yolo.py`](src/lilac/lcg_constructor/preprocessing/layout_doclayout_yolo.py). Checkpoint: [`juliozhao/DocLayout-YOLO-DocStructBench`](https://huggingface.co/juliozhao/DocLayout-YOLO-DocStructBench).
+
+#### MinerU (full pipeline)
+
+Produces structured `content_list.json` + extracted figures/tables/text in reading order. Handles PDFs natively. Heavier; uses its own model registry.
+
+```bash
+./models/download_layout_analyzers.sh --only mineru         # one-time (installs CLI + weights)
+
+./scripts/preprocessing/layout_mineru.sh \
+    --input  datasets/MyDataset/raw_pdfs \
+    --output artifacts/MyDataset/mineru/dev
+```
+
+Source: [`src/lilac/lcg_constructor/preprocessing/layout_mineru.py`](src/lilac/lcg_constructor/preprocessing/layout_mineru.py). Upstream: [opendatalab/mineru](https://github.com/opendatalab/mineru).
+
+Both scripts are decoupled from the dataset registry — you can run them on a folder of raw user pages *before* registering the dataset in YAML. The outputs are intended as inputs to your own `parsed_documents/dev/*.json` writer.
 
 </details>
 

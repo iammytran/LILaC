@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
-# predict_summary.py
 """
-Generate detailed summaries for every image in MP-DocVQA’s dev split
-using Qwen-2.5-VL-7B.
+Step 0 — generate VLM-based page-level summaries for every image in a
+benchmark's `image_components/dev/`.
 
-Input  directory:  .../image_components/dev/**/*.jpg|png|…
-Output directory:  .../image_summaries/dev/<basename>.txt
+Input:  datasets/<DS>/image_components/dev/*.{jpg,jpeg,png,bmp,webp}
+        (FLAT glob, no recursion — F-010 fix: previously a recursive glob
+         inflated MMCoQA from 704 unique images to 5879 cached duplicates.)
+Output: artifacts/<DS>/image_summaries/dev/<stem>.txt
+
+Multi-GPU + resumable via the shared helper `_caption_via_qwen_vl.caption_images`.
 """
 
 from __future__ import annotations
-import argparse, json, pathlib, os
+
+import argparse
+import pathlib
 from typing import List
 
-from tqdm import tqdm
-from src.models.mllm.qwen2_5_vl_7b import Qwen2_5_VL   # ← your wrapper
+from src.lilac.lcg_constructor.preprocessing._caption_via_qwen_vl import caption_images
 from src.utils.utils import REPO_ROOT
 
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
@@ -21,61 +25,62 @@ PROMPT_TXT = "Generate a summary of the given image. Include all the texts withi
 
 
 def collect_images(img_dir: pathlib.Path) -> List[pathlib.Path]:
+    """Flat (non-recursive) glob; F-010 fix."""
     imgs: List[pathlib.Path] = []
-    for p in img_dir.rglob("*"):
+    for p in sorted(img_dir.iterdir()):
         if p.is_file() and p.suffix.lower() in IMG_EXTS:
             imgs.append(p)
-    imgs.sort()
     return imgs
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--target_data", required=True,
-                    help="Benchmark name, e.g. MP-DocVQA, MultimodalQA, …")
-    ap.add_argument("--overwrite", action="store_true",
-                    help="Re-generate even if summary file already exists")
+                    help="Benchmark name, e.g. MP-DocVQA, MMCoQA, …")
+    ap.add_argument("--start_idx", type=int, default=0,
+                    help="Slice start (for chunked runs)")
+    ap.add_argument("--end_idx", type=int, default=0,
+                    help="Slice end (0 = no upper bound)")
+    ap.add_argument("--max_tokens", type=int, default=2048)
+    ap.add_argument("--num_gpus", type=int, default=0,
+                    help="Cap on parallel GPU workers (0 = use all visible)")
     args = ap.parse_args()
 
-    root = pathlib.Path(f"{REPO_ROOT}/datasets/{args.target_data}")
-    img_dir = root / "image_components" / "dev"
-    out_dir = root / "image_summaries" / "dev"
+    img_dir = pathlib.Path(f"{REPO_ROOT}/datasets/{args.target_data}/image_components/dev")
+    out_dir = pathlib.Path(f"{REPO_ROOT}/artifacts/{args.target_data}/image_summaries/dev")
+
+    if not img_dir.is_dir():
+        print(f"❌  Image dir not found: {img_dir}")
+        return
 
     imgs = collect_images(img_dir)
     if not imgs:
-        print("❌  No images found in", img_dir)
+        print(f"❌  No images found in {img_dir}")
         return
-    print(f"📂  Found {len(imgs):,} images in {img_dir}")
+    print(f"📂  Found {len(imgs):,} images in {img_dir} (flat glob)")
+
+    s, e = args.start_idx, (args.end_idx if args.end_idx > 0 else len(imgs))
+    imgs = imgs[s:e]
+    if not imgs:
+        print(f"⚠️  Slice [{s}:{e}] is empty")
+        return
+    print(f"🔪  Processing slice [{s}:{e}] = {len(imgs):,} images")
 
     out_dir.mkdir(parents=True, exist_ok=True)
+    image_paths = [str(p) for p in imgs]
+    output_paths = [str(out_dir / f"{p.stem}.txt") for p in imgs]
 
-    # build inference objects
-    objects, out_paths = [], []
-    for p in imgs:
-        out_p = out_dir / f"{p.stem}.txt"
-        if out_p.exists() and not args.overwrite:
-            continue
-        objects.append({"text": PROMPT_TXT, "images": [str(p)]})
-        out_paths.append(out_p)
+    caption_images(
+        image_paths=image_paths,
+        output_paths=output_paths,
+        prompt=PROMPT_TXT,
+        max_tokens=args.max_tokens,
+        num_gpus=(args.num_gpus or None),
+    )
 
-    if not objects:
-        print("✅  All summaries already present – nothing to do.")
-        return
-    print(f"📝  Generating {len(objects):,} new summaries")
+    written = sum(1 for p in output_paths if pathlib.Path(p).exists())
+    print(f"✅  {written}/{len(output_paths)} outputs present in {out_dir}")
 
-    qwen = Qwen2_5_VL()
 
-    results = qwen.infer(objects, batch_size = 8, max_tokens = 2048)
-    assert len(results) == len(out_paths)
-
-    for path, summary in zip(out_paths, results):
-        try:
-            path.write_text(summary.strip(), encoding="utf-8")
-        except Exception as e:
-            print(f"❗  Failed to write {path.name}: {e}")
-
-    print(f"✅  Wrote {len(results):,} summaries → {out_dir}")
-
-# ────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     main()

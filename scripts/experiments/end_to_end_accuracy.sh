@@ -12,6 +12,8 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
+source "$REPO_ROOT/scripts/_lilac_preamble.sh" lilac-qwen 18000
+
 ALL_EMBEDDERS=(MM-Embed MMe5 UniME)
 ALL_BENCHMARKS=(MP-DocVQA SlideVQA InfoVQA MultimodalQA MMCoQA)
 EMBEDDERS=("${ALL_EMBEDDERS[@]}")
@@ -56,7 +58,7 @@ for EMB in "${EMBEDDERS[@]}"; do
         if has_image_components "$DS"; then
             EXTRA+=(--images_subpath image_components)
         fi
-        CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3}" python3 src/lilac/retriever/generator.py \
+        python3 src/lilac/retriever/generator.py \
             --run_name "$RUN_TAG" \
             --target_dataset "$DS" \
             --retrieval_results_path "$RETRIEVAL" \
