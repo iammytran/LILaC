@@ -33,16 +33,16 @@ if want mmembed; then
         --local-dir "$REPO_ROOT/models/MM-Embed"
 fi
 
-# UniME     (src/models/embedder/unime.py  → models/UniME-LLaVA-OneVision-7B)
-if want unime; then
-    hf download \
-        DeepGlint-AI/UniME-LLaVA-OneVision-7B \
-        --local-dir "$REPO_ROOT/models/UniME-LLaVA-OneVision-7B"
-fi
+# # UniME     (src/models/embedder/unime.py  → models/UniME-LLaVA-OneVision-7B)
+# if want unime; then
+#     hf download \
+#         DeepGlint-AI/UniME-LLaVA-OneVision-7B \
+#         --local-dir "$REPO_ROOT/models/UniME-LLaVA-OneVision-7B"
+# fi
 
-# mmE5      (src/models/embedder/mme5.py   → models/mmE5-mllama-11b-instruct)
-if want mme5; then
-    hf download \
-        intfloat/mmE5-mllama-11b-instruct \
-        --local-dir "$REPO_ROOT/models/mmE5-mllama-11b-instruct"
-fi
+# # mmE5      (src/models/embedder/mme5.py   → models/mmE5-mllama-11b-instruct)
+# if want mme5; then
+#     hf download \
+#         intfloat/mmE5-mllama-11b-instruct \
+#         --local-dir "$REPO_ROOT/models/mmE5-mllama-11b-instruct"
+# fi
