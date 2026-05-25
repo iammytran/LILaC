@@ -6,6 +6,7 @@ import json
 from src.lilac.basic_class.component import Component
 from src.utils.constants import EmbeddingMode
 from pathlib import Path
+from typing import Union
 
 
 class Image(Component):
@@ -42,6 +43,7 @@ class Image(Component):
     
         if "caption" in self.component_obj:
             if "text" in self.component_obj["caption"]:
+                print(f"self.component_obj['caption']: {self.component_obj['caption']}")
                 representations["caption"] = " [SEP] " + self.component_obj["caption"]["text"]
             
             if "ocr" in self.component_obj["caption"]:
@@ -82,7 +84,7 @@ class Image(Component):
         return embedding_obj
     
     
-    def _get_image_summary(self, image_filename: str) -> str | None:
+    def _get_image_summary(self, image_filename: str) -> Union[str, None]:
         """
         Given an image path (possibly nested), map it to the corresponding
         summary text file and return its contents, or *None* if not found.

@@ -100,7 +100,7 @@ class ComponentSerializer:
         target_path = os.path.join(self._serializations_path, f"text.json")
         if not os.path.exists(target_path):    
             text_serializations = []
-            for filename, parsed_document in tqdm(filename_to_parseddoc.items()):
+            for filename, parsed_document in tqdm(filename_to_parseddoc.items(), desc="Serializing text components"):
                 doc_title       = parsed_document["title"]
                 hierarchy_dict  = parsed_document["hierarchy"]
                 text_component_ids = parsed_document["text"]
@@ -115,7 +115,7 @@ class ComponentSerializer:
         target_path = os.path.join(self._serializations_path, f"sentence.json")
         if not os.path.exists(target_path):
             sentence_serializations = []
-            for filename, parsed_document in tqdm(filename_to_parseddoc.items()):
+            for filename, parsed_document in tqdm(filename_to_parseddoc.items(), desc="Serializing sentence components"):
                 doc_title       = parsed_document["title"]
                 hierarchy_dict  = parsed_document["hierarchy"]
                 sentence_component_ids = parsed_document["sentence"]
@@ -132,7 +132,7 @@ class ComponentSerializer:
             target_path = os.path.join(self._serializations_path, "table+" + "+".join(mode) + ".json")
             if not os.path.exists(target_path):
                 table_serializations = []
-                for filename, parsed_document in tqdm(filename_to_parseddoc.items()):
+                for filename, parsed_document in tqdm(filename_to_parseddoc.items(), desc="Serializing table components"):
                     doc_title       = parsed_document["title"]
                     hierarchy_dict  = parsed_document["hierarchy"]
                     table_component_ids = parsed_document["table"]
@@ -149,7 +149,7 @@ class ComponentSerializer:
             target_path = os.path.join(self._serializations_path, "table_segment+" + "+".join(mode) + ".json")
             if not os.path.exists(target_path):
                 table_segment_serializations = []
-                for filename, parsed_document in tqdm(filename_to_parseddoc.items()):
+                for filename, parsed_document in tqdm(filename_to_parseddoc.items(), desc="Serializing table segment components"):
                     doc_title       = parsed_document["title"]
                     hierarchy_dict  = parsed_document["hierarchy"]
                     table_segment_component_ids = parsed_document["table_segment"]
@@ -166,7 +166,7 @@ class ComponentSerializer:
             target_path = os.path.join(self._serializations_path, "image+" + "+".join(mode) + ".json")
             if not os.path.exists(target_path):
                 image_serializations = []
-                for filename, parsed_document in tqdm(filename_to_parseddoc.items()):
+                for filename, parsed_document in tqdm(filename_to_parseddoc.items(), desc="Serializing image components"):
                     doc_title       = parsed_document["title"]
                     hierarchy_dict  = parsed_document["hierarchy"]
                     image_component_ids = parsed_document["image"]
@@ -183,7 +183,7 @@ class ComponentSerializer:
             target_path = os.path.join(self._serializations_path, "subimage+" + "+".join(mode) + ".json")
             if not os.path.exists(target_path):
                 subimage_serializations = []
-                for filename, parsed_document in tqdm(filename_to_parseddoc.items()):
+                for filename, parsed_document in tqdm(filename_to_parseddoc.items(), desc="Serializing subimage components"):
                     doc_title       = parsed_document["title"]
                     hierarchy_dict  = parsed_document["hierarchy"]
                     subimage_component_ids = parsed_document["subimage"]

@@ -5,6 +5,7 @@ mineru_directory_name = Path("mineru_outputs")
 content_list_name_end = "content_list_v2.json"
 middle_name_end = "middle.json"
 
+current_file = Path(__file__).parent
 
 def main():
     infographics = [f for f in mineru_directory_name.iterdir() if f.is_dir()]
@@ -30,28 +31,41 @@ def main():
             if block_type_content_value != []:
                 if block_type_content_value[0]['type'] and block_type_content_value[0]['type'] == 'text':
                     item_content = block_type_content_value[0]['content']
-                    text_items.append(item_content)
+                    if item_content.strip() !=  "[No text]":
+                        text_items.append(item_content)
                 
         print(text_items)
 
-            # inner_list = next(iter(block_content.values()))
-
-            # # Bây giờ bạn có thể truy cập phần tử đầu tiên như bình thường
-            # if inner_list:
-            #     text_type = inner_list[0]["type"]
-            #     text_content = inner_list[0]["content"]
-            #     print(text_type, "->", text_content)
 
         # write text into file parsed json
-        for id, i in enumerate(text_items):
-            text_id = f'p_{}'
+        text_field = {
+            f"p_{i}": {"text": str(s).strip(), "edges": []}
+            for i, s in enumerate(text_items, start=1)
+        }
+        parsed_json_path = "/Users/mytnguyen/Desktop/my-lilac/LILaC/datasets/InfoVQA/parsed_documents/dev"
+        parsed_json_path2 = f"{parsed_json_path}/{infographic_name}.json"
+        # lilac_root = current_file.parents[2]
 
+        # # 3. Đi vào thư mục chứa các file JSON bằng toán tử /
+        # json_dir = lilac_root / "datasets" / "parsed_document"
+
+        # # 4. Chỉ định chính xác file JSON bạn muốn đọc
+        # target_file = json_dir / "10002.json"
+
+        with open(parsed_json_path2, 'r', encoding="utf-8") as file:
+            parsed_json_content = json.load(file)
+
+        parsed_json_content['text'] = text_field
         # split text into sentences
+        sentence_field = {
+            f"s_{i}": {"text" : str(s).strip(), "edges": []}
+            for i, s in enumerate(text_items, start=1)
+        }
+        parsed_json_content['sentence'] = sentence_field
 
-
-
+        with open(parsed_json_path2, 'w', encoding="utf-8") as file:
+            json.dump(parsed_json_content, file, indent=2)
     return 
-
 
 if __name__ == "__main__":
     main()
