@@ -11,7 +11,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-export HF_HUB_ENABLE_HF_TRANSFER=1
+# export HF_HUB_ENABLE_HF_TRANSFER=1
 
 ALL=0
 ONLY=""

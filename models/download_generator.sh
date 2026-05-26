@@ -12,7 +12,6 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-export HF_HUB_ENABLE_HF_TRANSFER=1
 
 hf download \
     Qwen/Qwen2.5-VL-7B-Instruct \
