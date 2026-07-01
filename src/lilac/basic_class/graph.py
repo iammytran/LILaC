@@ -2,6 +2,7 @@ import os
 import json
 from tqdm import tqdm
 import time
+import logging
 
 from src.utils.constants import Modality, ParsedWebKeywords, component_id_to_modality
 from src.utils.utils import read_json_or_jsonl, REPO_ROOT
@@ -9,10 +10,10 @@ from src.lilac.basic_class.document import MultimodalDocument
 from src.lilac.basic_class.component import Component, get_highest_component_id
 
 
-
-
-
-
+# logging.basicConfig(level=logging.INFO,
+#                     format='%(asctime)s - %(levelname)s - %(message)s',
+#                     filename=os.path.join('debug', 'multimodal_doc.log'),
+#                     filemode='a')
 
 
 class Graph:
@@ -58,6 +59,11 @@ class Graph:
                 image_summaries_dir = self.summaries_dir
             )
             document.parse_json()
+
+            # if document.title == '10002' or document.title == '10032':
+            #     logging.info(f"document.title: {document.title}")
+            #     logging.info(f"document.get_id_to_component(): {document.get_id_to_component()}")
+            #     logging.info(f"document.get_component_list(): {document.get_component_list()}")
             
             self.filename_to_document[filename] = document
             self.title_to_documents[document.get_title()] = document
@@ -71,46 +77,168 @@ class Graph:
         self._generate_inter_document_edges()
         
         return
+
+
+    def parse_document(self, filename):
+        filepath = os.path.join(self.documents_dir, filename)
+
+        document = MultimodalDocument(
+            file_path = filepath,
+            images_dir = self.images_dir,
+            subimages_dir = self.subimages_dir,
+            image_summaries_dir = self.summaries_dir
+        )
+        document.parse_json()
+
+        # if document.title == '10002' or document.title == '10032':
+        #     logging.info(f"document.title: {document.title}")
+        #     logging.info(f"document.get_id_to_component(): {document.get_id_to_component()}")
+        #     logging.info(f"document.get_component_list(): {document.get_component_list()}")
+        
+        self.filename_to_document[filename] = document
+        self.title_to_documents[document.get_title()] = document
+    
+        # print(f"[Graph] Parsing documents from {self.documents_dir}...")
+    
+        # start_time = time.time()
+    
+        # filenames = os.listdir(self.documents_dir)
+        # filenames.sort()
+        
+        # for filename in tqdm(filenames):
+        #     filepath = os.path.join(self.documents_dir, filename)
+
+        #     document = MultimodalDocument(
+        #         file_path = filepath,
+        #         images_dir = self.images_dir,
+        #         subimages_dir = self.subimages_dir,
+        #         image_summaries_dir = self.summaries_dir
+        #     )
+        #     document.parse_json()
+
+        #     if document.title == '10002' or document.title == '10032':
+        #         logging.info(f"document.title: {document.title}")
+        #         logging.info(f"document.get_id_to_component(): {document.get_id_to_component()}")
+        #         logging.info(f"document.get_component_list(): {document.get_component_list()}")
+            
+        # self.filename_to_document[filename] = document
+        # self.title_to_documents[document.get_title()] = document
+            
+        # end_time = time.time()
+        
+        # print(f"[Graph] Finished parsing documents from {self.documents_dir}.")
+        # print(f"[Graph] Time taken: {end_time - start_time:.2f} seconds.", end = "\n\n")
+        
+        self._generate_intra_document_edges()
+        # self._generate_inter_document_edges()
+        
+        return
     
     def _generate_intra_document_edges(self):
         print("[Graph] Generating intra-document edges...")
+        intra_doc_edges_component_id = {}
         
         for filename, document in tqdm(self.filename_to_document.items()):
             if filename not in self.intra_document_edges:
                 self.intra_document_edges[filename] = {}
+                intra_doc_edges_component_id[filename] = {}
             
             component_ids = list(document.get_id_to_component().keys())
             self.intra_document_edges[filename] = {it : [] for it in component_ids}
+            intra_doc_edges_component_id[filename] = {it : [] for it in component_ids}
             
             # Iterate through each component in the document
             for parent_component_id, parent_component in document.get_id_to_component().items():            
                 for child_component_id, child_component in document.get_id_to_component().items():
+                    # logging.info(f"[parent_component_id, child_component_id]: [{parent_component_id}, {child_component_id}]")
+                    # logging.info(f"child_component.get_highest_component_id(): {child_component.get_highest_component_id()}")
+                    # logging.info(f"parent_component.get_highest_component_id(): {parent_component.get_highest_component_id()}")
                     if child_component.get_highest_component_id() == parent_component.get_highest_component_id() and \
                         child_component_id != parent_component_id:
                         # If the child component is a subcomponent of the parent component
                         # Add the edge to the intra-document edges
                         self.intra_document_edges[filename][parent_component_id].append(child_component)
-                        
-        # Count the number of total intra edges
-        total_edges = 0
-        modality_to_edge_count = {
-            "text": 0,
-            "table": 0,
-            "image": 0
-        }
-        for filename, edges in self.intra_document_edges.items():
-            for component_id, component_edges in edges.items():
-                total_edges += len(component_edges)
-                if "p" in component_id:
-                    modality_to_edge_count["text"] += len(component_edges)
-                elif "t" in component_id:
-                    modality_to_edge_count["table"] += len(component_edges)
-                elif "i" in component_id:
-                    modality_to_edge_count["image"] += len(component_edges)
+                        intra_doc_edges_component_id[filename][parent_component_id].append(child_component_id)
+          
+        # logging.info(f"intra_doc_edges_component_id: {intra_doc_edges_component_id}")
+        # # Count the number of total intra edges
+        # total_edges = 0
+        # modality_to_edge_count = {
+        #     "text": 0,
+        #     "table": 0,
+        #     "image": 0
+        # }
+        # for filename, edges in self.intra_document_edges.items():
+        #     for component_id, component_edges in edges.items():
+        #         total_edges += len(component_edges)
+        #         if "p" in component_id:
+        #             modality_to_edge_count["text"] += len(component_edges)
+        #         elif "t" in component_id:
+        #             modality_to_edge_count["table"] += len(component_edges)
+        #         elif "i" in component_id:
+        #             modality_to_edge_count["image"] += len(component_edges)
         
-        print(json.dumps(modality_to_edge_count, indent = 4))
+        # print(json.dumps(modality_to_edge_count, indent = 4))
         
         print(f"[Graph] Finished generating intra-document edges.")
+        
+        return
+
+    def _generate_intra_document_edges_for_filename(self, filename):
+        print("[Graph] Generating intra-document edges...")
+
+        if filename not in self.intra_document_edges:
+            self.intra_document_edges[filename] = {}
+        
+        component_ids = list(document.get_id_to_component().keys())
+        self.intra_document_edges[filename] = {it : [] for it in component_ids}
+        
+        # Iterate through each component in the document
+        for parent_component_id, parent_component in document.get_id_to_component().items():            
+            for child_component_id, child_component in document.get_id_to_component().items():
+                if child_component.get_highest_component_id() == parent_component.get_highest_component_id() and \
+                    child_component_id != parent_component_id:
+                    # If the child component is a subcomponent of the parent component
+                    # Add the edge to the intra-document edges
+                    self.intra_document_edges[filename][parent_component_id].append(child_component)
+          
+        # logging.info(f"self.intra_document_edges: {self.intra_document_edges}")
+        # for filename, document in tqdm(self.filename_to_document.items()):
+        #     if filename not in self.intra_document_edges:
+        #         self.intra_document_edges[filename] = {}
+            
+        #     component_ids = list(document.get_id_to_component().keys())
+        #     self.intra_document_edges[filename] = {it : [] for it in component_ids}
+            
+        #     # Iterate through each component in the document
+        #     for parent_component_id, parent_component in document.get_id_to_component().items():            
+        #         for child_component_id, child_component in document.get_id_to_component().items():
+        #             if child_component.get_highest_component_id() == parent_component.get_highest_component_id() and \
+        #                 child_component_id != parent_component_id:
+        #                 # If the child component is a subcomponent of the parent component
+        #                 # Add the edge to the intra-document edges
+        #                 self.intra_document_edges[filename][parent_component_id].append(child_component)
+          
+        # # Count the number of total intra edges
+        # total_edges = 0
+        # modality_to_edge_count = {
+        #     "text": 0,
+        #     "table": 0,
+        #     "image": 0
+        # }
+        # for filename, edges in self.intra_document_edges.items():
+        #     for component_id, component_edges in edges.items():
+        #         total_edges += len(component_edges)
+        #         if "p" in component_id:
+        #             modality_to_edge_count["text"] += len(component_edges)
+        #         elif "t" in component_id:
+        #             modality_to_edge_count["table"] += len(component_edges)
+        #         elif "i" in component_id:
+        #             modality_to_edge_count["image"] += len(component_edges)
+        
+        # print(json.dumps(modality_to_edge_count, indent = 4))
+        
+        print(f"[Graph] Finished generating intra-document edges for filename {filename}")
         
         return
     
@@ -508,15 +636,15 @@ def get_low_level_modality(
 
 if __name__ == "__main__":
     
-    print(get_low_level_modality(("31st_Sarasaviya_Awards.json", "t_2_s4")))
-    print(get_top_level_modality(("31st_Sarasaviya_Awards.json", "t_2_s4")))
+    # print(get_low_level_modality(("31st_Sarasaviya_Awards.json", "t_2_s4")))
+    # print(get_top_level_modality(("31st_Sarasaviya_Awards.json", "t_2_s4")))
     
-    print(top_level_gcid_by_low_level_gcid(("31st_Sarasaviya_Awards.json", "t_2_s4")))
+    # print(top_level_gcid_by_low_level_gcid(("31st_Sarasaviya_Awards.json", "t_2_s4")))
     
-    multimodal_documents_dir    = f"{REPO_ROOT}/datasets/MMCoQA/parsed_documents/dev"
-    images_dir                  = f"{REPO_ROOT}/datasets/MMCoQA/image_components/dev"
-    subimages_dir               = f"{REPO_ROOT}/datasets/MMCoQA/subimage_components/dev"
-    summaries_dir               = f"{REPO_ROOT}/datasets/MMCoQA/image_summaries/dev"
+    multimodal_documents_dir    = f"{REPO_ROOT}/datasets/InfoVQA/parsed_documents/dev"
+    images_dir                  = f"{REPO_ROOT}/datasets/InfoVQA/image_components/dev"
+    subimages_dir               = f"{REPO_ROOT}/artifacts/InfoVQA/image_components_sub/dev"
+    summaries_dir               = f"{REPO_ROOT}/artifacts/InfoVQA/image_summaries/dev"
     
     graph = Graph(
         multimodal_documents_directory  = multimodal_documents_dir,
@@ -524,6 +652,8 @@ if __name__ == "__main__":
         subimages_directory             = subimages_dir,
         summaries_directory             = summaries_dir
     )
-    graph.parse_documents()
+    graph.parse_document('10002.json')
+
+
     
     pass

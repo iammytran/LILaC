@@ -12,8 +12,6 @@ from src.lilac.basic_class.image import Image
 
 
 
-
-
 class MultimodalDocument:
     
     def __init__(self, 
@@ -52,7 +50,7 @@ class MultimodalDocument:
         for modality, component_class in modality_class_combinations:
             self.modality_to_components[modality.value] = []
             
-            component_id_to_component_obj = raw_json[modality.value]
+            component_id_to_component_obj = raw_json.get(modality.value, {})
             
             if modality == Modality.SUBIMAGE:
                 image_dir = self.subimages_dir
@@ -119,10 +117,10 @@ class MultimodalDocument:
 if __name__ == "__main__":
        
 
-    base_path           = f"{REPO_ROOT}/datasets/MMCoQA/parsed_documents/dev"
-    images_dir          = f"{REPO_ROOT}/datasets/MMCoQA/image_components/dev"
-    subimages_dir       = f"{REPO_ROOT}/datasets/MMCoQA/subimage_components/dev"
-    image_summaries_dir = f"{REPO_ROOT}/datasets/MMCoQA/image_summaries/dev"
+    base_path           = f"{REPO_ROOT}/datasets/InfoVQA/parsed_documents/dev"
+    images_dir          = f"{REPO_ROOT}/datasets/InfoVQA/image_components/dev"
+    subimages_dir       = f"{REPO_ROOT}/artifacts/InfoVQA/image_components_sub/dev"
+    image_summaries_dir = f"{REPO_ROOT}/datasets/InfoVQA/image_summaries/dev"
     
     parsed_documents = []
     

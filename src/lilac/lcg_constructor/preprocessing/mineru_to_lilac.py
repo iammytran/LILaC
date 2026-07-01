@@ -31,8 +31,16 @@ import json
 import shutil
 from pathlib import Path
 from typing import Dict, List, Optional
+from itertools import islice
+import os
+import logging
 
 from src.lilac.lcg_constructor.preprocessing._caption_via_qwen_vl import caption_images
+
+# logging.basicConfig(level=logging.INFO,
+#                     format='%(asctime)s - %(levelname)s - %(message)s',
+#                     filename=os.path.join('debug', 'mineru_to_lilac.log'),
+#                     filemode='a')
 
 
 TEXT_LIKE_TYPES = {
@@ -74,6 +82,8 @@ def _block_text(block: Dict) -> Optional[str]:
             caption = " ".join(caption)
         text = (caption + "\n" + body) if body else caption
         return text.strip() or None
+    if btype in IMAGE_TYPES:
+        return (block.get("content") or block.get("md") or "") or None
     return None
 
 
@@ -95,12 +105,14 @@ def build_parsed_documents(
     parsed_documents_out_dir.mkdir(parents=True, exist_ok=True)
     crops_out_dir.mkdir(parents=True, exist_ok=True)
     content_lists = _find_content_lists(layout_dir)
+    # content_lists = dict(islice(content_lists.items(), 30))
     print(f"[adapter/mineru] {len(content_lists)} content_list.json under {layout_dir}")
 
     crops_to_summarize: List[Path] = []
     type_counts: Dict[str, int] = {}
 
     for doc_id, cl_path in content_lists.items():
+        # logging.info(f"doc_id: {doc_id}")
         with open(cl_path) as f:
             blocks = json.load(f)
         if not isinstance(blocks, list):
@@ -119,8 +131,8 @@ def build_parsed_documents(
         t_counter = 0
 
         subimage_entries: Dict[str, Dict] = {}
-        sentence_entries: Dict[str, Dict] = {}
-        table_segment_entries: Dict[str, Dict] = {}
+        text_entries: Dict[str, Dict] = {}
+        table_entries: Dict[str, Dict] = {}
         id_sequence: List[str] = ["i_1"]
 
         for block in blocks:
@@ -132,7 +144,12 @@ def build_parsed_documents(
                 "_bbox": block.get("bbox"),
             }
 
+            native_text = _block_text(block)
+            if native_text is None:
+                continue  # unknown block with no text — skip
+
             if btype in IMAGE_TYPES:
+                # logging.info(f"block: {block} with btype as image")
                 src_img = _block_image_path(block, cl_path.parent)
                 if src_img is None:
                     continue
@@ -146,28 +163,36 @@ def build_parsed_documents(
                 subimage_entries[cid] = {
                     **common_meta,
                     "filename": crop_fname,
-                    "caption": {"text": "", "edges": []},
+                    "caption": {"text": native_text, "edges": []},
                 }
                 crops_to_summarize.append(target_crop)
                 id_sequence.append(cid)
                 continue
 
-            native_text = _block_text(block)
-            if native_text is None:
-                continue  # unknown block with no text — skip
-
             if btype in TABLE_TYPES:
+                # logging.info(f"block: {block} with btype as table")
+                src_img = _block_image_path(block, cl_path.parent)
+                if src_img is None:
+                    # logging.info(f"src_img: {src_img} not exists")
+                    continue  
                 t_counter += 1
                 cid = f"i_1_t{t_counter}"
-                table_segment_entries[cid] = {
+                crop_fname = f"{doc_id}___t_{t_counter}{src_img.suffix or '.jpg'}"
+                target_crop = crops_out_dir / doc_id / crop_fname
+                target_crop.parent.mkdir(parents=True, exist_ok=True)
+                if not target_crop.exists():
+                    shutil.copyfile(src_img, target_crop)
+                table_entries[cid] = {
                     **common_meta,
                     "text": native_text,
+                    "filename": crop_fname,
                     "edges": [],
                 }
             else:  # text-like
+                # logging.info(f"block: {block} with btype as text")
                 p_counter += 1
                 cid = f"i_1_p{p_counter}"
-                sentence_entries[cid] = {
+                text_entries[cid] = {
                     **common_meta,
                     "text": native_text,
                     "edges": [],
@@ -179,20 +204,24 @@ def build_parsed_documents(
             "hierarchy": {},
             "id_sequence": id_sequence,
             "header": {},
-            "text": {},
-            "table": {},
+            "text": text_entries,
+            "table": table_entries,
             "image": {
                 "i_1": {
                     "filename": page_img.name,
                     "caption": {"text": "", "edges": []},
                 }
             },
-            "sentence": sentence_entries,
+            "sentence": {},
             "proposition": {},
-            "table_segment": table_segment_entries,
+            "table_segment": {},
             "subimage": subimage_entries,
             "id_to_html": {},
         }
+
+        transform_text_to_sentence(parsed_doc)
+        transform_table_to_table_segment(parsed_doc)
+
         with open(parsed_documents_out_dir / f"{doc_id}.json", "w") as f:
             json.dump(parsed_doc, f, indent=4)
 
@@ -200,30 +229,67 @@ def build_parsed_documents(
         print(f"[adapter/mineru] block type counts: {type_counts}")
     return crops_to_summarize
 
+# TODO: transform texts to sentences
+def transform_text_to_sentence(parsed_doc):
+    text_entries = parsed_doc.get("text", {}) 
+    sentence_entries = []
+    
+    for text_entry in text_entries.items:
+        text = text_entry.get("text", "")
+        # Split by period
+        texts_splitted = text.split(".")
+
+    # Add sentence to sentence list
+
+    return
+
+def transform_table_to_table_segment(parsed_doc):
+    return
+
 
 def merge_subimage_captions(parsed_documents_out_dir: Path, crops_out_dir: Path) -> None:
     """Read per-crop .txt sidecars and merge into subimage[*].caption.text."""
     files = sorted(parsed_documents_out_dir.glob("*.json"))
+    files = files[:2]
     merged, missing = 0, 0
     for pd_path in files:
         with open(pd_path) as f:
             pd = json.load(f)
         doc_id = pd_path.stem
+        print(f"doc_id: {doc_id}")
         any_updated = False
         for sid, sv in pd.get("subimage", {}).items():
-            if (sv.get("caption") or {}).get("text"):
-                continue
-            crop_fname = sv.get("filename", "")
-            if not crop_fname:
-                missing += 1
-                continue
-            txt_path = (crops_out_dir / doc_id / crop_fname).with_suffix(".txt")
-            if txt_path.exists():
-                sv["caption"]["text"] = txt_path.read_text(encoding="utf-8").strip()
-                merged += 1
-                any_updated = True
-            else:
-                missing += 1
+            print(f"sid: {sid}")
+            # 1. Lấy text hiện tại trong JSON ra trước (nếu không có thì mặc định là chuỗi rỗng "")
+            current_text = (sv.get("caption") or {}).get("text", "")
+
+            # 2. KIỂM TRA ĐIỀU KIỆN: Chỉ xử lý NẾU text hiện tại đang TRỐNG
+            if not current_text:  
+                print(f"text in parsed_doc is empty")
+                crop_fname = sv.get("filename", "")
+                if not crop_fname:
+                    missing += 1
+                    continue
+                
+                txt_path = (crops_out_dir / doc_id / crop_fname).with_suffix(".txt")
+                
+                if txt_path.exists():
+                    content = txt_path.read_text(encoding="utf-8").strip()
+                    
+                    # (Tùy chọn) Chặn luôn nếu file .txt chứa chữ "None" hoặc bị trống rỗng
+                    if content == "" or content == "None":
+                        missing += 1
+                        continue
+                    
+                    if "caption" not in sv or sv["caption"] is None:
+                        sv["caption"] = {}
+                        
+                    # Tiến hành thêm vào vì chỗ này đang trống
+                    sv["caption"]["text"] = content
+                    merged += 1
+                    any_updated = True
+                else:
+                    missing += 1
         if any_updated:
             with open(pd_path, "w") as f:
                 json.dump(pd, f, indent=4)
@@ -246,6 +312,8 @@ def main():
     images_dir = Path(args.images)
     pd_out = Path(args.output)
     crops_out = Path(args.crops_out)
+
+    # merge_subimage_captions(pd_out, crops_out)
 
     crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
 

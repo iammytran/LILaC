@@ -1,150 +1,123 @@
 {
-  "title": "10002.jpeg",
-  "url": "placeholder",
-  "hierarchy": {},
-  "text": {
-    "p_1": {
-      "text": "Contact tracing is a fundamental part of outbreak control that's used by public health professionals around the world to prevent the spread of infections",
-      "edges": []
+    "title": "10002",
+    "hierarchy": {},
+    "id_sequence": [
+        "i_1",
+        "i_1_i1",
+        "i_1_p1",
+        "i_1_p2",
+        "i_1_p3",
+        "i_1_i2",
+        "i_1_p4",
+        "i_1_p5"
+    ],
+    "header": {},
+    "text": {},
+    "table": {},
+    "image": {
+        "i_1": {
+            "filename": "10002.jpeg",
+            "caption": {
+                "text": "",
+                "edges": []
+            }
+        }
     },
-    "p_2": {
-      "text": "Public Health England",
-      "edges": []
-    }
-  },
-  "sentence": {
-    "s_1": {
-      "text": "Contact tracing is a fundamental part of outbreak control that's used by public health professionals around the world to prevent the spread of infections",
-      "edges": []
+    "sentence": {
+        "i_1_p1": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                539,
+                68,
+                906,
+                94
+            ],
+            "text": "WHAT IS",
+            "edges": []
+        },
+        "i_1_p2": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                466,
+                95,
+                906,
+                117
+            ],
+            "text": "contact tracing",
+            "edges": []
+        },
+        "i_1_p3": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                59,
+                155,
+                915,
+                200
+            ],
+            "text": "Contact tracing is a fundamental part of outbreak control that's used by public health professionals around the world to prevent the spread of infections",
+            "edges": []
+        },
+        "i_1_p4": {
+            "dla_idx": null,
+            "dla_type": "header",
+            "_bbox": [
+                50,
+                14,
+                93,
+                30
+            ],
+            "text": "[No text]",
+            "edges": []
+        },
+        "i_1_p5": {
+            "dla_idx": null,
+            "dla_type": "header",
+            "_bbox": [
+                101,
+                16,
+                338,
+                29
+            ],
+            "text": "Public Health England",
+            "edges": []
+        }
     },
-    "s_2": {
-      "text": "Public Health England",
-      "edges": []
-    }
-  },
-  "table": {},
-  "table_segment": {},
-  "image": {
-    "i_1": {
-      "content": "",
-      "bbox": [
-        0,
-        44,
-        460,
-        138
-      ],
-      "metadata": ""
+    "proposition": {},
+    "table_segment": {},
+    "subimage": {
+        "i_1_i1": {
+            "dla_idx": null,
+            "dla_type": "image",
+            "_bbox": [
+                0,
+                44,
+                460,
+                138
+            ],
+            "filename": "10002___i_1.jpg",
+            "caption": {
+                "text": "Microscopic view of a virus with red and blue cellular structures, no visible text or symbols",
+                "edges": []
+            }
+        },
+        "i_1_i2": {
+            "dla_idx": null,
+            "dla_type": "image",
+            "_bbox": [
+                0,
+                210,
+                997,
+                975
+            ],
+            "filename": "10002___i_2.jpg",
+            "caption": {
+                "text": "```mermaid\ngraph TD\n  A[\"Person tests positive for coronavirus (COVID-19)\"] --> B[\"Identify anyone who has had close contact with them during the time they are infectious\"]\n  B --> C[\"Following this assessment, we can categorise them into low or high risk and contact them to provide advice on what they should do\"]\n  C --> D[\"Low risk contact doesn't require self-isolation\"]\n  D --> E[\"Contact on passive follow up which means person being monitored but we don't necessarily contact them every day\"]\n  E --> F[\"If the person does develop symptoms, we would test them and provide them with specialist care if they have the novel coronavirus (COVID-19)\"]\n  F --> G[\"Recovery time\"]\n  G --> H[\"Contact displays no symptoms of coronavirus (COVID-19) the patient makes a full recovery, they can go back to daily lives as normal and pose no risk to others\"]\n```",
+                "edges": []
+            }
+        }
     },
-    "i_2": {
-      "content": "",
-      "bbox": [
-        466,
-        45,
-        957,
-        138
-      ],
-      "metadata": ""
-    },
-    "i_3": {
-      "content": "",
-      "bbox": [
-        0,
-        211,
-        997,
-        712
-      ],
-      "metadata": ""
-    },
-    "i_4": {
-      "content": "",
-      "bbox": [
-        0,
-        713,
-        935,
-        821
-      ],
-      "metadata": ""
-    },
-    "i_5": {
-      "content": "",
-      "bbox": [
-        248,
-        821,
-        488,
-        972
-      ],
-      "metadata": ""
-    },
-    "i_6": {
-      "content": "",
-      "bbox": [
-        593,
-        722,
-        841,
-        812
-      ],
-      "metadata": ""
-    },
-    "i_7": {
-      "content": "",
-      "bbox": [
-        0,
-        821,
-        997,
-        998
-      ],
-      "metadata": ""
-    }
-  },
-  "subimage": {
-    "im_1_s1": {
-      "filename": "2dcdfabe988dbe98553fd34ddd0c8e0dcfb6ad59acb643f1be5432f16c62b26a.jpg",
-      "caption": {
-        "text": "Microscopic view of a biological structure with red and blue components, no visible text or symbols"
-      },
-      "source_url": "mineru_outputs/10002/images/2dcdfabe988dbe98553fd34ddd0c8e0dcfb6ad59acb643f1be5432f16c62b26a.jpg"
-    },
-    "im_1_s2": {
-      "filename": "595329f5f51978b43bce8044b3bda2da415e8101d7a4ef814d240ab0d2c2e2f5.jpg",
-      "caption": {
-        "text": "WHAT IS\ncontact tracing?"
-      },
-      "source_url": "mineru_outputs/10002/images/595329f5f51978b43bce8044b3bda2da415e8101d7a4ef814d240ab0d2c2e2f5.jpg"
-    },
-    "im_1_s3": {
-      "filename": "bf37b62bdb00c423981c018e1b4952756a5c10d8f85c7932e6dd7d6449b28717.jpg",
-      "caption": {
-        "text": "```mermaid\ngraph TD\n    A[\"Person tests positive for coronavirus (COVID-19)\"] --> B[\"Who has had close contact\"]\n    B --> C{Speak to the patient to identify anyone who has had close contact with them during the time they are infectious}\n    C --> D[\"Following this assessment, we can categorise them into low or high risk and contact them to provide advice on what they should do\"]\n    D --> E{Low risk contact doesn't require self-isolation}\n    E --> F[\"14 days of contact on passive follow up which means person being monitored but we don't necessarily contact them every day\"]\n    F --> G{If we believe a contact is at higher risk of infection they may be asked to self-isolate, remaining in their home for 14 days and staying away from work, school or public places}\n    G --> H{We contact them daily provide them with advice on what to do if they become unwell until they can be given all-clear}\n```"
-      },
-      "source_url": "mineru_outputs/10002/images/bf37b62bdb00c423981c018e1b4952756a5c10d8f85c7932e6dd7d6449b28717.jpg"
-    },
-    "im_1_s4": {
-      "filename": "9f1b9369c4ff0571dae7ca848d229fa5a42f8600c5179e51a74d5bbdadbd4e8f.jpg",
-      "caption": {
-        "text": "If the person does develop symptoms, we would test them and provide them with specialist care if they have the novel coronavirus (COVID-19)"
-      },
-      "source_url": "mineru_outputs/10002/images/9f1b9369c4ff0571dae7ca848d229fa5a42f8600c5179e51a74d5bbdadbd4e8f.jpg"
-    },
-    "im_1_s5": {
-      "filename": "4e66962f9361b9cc3568e894f54d89b90fffcd3b663c945e397982df87367315.jpg",
-      "caption": {
-        "text": "Recovery\ntime\nConta\nof con\nthe pat\nthey ca\nnormal"
-      },
-      "source_url": "mineru_outputs/10002/images/4e66962f9361b9cc3568e894f54d89b90fffcd3b663c945e397982df87367315.jpg"
-    },
-    "im_1_s6": {
-      "filename": "63d93c58ff0f37c6288f00ab8fa02143b463fad503a7a8ad09f839a904e59e6a.jpg",
-      "caption": {
-        "text": "Infographic with scientific icons and charts, including a red 'O', EKG line, and bar graphs"
-      },
-      "source_url": "mineru_outputs/10002/images/63d93c58ff0f37c6288f00ab8fa02143b463fad503a7a8ad09f839a904e59e6a.jpg"
-    },
-    "im_1_s7": {
-      "filename": "ea1cea8f9fd5a7b8ee4d5511203eab9be21aa6ea5fdf6ee280c370b4763c3c9f.jpg",
-      "caption": {
-        "text": "Recovery\ntime\nContact displays no symptoms\nof coronavirus (COVID-19)\nthe patient makes a full recovery,\nthey can go back to daily lives as\nnormal and pose no risk to others"
-      },
-      "source_url": "mineru_outputs/10002/images/ea1cea8f9fd5a7b8ee4d5511203eab9be21aa6ea5fdf6ee280c370b4763c3c9f.jpg"
-    }
-  }
+    "id_to_html": {}
 }

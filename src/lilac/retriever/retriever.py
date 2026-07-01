@@ -5,6 +5,7 @@ import time
 import faiss
 import torch
 import pickle
+import logging
 
 import argparse
 from tqdm import tqdm
@@ -19,6 +20,11 @@ from src.utils.utils import (
     REPO_ROOT,
     dataset_root, artifact_root, input_subpath, artifact_subpath, parsed_documents_path,
 )
+
+# logging.basicConfig(level=logging.INFO,
+#                     format='%(asctime)s - %(levelname)s - %(message)s',
+#                     filename=os.path.join('debug', 'retriever.log'),
+#                     filemode='a')
 
 
 
@@ -144,7 +150,7 @@ class Retriever:
         Load the questions and subqueries from the JSONL files.
         """
         questions_path                              = os.path.join(self._benchmark_dir, self._metadata_config["dataset_metadata"][self._target_dataset]["filename"])
-        subqueries_path                             = artifact_subpath(self._metadata_config, self._target_dataset, "query_decomposition_dirname", "dev", self._metadata_config["metadata_files"]["subqueries"])
+        subqueries_path                             = artifact_subpath(self._metadata_config, self._target_dataset, "query_decomposition_dirname", "dev", self._metadata_config["metadata_files"]["revised_subqueries"])
 
         emb_dir = artifact_subpath(self._metadata_config, self._target_dataset, "embeddings_dirname", self._target_embedder)
 
@@ -239,6 +245,7 @@ class Retriever:
     def initiate_graph(self):
         if self._run_function_mode != "single_knn":
             self._graph_path = artifact_subpath(self._metadata_config, self._target_dataset, "component_dirname", "graph.pickle")
+            os.makedirs(artifact_subpath(self._metadata_config, self._target_dataset, "component_dirname"), exist_ok=True)
             if check_file_exists(self._graph_path):
                 print("[Retriever] Loading existing graph …")
                 with open(self._graph_path, "rb") as f:
@@ -271,6 +278,7 @@ class Retriever:
         # qids = self._labeled_benchmark.get_qid_list()
         
         qids = self._questions_manager.get_qid_list()
+        # qids = qids[:2]
         
         for qid in tqdm(qids, desc = "Retrieving"):
             
@@ -322,6 +330,7 @@ class Retriever:
         After each iteration, we collect up to 'top_k' distinct nodes to feed
         into the next iteration, thereby expanding the subgraph exploration.
         """
+        # logging.info(f'-------------qid: {qid}------------')
         if k_ret is None:
             k_ret = int(self._run_config["parameters"]["top_k"])
         beam_width = self._run_config["parameters"]["beam_width"]
@@ -351,7 +360,9 @@ class Retriever:
         t_knn0 = time.perf_counter()
         low_level_indexer = self.level_to_indexer["low"]
         # Pull many results (e.g. 2048) to avoid losing potential neighbors
+        # logging.info(f"query_vec: {query_vec}")
         initial_knn_results = low_level_indexer.knn_search(query_vec, top_k = 2048)
+        # logging.info(f"initial_knn_results: {initial_knn_results}")
         t_knn1 = time.perf_counter()
         timing_acc["knn_search(ms)"] += (t_knn1 - t_knn0) * 1000
 
@@ -359,6 +370,8 @@ class Retriever:
         t_top0 = time.perf_counter()
         low_level_gcid_list = [r["target"] for r in initial_knn_results]
         top_level_gcid_list = [top_level_gcid_by_low_level_gcid(g) for g in low_level_gcid_list]
+        # logging.info(f"low_level_gcid_list: {low_level_gcid_list}")
+        # logging.info(f"top_level_gcid_list: {top_level_gcid_list}")
 
         seen = set()
         distinct_top_gcid_list = []
@@ -374,6 +387,7 @@ class Retriever:
         timing_acc["top_level_gcid_organizing(ms)"] += (t_top1 - t_top0) * 1000
 
         iteration_top_level_nodes = distinct_top_gcid_list
+        # logging.info(f"iteration_top_level_nodes: {iteration_top_level_nodes}")
         final_scored_edges = []
 
 
@@ -381,6 +395,7 @@ class Retriever:
         # Iterative expansion
         # --------------------------------------------
         for it in range(num_iterations):
+            # logging.info(f"-------qid {qid} - iteration [{it}]--------")
             
             # 1) Build subgraph from iteration_top_level_nodes
             t_sg0 = time.perf_counter()
@@ -391,6 +406,7 @@ class Retriever:
             # Force a 1-hop expansion so neighbors are included
             subgraph.extract_edges("1_hop")
             subgraph_top_gcid_list = subgraph.get_top_level_gcids_list()
+            # logging.info(f"subgraph_top_gcid_list: {subgraph_top_gcid_list}") # top-level nodes with 1-hop in the graph 
             t_sg1 = time.perf_counter()
             timing_acc["subgraph_extraction(ms)"] += (t_sg1 - t_sg0) * 1000
 
@@ -405,6 +421,7 @@ class Retriever:
             # 3) Score each edge in CPU using late interaction
             t_cpu0 = time.perf_counter()
             edge_list = subgraph.get_retrieval_units_list()
+            # logging.info(f"edge_list: {edge_list}")
             scored = []
             for e_pair in edge_list:
                 if len(e_pair) == 1:
@@ -416,11 +433,13 @@ class Retriever:
                 else:
                     raise ValueError(f"Invalid edge pair: {e_pair}")
                 scored.append({"edge": nodes, "score": sc})
+            # logging.info(f"scored: {scored}")
             t_cpu1 = time.perf_counter()
             timing_acc["cpu_late_interaction(ms)"] += (t_cpu1 - t_cpu0) * 1000
 
             # 4) In-edge re-ranking and selecting top edges
             t_re0 = time.perf_counter()
+            # logging.info("In-edge re-ranking and selecting top edges...")
             # 4.1) Remove duplicates, keep max score
             unique_map = {}
             for item in scored:
@@ -449,7 +468,7 @@ class Retriever:
                 try:
                     row_idx = idxer.get_vector_idx_for_target(gcid)
                 except KeyError:
-                    print("[Retriever] KeyError in in-edge reranking: ", gcid)
+                    # logging.error(f"[Retriever] KeyError in in-edge reranking: {gcid}")
                     relevancy_cache[gcid] = 0.0
                     return 0.0
                 node_vec = top_emb_matrix[row_idx, :]
@@ -457,6 +476,7 @@ class Retriever:
                 relevancy_cache[gcid] = score
                 return score
 
+            # logging.info(f"top_k_edges before get_relevancy(): {top_k_edges}")
             for item in top_k_edges:
                 if len(item["edge"]) > 1:
                     sorted_edge = sorted(
@@ -492,6 +512,7 @@ class Retriever:
                 break
 
             iteration_top_level_nodes = new_top_level_nodes
+            # logging.info(f"iteration_top_level_nodes: {iteration_top_level_nodes}")
 
         # --------------------------------------------
         # After all iterations, produce final retrieval_obj

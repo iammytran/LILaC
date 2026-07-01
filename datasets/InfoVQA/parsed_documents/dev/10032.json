@@ -1,1454 +1,209 @@
 {
-  "title": "10032.jpeg",
-  "url": "placeholder",
-  "hierarchy": {},
-  "text": {
-    "p_1": {
-      "text": "COVID-19 CASES AND DEATHS",
-      "edges": []
-    },
-    "p_2": {
-      "text": "TOTAL CASES",
-      "edges": []
-    },
-    "p_3": {
-      "text": "1,59,45,037",
-      "edges": []
-    },
-    "p_4": {
-      "text": "DEATHS",
-      "edges": []
-    },
-    "p_5": {
-      "text": "6,42,775",
-      "edges": []
-    },
-    "p_6": {
-      "text": "RECOVERED",
-      "edges": []
-    },
-    "p_7": {
-      "text": "97,42,879",
-      "edges": []
-    },
-    "p_8": {
-      "text": "ACTIVE CASES",
-      "edges": []
-    },
-    "p_9": {
-      "text": "55,59,383",
-      "edges": []
-    },
-    "p_10": {
-      "text": "MILD CONDITION",
-      "edges": []
-    },
-    "p_11": {
-      "text": "54,93,158",
-      "edges": []
-    },
-    "p_12": {
-      "text": "CRITICAL",
-      "edges": []
-    },
-    "p_13": {
-      "text": "66,225",
-      "edges": []
-    },
-    "p_14": {
-      "text": "COVID-19 IN INDIA",
-      "edges": []
-    },
-    "p_15": {
-      "text": "ACTIVE CASES",
-      "edges": []
-    },
-    "p_16": {
-      "text": "4,56,071",
-      "edges": []
-    },
-    "p_17": {
-      "text": "DEATHS",
-      "edges": []
-    },
-    "p_18": {
-      "text": "31,358",
-      "edges": []
-    },
-    "p_19": {
-      "text": "RECOVERED",
-      "edges": []
-    },
-    "p_20": {
-      "text": "8,49,431",
-      "edges": []
-    },
-    "p_21": {
-      "text": "Source: www.worldometers.info",
-      "edges": []
-    },
-    "p_22": {
-      "text": "IANS GRAPHICS",
-      "edges": []
-    }
-  },
-  "sentence": {
-    "s_1": {
-      "text": "COVID-19 CASES AND DEATHS",
-      "edges": []
-    },
-    "s_2": {
-      "text": "TOTAL CASES",
-      "edges": []
-    },
-    "s_3": {
-      "text": "1,59,45,037",
-      "edges": []
-    },
-    "s_4": {
-      "text": "DEATHS",
-      "edges": []
-    },
-    "s_5": {
-      "text": "6,42,775",
-      "edges": []
-    },
-    "s_6": {
-      "text": "RECOVERED",
-      "edges": []
-    },
-    "s_7": {
-      "text": "97,42,879",
-      "edges": []
-    },
-    "s_8": {
-      "text": "ACTIVE CASES",
-      "edges": []
-    },
-    "s_9": {
-      "text": "55,59,383",
-      "edges": []
-    },
-    "s_10": {
-      "text": "MILD CONDITION",
-      "edges": []
-    },
-    "s_11": {
-      "text": "54,93,158",
-      "edges": []
-    },
-    "s_12": {
-      "text": "CRITICAL",
-      "edges": []
-    },
-    "s_13": {
-      "text": "66,225",
-      "edges": []
-    },
-    "s_14": {
-      "text": "COVID-19 IN INDIA",
-      "edges": []
-    },
-    "s_15": {
-      "text": "ACTIVE CASES",
-      "edges": []
-    },
-    "s_16": {
-      "text": "4,56,071",
-      "edges": []
-    },
-    "s_17": {
-      "text": "DEATHS",
-      "edges": []
-    },
-    "s_18": {
-      "text": "31,358",
-      "edges": []
-    },
-    "s_19": {
-      "text": "RECOVERED",
-      "edges": []
-    },
-    "s_20": {
-      "text": "8,49,431",
-      "edges": []
-    },
-    "s_21": {
-      "text": "Source: www.worldometers.info",
-      "edges": []
-    },
-    "s_22": {
-      "text": "IANS GRAPHICS",
-      "edges": []
-    }
-  },
-  "table": {
-    "t_1": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "USA",
-          "4,248,327",
-          "",
-          "148,490",
-          "2,028,074",
-          "2,071,763",
-          "19,098"
-        ],
-        [
-          "BRAZIL",
-          "2,348,200",
-          "",
-          "85,385",
-          "1,592,281",
-          "670,534",
-          "8,318"
-        ],
-        [
-          "RUSSIA",
-          "800,849",
-          "",
-          "13,046",
-          "588,774",
-          "199,029",
-          "2,300"
-        ],
-        [
-          "SOUTH AFRICA",
-          "421,996",
-          "",
-          "6,343",
-          "245,771",
-          "169,882",
-          "539"
-        ],
-        [
-          "MEXICO",
-          "378,285",
-          "+7,573",
-          "42,645",
-          "242,692",
-          "92,948",
-          "3,889"
-        ],
-        [
-          "PERU",
-          "375,961",
-          "",
-          "17,843",
-          "259,423",
-          "98,695",
-          "1,389"
-        ],
-        [
-          "CHILE",
-          "341,304",
-          "",
-          "8,914",
-          "313,696",
-          "18,694",
-          "1,636"
-        ],
-        [
-          "SPAIN",
-          "319,501",
-          "",
-          "28,432",
-          "N/A",
-          "N/A",
-          "617"
-        ],
-        [
-          "UK",
-          "297,914",
-          "",
-          "45,677",
-          "N/A",
-          "N/A",
-          "110"
-        ],
-        [
-          "IRAN",
-          "286,523",
-          "",
-          "15,289",
-          "249,212",
-          "22,022",
-          "3,653"
-        ],
-        [
-          "PAKISTAN",
-          "271,887",
-          "+1,487",
-          "5,787",
-          "236,596",
-          "29,504",
-          "1,294"
-        ],
-        [
-          "SAUDI ARABIA",
-          "262,772",
-          "",
-          "2,672",
-          "215,731",
-          "44,369",
-          "2,143"
-        ],
-        [
-          "ITALY",
-          "245,590",
-          "",
-          "35,097",
-          "198,192",
-          "12,301",
-          "46"
-        ],
-        [
-          "COLOMBIA",
-          "233,541",
-          "",
-          "7,975",
-          "113,864",
-          "111,702",
-          "1,493"
-        ],
-        [
-          "TURKEY",
-          "224,252",
-          "",
-          "5,580",
-          "207,374",
-          "11,298",
-          "1,248"
-        ],
-        [
-          "BANGLADESH",
-          "218,658",
-          "",
-          "2,836",
-          "120,976",
-          "94,846",
-          "1"
-        ],
-        [
-          "GERMANY",
-          "205,960",
-          "",
-          "9,201",
-          "190,400",
-          "6,359",
-          "237"
-        ],
-        [
-          "FRANCE",
-          "180,528",
-          "",
-          "30,192",
-          "80,815",
-          "69,521",
-          "410"
-        ],
-        [
-          "ARGENTINA",
-          "153,520",
-          "",
-          "2,807",
-          "65,447",
-          "85,266",
-          "902"
-        ],
-        [
-          "CANADA",
-          "113,206",
-          "",
-          "8,881",
-          "98,873",
-          "5,452",
-          "2,221"
-        ],
-        [
-          "QATAR",
-          "108,638",
-          "",
-          "164",
-          "105,420",
-          "3,054",
-          "101"
-        ],
-        [
-          "IRAQ",
-          "104,711",
-          "",
-          "4,212",
-          "71,268",
-          "29,231",
-          "456"
-        ],
-        [
-          "INDONESIA",
-          "95,418",
-          "",
-          "4,665",
-          "53,945",
-          "36,808",
-          ""
-        ],
-        [
-          "EGYPT",
-          "91,072",
-          "",
-          "4,518",
-          "31,970",
-          "5,000 HEUS",
-          "41"
-        ],
-        [
-          "CHINA",
-          "83,784",
-          "+34",
-          "4,634",
-          "78,889",
-          "X1",
-          "6"
-        ],
-        [
-          "KAZAKHSTAN",
-          "80,226",
-          "+1,740",
-          "585",
-          "51,260",
-          "28,381",
-          "221"
-        ],
-        [
-          "ECUADOR",
-          "79,049",
-          "",
-          "5,468",
-          "34,544",
-          "39,037",
-          "346"
-        ],
-        [
-          "SWEDEN",
-          "78,997",
-          "",
-          "5,697",
-          "N/A",
-          "N/A",
-          "50"
-        ],
-        [
-          "PHILIPPINES",
-          "76,444",
-          "",
-          "1,879",
-          "24,502",
-          "50,063",
-          "351"
-        ]
-      ],
-      "refs": []
-    }
-  },
-  "table_segment": {
-    "t_1_s0": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "USA",
-          "4,248,327",
-          "",
-          "148,490",
-          "2,028,074",
-          "2,071,763",
-          "19,098"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s1": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "BRAZIL",
-          "2,348,200",
-          "",
-          "85,385",
-          "1,592,281",
-          "670,534",
-          "8,318"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s2": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "RUSSIA",
-          "800,849",
-          "",
-          "13,046",
-          "588,774",
-          "199,029",
-          "2,300"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s3": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "SOUTH AFRICA",
-          "421,996",
-          "",
-          "6,343",
-          "245,771",
-          "169,882",
-          "539"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s4": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "MEXICO",
-          "378,285",
-          "+7,573",
-          "42,645",
-          "242,692",
-          "92,948",
-          "3,889"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s5": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "PERU",
-          "375,961",
-          "",
-          "17,843",
-          "259,423",
-          "98,695",
-          "1,389"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s6": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "CHILE",
-          "341,304",
-          "",
-          "8,914",
-          "313,696",
-          "18,694",
-          "1,636"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s7": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "SPAIN",
-          "319,501",
-          "",
-          "28,432",
-          "N/A",
-          "N/A",
-          "617"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s8": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "UK",
-          "297,914",
-          "",
-          "45,677",
-          "N/A",
-          "N/A",
-          "110"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s9": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "IRAN",
-          "286,523",
-          "",
-          "15,289",
-          "249,212",
-          "22,022",
-          "3,653"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s10": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "PAKISTAN",
-          "271,887",
-          "+1,487",
-          "5,787",
-          "236,596",
-          "29,504",
-          "1,294"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s11": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "SAUDI ARABIA",
-          "262,772",
-          "",
-          "2,672",
-          "215,731",
-          "44,369",
-          "2,143"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s12": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "ITALY",
-          "245,590",
-          "",
-          "35,097",
-          "198,192",
-          "12,301",
-          "46"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s13": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "COLOMBIA",
-          "233,541",
-          "",
-          "7,975",
-          "113,864",
-          "111,702",
-          "1,493"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s14": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "TURKEY",
-          "224,252",
-          "",
-          "5,580",
-          "207,374",
-          "11,298",
-          "1,248"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s15": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "BANGLADESH",
-          "218,658",
-          "",
-          "2,836",
-          "120,976",
-          "94,846",
-          "1"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s16": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "GERMANY",
-          "205,960",
-          "",
-          "9,201",
-          "190,400",
-          "6,359",
-          "237"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s17": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "FRANCE",
-          "180,528",
-          "",
-          "30,192",
-          "80,815",
-          "69,521",
-          "410"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s18": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "ARGENTINA",
-          "153,520",
-          "",
-          "2,807",
-          "65,447",
-          "85,266",
-          "902"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s19": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "CANADA",
-          "113,206",
-          "",
-          "8,881",
-          "98,873",
-          "5,452",
-          "2,221"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s20": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "QATAR",
-          "108,638",
-          "",
-          "164",
-          "105,420",
-          "3,054",
-          "101"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s21": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "IRAQ",
-          "104,711",
-          "",
-          "4,212",
-          "71,268",
-          "29,231",
-          "456"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s22": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "INDONESIA",
-          "95,418",
-          "",
-          "4,665",
-          "53,945",
-          "36,808",
-          ""
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s23": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "EGYPT",
-          "91,072",
-          "",
-          "4,518",
-          "31,970",
-          "5,000 HEUS",
-          "41"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s24": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "CHINA",
-          "83,784",
-          "+34",
-          "4,634",
-          "78,889",
-          "X1",
-          "6"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s25": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "KAZAKHSTAN",
-          "80,226",
-          "+1,740",
-          "585",
-          "51,260",
-          "28,381",
-          "221"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s26": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "ECUADOR",
-          "79,049",
-          "",
-          "5,468",
-          "34,544",
-          "39,037",
-          "346"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s27": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "SWEDEN",
-          "78,997",
-          "",
-          "5,697",
-          "N/A",
-          "N/A",
-          "50"
-        ]
-      ],
-      "refs": []
-    },
-    "t_1_s28": {
-      "table_caption": "A caption for the table.",
-      "columns": [
-        "COUNTRY",
-        "TOTAL CASES",
-        "NEW CASES",
-        "TOTAL DEATHS",
-        "RECOVERED",
-        "ACTIVE CASES",
-        "CRITICAL"
-      ],
-      "rows": 29,
-      "table": [
-        [
-          "COUNTRY",
-          "TOTAL CASES",
-          "NEW CASES",
-          "TOTAL DEATHS",
-          "RECOVERED",
-          "ACTIVE CASES",
-          "CRITICAL"
-        ],
-        [
-          "PHILIPPINES",
-          "76,444",
-          "",
-          "1,879",
-          "24,502",
-          "50,063",
-          "351"
-        ]
-      ],
-      "refs": []
-    }
-  },
-  "image": {},
-  "subimage": {}
+    "title": "10032",
+    "hierarchy": {},
+    "id_sequence": [
+        "i_1",
+        "i_1_p1",
+        "i_1_p2",
+        "i_1_p3",
+        "i_1_p4",
+        "i_1_p5",
+        "i_1_p6",
+        "i_1_p7",
+        "i_1_p8",
+        "i_1_p9",
+        "i_1_p10",
+        "i_1_p11",
+        "i_1_t1",
+        "i_1_p12",
+        "i_1_p13"
+    ],
+    "header": {},
+    "text": {},
+    "table": {},
+    "image": {
+        "i_1": {
+            "filename": "10032.jpeg",
+            "caption": {
+                "text": "",
+                "edges": []
+            }
+        }
+    },
+    "sentence": {
+        "i_1_p1": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                38,
+                7,
+                957,
+                44
+            ],
+            "text": "COVID-19 CASES AND DEATHS",
+            "edges": []
+        },
+        "i_1_p2": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                19,
+                77,
+                346,
+                151
+            ],
+            "text": "TOTAL CASES\n1,59,45,037",
+            "edges": []
+        },
+        "i_1_p3": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                394,
+                79,
+                637,
+                151
+            ],
+            "text": "DEATHS\n6,42,775",
+            "edges": []
+        },
+        "i_1_p4": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                705,
+                79,
+                948,
+                151
+            ],
+            "text": "RECOVERED\n97,42,879",
+            "edges": []
+        },
+        "i_1_p5": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                35,
+                172,
+                313,
+                244
+            ],
+            "text": "ACTIVE CASES\n55,59,383",
+            "edges": []
+        },
+        "i_1_p6": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                362,
+                172,
+                644,
+                244
+            ],
+            "text": "MILD CONDITION\n54,93,158",
+            "edges": []
+        },
+        "i_1_p7": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                731,
+                172,
+                922,
+                244
+            ],
+            "text": "CRITICAL\n66,225",
+            "edges": []
+        },
+        "i_1_p8": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                297,
+                262,
+                699,
+                288
+            ],
+            "text": "COVID-19 IN INDIA",
+            "edges": []
+        },
+        "i_1_p9": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                29,
+                298,
+                320,
+                370
+            ],
+            "text": "ACTIVE CASES\n4,56,071",
+            "edges": []
+        },
+        "i_1_p10": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                391,
+                298,
+                637,
+                374
+            ],
+            "text": "DEATHS\n31,358",
+            "edges": []
+        },
+        "i_1_p11": {
+            "dla_idx": null,
+            "dla_type": "text",
+            "_bbox": [
+                682,
+                298,
+                961,
+                370
+            ],
+            "text": "RECOVERED\n8,49,431",
+            "edges": []
+        },
+        "i_1_p12": {
+            "dla_idx": null,
+            "dla_type": "footer",
+            "_bbox": [
+                110,
+                970,
+                343,
+                983
+            ],
+            "text": "Source: www.worldometers.info",
+            "edges": []
+        },
+        "i_1_p13": {
+            "dla_idx": null,
+            "dla_type": "footer",
+            "_bbox": [
+                783,
+                968,
+                970,
+                987
+            ],
+            "text": "IANS GRAPHICS",
+            "edges": []
+        }
+    },
+    "proposition": {},
+    "table_segment": {
+        "i_1_t1": {
+            "dla_idx": null,
+            "dla_type": "table",
+            "_bbox": [
+                22,
+                379,
+                974,
+                959
+            ],
+            "text": "<table><tr><td>COUNTRY</td><td>TOTAL CASES</td><td>NEW CASES</td><td>TOTAL DEATHS</td><td>RECOVERED</td><td>ACTIVE CASES</td><td>CRITICAL</td></tr><tr><td>USA</td><td>4,248,327</td><td></td><td>148,490</td><td>2,028,074</td><td>2,071,763</td><td>19,098</td></tr><tr><td>BRAZIL</td><td>2,348,200</td><td></td><td>85,385</td><td>1,592,281</td><td>670,534</td><td>8,318</td></tr><tr><td>RUSSIA</td><td>800,849</td><td></td><td>13,046</td><td>588,774</td><td>199,029</td><td>2,300</td></tr><tr><td>SOUTH AFRICA</td><td>421,996</td><td></td><td>6,343</td><td>245,771</td><td>169,882</td><td>539</td></tr><tr><td>MEXICO</td><td>378,285</td><td>+7,573</td><td>42,645</td><td>242,692</td><td>92,948</td><td>3,889</td></tr><tr><td>PERU</td><td>375,961</td><td></td><td>17,843</td><td>259,423</td><td>98,695</td><td>1,389</td></tr><tr><td>CHILE</td><td>341,304</td><td></td><td>8,914</td><td>313,696</td><td>18,694</td><td>1,636</td></tr><tr><td>SPAIN</td><td>319,501</td><td></td><td>28,432</td><td>N/A</td><td>N/A</td><td>617</td></tr><tr><td>UK</td><td>297,914</td><td></td><td>45,677</td><td>N/A</td><td>N/A</td><td>110</td></tr><tr><td>IRAN</td><td>286,523</td><td></td><td>15,289</td><td>249,212</td><td>22,022</td><td>3,653</td></tr><tr><td>PAKISTAN</td><td>271,887</td><td>+1,487</td><td>5,787</td><td>236,596</td><td>29,504</td><td>1,294</td></tr><tr><td>SAUDI ARABIA</td><td>262,772</td><td></td><td>2,672</td><td>215,731</td><td>44,369</td><td>2,143</td></tr><tr><td>ITALY</td><td>245,590</td><td></td><td>35,097</td><td>198,192</td><td>12,301</td><td>46</td></tr><tr><td>COLOMBIA</td><td>233,541</td><td></td><td>7,975</td><td>113,864</td><td>111,702</td><td>1,493</td></tr><tr><td>TURKEY</td><td>224,252</td><td></td><td>5,580</td><td>207,374</td><td>11,298</td><td>1,248</td></tr><tr><td>BANGLADESH</td><td>218,658</td><td></td><td>2,836</td><td>120,976</td><td>94,846</td><td>1</td></tr><tr><td>GERMANY</td><td>205,960</td><td></td><td>9,201</td><td>190,400</td><td>6,359</td><td>237</td></tr><tr><td>FRANCE</td><td>180,528</td><td></td><td>30,192</td><td>80,815</td><td>69,521</td><td>410</td></tr><tr><td>ARGENTINA</td><td>153,520</td><td></td><td>2,807</td><td>65,447</td><td>85,266</td><td>902</td></tr><tr><td>CANADA</td><td>113,206</td><td></td><td>8,881</td><td>98,873</td><td>5,452</td><td>2,221</td></tr><tr><td>QATAR</td><td>108,638</td><td></td><td>164</td><td>105,420</td><td>3,054</td><td>101</td></tr><tr><td>IRAQ</td><td>104,711</td><td></td><td>4,212</td><td>71,268</td><td>29,231</td><td>456</td></tr><tr><td>INDONESIA</td><td>95,418</td><td></td><td>4,665</td><td>53,945</td><td>36,808</td><td></td></tr><tr><td>EGYPT</td><td>91,072</td><td></td><td>4,518</td><td>31,970</td><td>5,904</td><td>41</td></tr><tr><td>CHINA</td><td>83,784</td><td>+34</td><td>4,634</td><td>78,889</td><td>61</td><td>6</td></tr><tr><td>KAZAKHSTAN</td><td>80,226</td><td>+1,740</td><td>585</td><td>51,260</td><td>28,384</td><td>221</td></tr><tr><td>ECUADOR</td><td>79,049</td><td></td><td>5,468</td><td>34,544</td><td>39,037</td><td>346</td></tr><tr><td>SWEDEN</td><td>78,997</td><td></td><td>5,697</td><td>N/A</td><td>N/A</td><td>50</td></tr><tr><td>PHILIPPINES</td><td>76,444</td><td></td><td>1,879</td><td>24,502</td><td>50,063</td><td>351</td></tr></table>",
+            "filename": "10032___t_1.jpg",
+            "edges": []
+        }
+    },
+    "subimage": {},
+    "id_to_html": {}
 }

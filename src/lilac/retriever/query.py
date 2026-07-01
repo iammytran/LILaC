@@ -139,10 +139,10 @@ class QuestionsManager:
             qid = question_obj["qid"]
             question = question_obj["question"]
             
-            embedding = query_embeddings[qid_to_index[qid]]
+            embedding = query_embeddings[qid_to_index[str(qid)]]
             
             subqueries_list = []
-            subqueries_obj = qid_to_subquery_dict[qid]
+            subqueries_obj = qid_to_subquery_dict[str(qid)]
 
             for subquery_obj in subqueries_obj["subqueries"]:
                 sqid = subquery_obj["sqid"]

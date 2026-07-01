@@ -35,6 +35,7 @@ if [[ -z "$INPUT" || -z "$OUTPUT" ]]; then
     exit 2
 fi
 
-CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" python3 \
+CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1}" python3 \
     src/lilac/lcg_constructor/preprocessing/layout_mineru.py \
-    --input_dir "$INPUT" --output_dir "$OUTPUT" "${EXTRA[@]}"
+    --input_dir "$INPUT" --output_dir "$OUTPUT" "${EXTRA[@]}" \
+    --backend vlm-engine

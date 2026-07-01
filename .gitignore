@@ -67,3 +67,5 @@ algorithm_results/
 
 # Downloaded model checkpoints — fetched by models/download_*.sh, never committed.
 models/*/
+
+datasets/InfoVQA/parsed_documents

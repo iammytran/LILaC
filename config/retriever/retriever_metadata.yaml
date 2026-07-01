@@ -122,6 +122,7 @@ metadata_files:
 
   qa_pairs:    QAs_dev.jsonl
   subqueries:  subqueries_with_modality.json
+  revised_subqueries: revised_subqueries_with_modality.json
 
   subqueries_modality_agnostic:       subqueries_modality_agnostic.pt
   subqueries_modality_agnostic_index: subqueries_modality_agnostic.json

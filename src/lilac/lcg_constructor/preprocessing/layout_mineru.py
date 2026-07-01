@@ -36,7 +36,6 @@ from typing import List
 
 SUPPORTED_EXTS = {".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp", ".webp"}
 
-
 def parse_arguments():
     parser = argparse.ArgumentParser(description="MinerU layout analysis (CLI wrapper).")
     parser.add_argument("--input_dir",  required=True,
@@ -44,7 +43,7 @@ def parse_arguments():
     parser.add_argument("--output_dir", required=True,
                         help="Directory to write per-document MinerU outputs.")
     parser.add_argument("--backend", default="pipeline",
-                        choices=["pipeline", "vlm-transformers", "vlm-vllm-engine", "vlm-sglang-engine"],
+                        choices=["pipeline", "vlm-engine", "hybrid-engine", "vlm-http-client", "hybrid-http-client"],
                         help="MinerU backend; 'pipeline' is the default modular pipeline.")
     parser.add_argument("--method", default="auto",
                         choices=["auto", "txt", "ocr"],

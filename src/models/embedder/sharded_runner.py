@@ -15,10 +15,16 @@ import os
 import shutil
 import tempfile
 from typing import Any, Dict, List, Type
+import logging
 
 import torch
 
 from src.models.embedder.embedder import Embedder
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    filename=os.path.join('debug', 'mmembed.log'),
+                    filemode='a')
 
 
 def visible_gpu_ids() -> List[int]:
@@ -121,7 +127,7 @@ def _merge_shards(
     with open(out_index_path, "w") as f:
         json.dump(global_index, f, indent=4)
 
-    print(f"✅ Merged embeddings: {final_tensor.shape} • index size: {len(global_index)}")
+    logging.info(f"✅ Merged embeddings: {final_tensor.shape} • index size: {len(global_index)}")
 
 
 def encode_one_corpus(
@@ -141,12 +147,12 @@ def encode_one_corpus(
     ``.pt`` + ``.json`` artifacts. Idempotent — skips if outputs already exist."""
     mp.set_start_method("spawn", force=True)
 
-    print("==========================")
-    print(out_embeddings_path)
-    print("==========================")
+    logging.info("==========================")
+    logging.info(out_embeddings_path)
+    logging.info("==========================")
 
     if os.path.exists(out_embeddings_path) and os.path.exists(out_index_path):
-        print(
+        logging.info(
             f"⚠️  Skipping – already exists: "
             f"{out_embeddings_path} • {out_index_path}"
         )
@@ -156,7 +162,7 @@ def encode_one_corpus(
         corpus: List[Dict[str, Any]] = json.load(f)
 
     if not corpus:
-        print(f"⚠️  Empty corpus at {corpus_in_filepath} — skipping encode.")
+        logging.info(f"⚠️  Empty corpus at {corpus_in_filepath} — skipping encode.")
         return
 
     # Respect an outer CUDA_VISIBLE_DEVICES if it was set; each worker gets a
@@ -208,7 +214,7 @@ def encode_one_corpus(
         parts=len(procs),
     )
     shutil.rmtree(tmp_dir)
-    print(f"✅  Finished – {out_embeddings_path} • {out_index_path}")
+    logging.info(f"✅  Finished – {out_embeddings_path} • {out_index_path}")
 
 
 def run_corpus_encoder(

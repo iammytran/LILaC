@@ -7,12 +7,19 @@ from typing import List, Union, Sequence, Dict
 
 from tqdm import tqdm
 from PIL import Image
+import logging
 
 
 import torch
 import torch.nn.functional as F
 from src.models.embedder.embedder import Embedder
 from src.utils.utils import REPO_ROOT
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    filename=os.path.join('debug', 'mmembed.log'),
+                    filemode='a')
+
 
 
 
@@ -56,6 +63,28 @@ class MMEmbed(Embedder):
         print("Model loaded successfully.")
 
         return
+
+    def load_tokenizer(self):
+        from transformers import AutoProcessor
+
+        print("Loading mmembed processor...")
+        # Thường mmembed sử dụng AutoProcessor dưới nền
+        processor = AutoProcessor.from_pretrained(
+            self.model_path,
+            trust_remote_code = True
+        )
+        
+        # Ép biến self.tokenizer về đúng bộ tách từ text ẩn bên trong processor
+        if hasattr(processor, 'tokenizer'):
+            self.tokenizer = processor.tokenizer
+        elif hasattr(processor, 'image_processor') and hasattr(processor, 'tokenizer'):
+            self.tokenizer = processor.tokenizer
+        else:
+            # Nếu processor chính là tokenizer (tùy kiến trúc custom của mmembed)
+            self.tokenizer = processor
+            
+        print("Tokenizer loaded successfully.")
+        return
     
     
     def delete_model(self):
@@ -64,6 +93,48 @@ class MMEmbed(Embedder):
         
         return
 
+    def check_over_max_length(self, all_inputs, max_length, start_idx):
+        # ======================================================================
+        # 📊 KIỂM TRA VÀ IN RA DANH SÁCH CÁC DÒNG VƯỢT QUÁ MAX_LENGTH
+        # ======================================================================
+        # Tìm bộ tokenizer (thường nằm trong self.tokenizer hoặc self.model.tokenizer)
+
+        self.load_tokenizer()
+        
+        if self.tokenizer is not None:
+            logging.info("🔍 Đang kiểm tra độ dài token của toàn bộ corpus...")
+            oversized_items = []
+            
+            for index, inp in enumerate(all_inputs):
+                # Mã hóa chuỗi text để đếm số lượng token thực tế
+                token_ids = self.tokenizer.encode(inp['txt'], add_special_tokens=True)
+                token_len = len(token_ids)
+                
+                # Nếu vượt quá max_length, lưu lại thông tin để báo cáo
+                if token_len > max_length:
+                    oversized_items.append({
+                        'actual_index': start_idx + index if start_idx else index,
+                        'token_len': token_len,
+                        'text_preview': inp['txt'][:100] + "..." # In thử 100 ký tự đầu
+                    })
+            
+            # In kết quả báo cáo ra màn hình log
+            if oversized_items:
+                logging.warning(f"\n🚨 PHÁT HIỆN {len(oversized_items)} DÒNG CÓ ĐỘ DÀI VƯỢT QUÁ MAX_LENGTH ({max_length}):")
+                logging.warning("=" * 80)
+                for item in oversized_items:
+                    logging.warning(
+                        f"- Chỉ mục tổng: {item['actual_index']} | "
+                        f"Độ dài thực tế: {item['token_len']} tokens\n"
+                        f"  Nội dung: {item['text_preview']}\n"
+                    )
+                logging.warning("=" * 80)
+            else:
+                logging.info(f"✅ Tuyệt vời! Không có dòng nào vượt quá max_length ({max_length}).")
+        else:
+            logging.warning("⚠️ Không tìm thấy thuộc tính 'tokenizer' trong mô hình để đo độ dài.")
+        
+        return
 
     # def encode_queries(self, 
     #     queries: list[str],
@@ -189,6 +260,7 @@ class MMEmbed(Embedder):
             image_paths = data_obj["target"]["images"]
             
             clean_text = data_txt.strip()
+            clean_text = clean_text.replace("<image>", "image")
 
             image = None
             success = False
@@ -213,6 +285,8 @@ class MMEmbed(Embedder):
         else:
             all_inputs = all_inputs
 
+        self.check_over_max_length(all_inputs, max_length, start_idx)
+        
         # Batched encoding for corpus
         all_embeddings = []
         if self.show_progress:
@@ -223,11 +297,39 @@ class MMEmbed(Embedder):
             batch_inputs = all_inputs[i : i + batch_size]
             with torch.no_grad():
                 try:
+                    logging.info(f"\n----- Batch từ {i} đến {i + len(batch_inputs)} -----")
+                    logging.info(f"batch_inputs: {batch_inputs}")
                     outputs = self.model.encode(batch_inputs, instruction = instruction, max_length = max_length)
                     embeddings = outputs['hidden_states']
-                except Exception as e:
-                    print(f"Error during model encoding: {e}")
-                    embeddings = torch.zeros((len(batch_inputs), 4096), dtype=torch.float32).to('cuda:0')
+                except Exception as batch_error:
+                    logging.error(f"[DEBUG] Phát hiện lỗi {batch_error}")
+                    logging.error(f"\n[DEBUG] Phát hiện lỗi ở Batch từ chỉ mục {i} đến {i + len(batch_inputs)}. Tiến hành bóc tách từng dòng...")
+                    
+                    # Khởi tạo một danh sách để chứa vector của từng dòng trong batch lỗi này
+                    backfill_embeddings = []
+                    
+                    # Duyệt qua từng dòng một trong batch bị lỗi
+                    for sub_idx, single_input in enumerate(batch_inputs):
+                        try:
+                            # Chạy mô hình cho duy nhất 1 dòng này
+                            # Lưu ý: Truyền [single_input] dưới dạng list có 1 phần tử
+                            single_output = self.model.encode([single_input], instruction=instruction, max_length=max_length)
+                            single_emb = single_output['hidden_states']
+                            backfill_embeddings.append(single_emb)
+                        except Exception as single_error:
+                            # 🎯 ĐÂY CHÍNH LÀ NƠI BẠN TÌM RA THỦ PHẠM!
+                            actual_index = i + sub_idx
+                            logging.info("-" * 60)
+                            logging.error(f"🚨 PHÁT HIỆN DÒNG BỊ LỖI tại chỉ mục tổng: {actual_index}")
+                            logging.error(f"Nội dung dòng lỗi: {single_input}")
+                            logging.error(f"Chi tiết lỗi: {single_error}")
+                            logging.info("-" * 60)
+                            
+                            # Tạo vector 0 phòng hờ RIÊNG cho dòng lỗi này thôi, không làm ảnh hưởng dòng khác
+                            zero_emb = torch.zeros((1, 4096), dtype=torch.float32).to('cuda:0')
+                            backfill_embeddings.append(zero_emb)
+                    embeddings = torch.cat(backfill_embeddings, dim=0)
+                    
                 embeddings = embeddings.cpu()
                 all_embeddings.append(embeddings)
 
