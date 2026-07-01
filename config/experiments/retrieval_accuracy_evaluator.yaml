@@ -62,6 +62,6 @@ Algorithms:
 
     InfoVQA:
       retrieval_directory: "retrieval"
-      run_name: "mmebed_defulat.jsonl"
+      run_name: "mmembed_default_2606_3.jsonl"
       label_type: "page"
       k : 10

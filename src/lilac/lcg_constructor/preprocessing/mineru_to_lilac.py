@@ -34,6 +34,7 @@ from typing import Dict, List, Optional
 from itertools import islice
 import os
 import logging
+import re
 
 from src.lilac.lcg_constructor.preprocessing._caption_via_qwen_vl import caption_images
 
@@ -149,7 +150,11 @@ def build_parsed_documents(
                 continue  # unknown block with no text — skip
 
             if btype in IMAGE_TYPES:
-                # logging.info(f"block: {block} with btype as image")
+                sub_type = block.get("sub_type", "")
+                if btype == "chart":
+                    native_text = f"A {sub_type} chart: {native_text}"
+                if sub_type == "flowchart":
+                    native_text = f"A {sub_type}: {native_text}"
                 src_img = _block_image_path(block, cl_path.parent)
                 if src_img is None:
                     continue
@@ -163,7 +168,7 @@ def build_parsed_documents(
                 subimage_entries[cid] = {
                     **common_meta,
                     "filename": crop_fname,
-                    "caption": {"text": native_text, "edges": []},
+                    "caption": {"text": comprehensive_clean(native_text), "edges": []},
                 }
                 crops_to_summarize.append(target_crop)
                 id_sequence.append(cid)
@@ -184,7 +189,7 @@ def build_parsed_documents(
                     shutil.copyfile(src_img, target_crop)
                 table_entries[cid] = {
                     **common_meta,
-                    "text": native_text,
+                    "text": comprehensive_clean(native_text),
                     "filename": crop_fname,
                     "edges": [],
                 }
@@ -194,7 +199,7 @@ def build_parsed_documents(
                 cid = f"i_1_p{p_counter}"
                 text_entries[cid] = {
                     **common_meta,
-                    "text": native_text,
+                    "text": comprehensive_clean(native_text),
                     "edges": [],
                 }
             id_sequence.append(cid)
@@ -219,8 +224,8 @@ def build_parsed_documents(
             "id_to_html": {},
         }
 
-        transform_text_to_sentence(parsed_doc)
-        transform_table_to_table_segment(parsed_doc)
+        # transform_text_to_sentence(parsed_doc)
+        # transform_table_to_table_segment(parsed_doc)
 
         with open(parsed_documents_out_dir / f"{doc_id}.json", "w") as f:
             json.dump(parsed_doc, f, indent=4)
@@ -233,11 +238,17 @@ def build_parsed_documents(
 def transform_text_to_sentence(parsed_doc):
     text_entries = parsed_doc.get("text", {}) 
     sentence_entries = []
+    # print(f"text_entries: {text_entries}")
     
-    for text_entry in text_entries.items:
-        text = text_entry.get("text", "")
+    for text_block in text_entries.values():
+        text = text_block.get("text", "")
         # Split by period
-        texts_splitted = text.split(".")
+        sentences = text.split(".")
+        for sent in sentences:
+            sentence_entries.append(sent)
+        # sentence_entries.append(sentence.strip() for sentence in sentences)
+
+    print(sentence_entries)
 
     # Add sentence to sentence list
 
@@ -246,6 +257,42 @@ def transform_text_to_sentence(parsed_doc):
 def transform_table_to_table_segment(parsed_doc):
     return
 
+# TODO: clean_text
+def comprehensive_clean(text: str) -> str:
+    if not text:
+        return ""
+
+    # 1. Hàm dịch chuẩn mọi mã Unicode (\u00e9, \u5e74, \u221a)
+    def decode_unicode(match):
+        val = match.group(0)
+        try:
+            # Dịch trực tiếp chuỗi \uXXXX thành ký tự thực tế
+            return val.encode('utf-8').decode('unicode_escape')
+        except (UnicodeDecodeError, ValueError):
+            return "" # Nếu lỗi hoàn toàn (như \uabs) thì xóa bỏ
+
+    # Quét chính xác cụm \u theo sau là đúng 4 ký tự hex (không phân biệt hoa thường)
+    text = re.sub(r'\\u([0-9a-fA-F]{4})', decode_unicode, text)
+    
+    # Xóa bỏ các mã \u bị lỗi/bị cắt cụt (như \uabs, \u12) còn sót lại
+    text = re.sub(r'\\u[a-zA-Z0-9]{1,3}', '', text)
+
+    # 2. Xử lý các lỗi LaTeX đặc trưng của MinerU
+    text = text.replace('\\%', '%').replace('$', '')
+    text = text.replace('\\`', '`').replace('\\#', '#')
+
+    # 3. Thay thế các ký tự xuống dòng, tab thành khoảng trắng
+    text = re.sub(r'[\n\t\r]', ' ', text)
+
+    # 4. Xóa các ký tự toán học/bullet lạ đứng một mình (như dấu √ ở câu trước)
+    # Nhưng VẪN GIỮ LẠI các chữ có dấu hợp lệ (như chữ é trong Nestlé, hoặc tiếng Trung)
+    # [^\w\s] trong Python 3 mặc định tự động giữ lại ký tự chữ của mọi ngôn ngữ (Unicode)
+    text = re.sub(r'[^\w\s.,?!%\-\(\)\'\"]', '', text)
+
+    # 5. Chuẩn hóa khoảng trắng
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    return text
 
 def merge_subimage_captions(parsed_documents_out_dir: Path, crops_out_dir: Path) -> None:
     """Read per-crop .txt sidecars and merge into subimage[*].caption.text."""
@@ -334,3 +381,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # content = ""
+    # path = "datasets/InfoVQA/parsed_documents/dev/70436.json"
+    # with open(path, 'r') as file:
+    #     content = json.load(file)
+
+    # transform_text_to_sentence(content)
