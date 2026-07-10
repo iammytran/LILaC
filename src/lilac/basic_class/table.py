@@ -116,7 +116,8 @@ class Table(Component):
         # 7) final clean‐up
         serialized_text = serialized_text.replace("\n", " ")
         serialized_text = re.sub(r'(\s*\[SEP\]\s*)+', ' [SEP] ', serialized_text)
-        print()
+        serialized_text = serialized_text.strip()
+        serialized_text = re.sub(r'\[SEP\]$', '', serialized_text).strip()
 
         in_table_image_filepaths.append(self._get_image_abs_path(self.component_obj.get("filename")))
 
@@ -241,6 +242,7 @@ class Table(Component):
                     self._get_image_summary(fn) 
                     for fn in in_table_image_filepaths
                 ]
+        # print(f"in_table_image_filepaths: {in_table_image_filepaths}")
 
         # 5) build a single “image_summaries” list so each index i → all modes concatenated
         image_summaries: List[str] = []
@@ -382,7 +384,7 @@ class Table(Component):
 
         if "image" in cell and "filename" in cell["image"] and cell["image"]["filename"] != None:
             image_filename = cell["image"]["filename"]
-            image_filepath = self._get_image_abs_path(image_filename)    
+            image_filepath = self._get_image_abs_path(image_filename)
             
             if image_filepath not in in_table_image_filepaths:
                 in_table_image_filepaths.append(image_filepath)
@@ -600,7 +602,7 @@ if __name__ == "__main__":
     # with open("check.json", "w") as f:
     #     json.dump(outputs, f, indent = 4)
     
-    filename = "datasets/InfoVQA/parsed_documents/dev/10069.json"
+    filename = "datasets/InfoVQA/parsed_documents/dev/10030.json"
     with open(filename, 'r') as file:
         parsed_document = json.load(file)
 
@@ -619,19 +621,3 @@ if __name__ == "__main__":
                                 images_dir = sub_image_dir, image_summaries_dir = subimage_summaries_dir)
         table_segment_serializations.append(table_segment_component.serialize(mode))
     print(table_segment_serializations[0])
-
-    # for mode in [["image", "summary"]]:
-    #     target_path = os.path.join(self._serializations_path, "table_segment+" + "+".join(mode) + ".json")
-    #     if not os.path.exists(target_path):
-    #         table_segment_serializations = []
-    #         for filename, parsed_document in tqdm(filename_to_parseddoc.items(), desc="Serializing table segment components"):
-    #             doc_title       = parsed_document["title"]
-    #             hierarchy_dict  = parsed_document["hierarchy"]
-    #             table_segment_component_ids = parsed_document["table_segment"]
-    #             for component_id in table_segment_component_ids:
-    #                 component = parsed_document["table_segment"][component_id]
-    #                 table_segment_component = Table(filename, doc_title, hierarchy_dict, component_id, component,
-    #                                         images_dir = self._images_dir, image_summaries_dir = self._summaries_dir)
-    #                 table_segment_serializations.append(table_segment_component.serialize(mode))
-    #         write_json_file(table_segment_serializations, target_path)
-    #         print(f"Table segment components serialized to {target_path}")

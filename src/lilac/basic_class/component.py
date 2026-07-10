@@ -76,22 +76,11 @@ class Component(ABC):
     def get_intra_edges_as_filenames_list(self):
         raise NotImplementedError("The method get_edges() is not implemented in the Component class.")
         
-
     def _get_image_abs_path(self, image_filename):
-        image_dir_path = Path(self._images_dir)
-        matches = list(image_dir_path.rglob(image_filename))
-        if not matches:
-            return None  # Trả về None nếu không tìm thấy
-
-        return str(matches[0].resolve())
-        # if "sub" in self._images_dir.lower():
-        #     image_file_name_folder = image_filename.split("___")[0]
-        #     image_filepath = os.path.join(self._images_dir, image_file_name_folder, image_filename)
-        # else:
-        #     image_filepath = os.path.join(self._images_dir, image_filename)
-        # if not os.path.exists(image_filepath):
-        #     return None
-        # return image_filepath
+        image_filepath = os.path.join(self._images_dir, image_filename)
+        if not os.path.exists(image_filepath):
+            return None
+        return image_filepath
     
     def _get_image_summary(self, image_filename):
         # Get basename, remove extension, and add .txt
