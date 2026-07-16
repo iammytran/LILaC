@@ -150,7 +150,7 @@ class ComponentSerializer:
                     for component_id in table_component_ids:
                         component = parsed_document["table"][component_id]
                         table_component = Table(filename, doc_title, hierarchy_dict, component_id, component,
-                                                images_dir = self._subimages_dir, image_summaries_dir = self._subsummaries_dir)
+                                                images_dir = self._images_dir, image_summaries_dir = self._summaries_dir)
                         table_serializations.append(table_component.serialize(mode))
                 write_json_file(table_serializations, target_path)
                 print(f"Table components serialized to {target_path}")

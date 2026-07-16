@@ -3,7 +3,8 @@ import json
 import logging
 import os
 
-
+subquery_file = "artifacts/InfoVQA/query_decomposition/dev/subqueries.json"
+revised_subquery_file = "artifacts/InfoVQA/query_decomposition/dev/revised_subqueries.json"
 subquery_with_modality_file = "artifacts/InfoVQA/query_decomposition/dev/subqueries_with_modality.json"
 revised_subquery_with_modality_file = 'artifacts/InfoVQA/query_decomposition/dev/revised_subqueries_with_modality.json'
 logging.basicConfig(level=logging.INFO, 
@@ -11,6 +12,7 @@ logging.basicConfig(level=logging.INFO,
                     filename=os.path.join('debug', 'subquery_with_modality.log'),
                     filemode='a'
                     )
+subqueries_txt = "debug/compare_subqueries.txt"
 
 def main():
     # load dict content
@@ -76,6 +78,38 @@ def check_for_missing_modality(subqueries_with_modality_file_path):
                 subqueries_not_have_modality.append(subquery)
     return not len(subqueries_not_have_modality) == 0
 
+def compare_subqueries(subqueries_file, subqueries_with_modality_file):
+    not_equal = 0
+    # read file subquery
+    subquery_content = {}
+    with open(subqueries_file, "r") as file:
+        subquery_content = json.load(file)
+
+     # read file subquery_with_modality
+    subquery_with_modality_content = {}
+    with open(subqueries_with_modality_file, "r") as file:
+        subquery_with_modality_content = json.load(file)
+
+    # print(len(subquery_content.items()))
+    # print(len(subquery_with_modality_content.items()))
+
+    # print(len(subquery_content.items()))
+    with open(subqueries_txt, 'w') as file:
+        for subquery_content, subquery_with_modality_content in zip(subquery_content.values(), subquery_with_modality_content.values()):
+            subquery_content_qid = subquery_content.get("qid", "")
+            # subquery_with_modality_content_qid = subquery_with_modality_content.get("qid", "")
+            subquery_content_subqueries = subquery_content.get("subqueries", [])
+            subquery_with_modality_content_subqueries = subquery_with_modality_content.get("subqueries", [])
+            if len(subquery_content_subqueries) != len(subquery_with_modality_content_subqueries):
+                not_equal += 1
+                file.write(str(subquery_content_qid))
+                file.write("\n")
+
+    print(not_equal)
+    # print(len(subquery_with_modality_content.items()))
+    return 
+
 if __name__ == "__main__":
     # main()
-    print(check_for_missing_modality(revised_subquery_with_modality_file))
+    # print(check_for_missing_modality(revised_subquery_with_modality_file))
+    compare_subqueries(revised_subquery_file, revised_subquery_with_modality_file)

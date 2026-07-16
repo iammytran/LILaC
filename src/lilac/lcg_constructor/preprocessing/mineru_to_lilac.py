@@ -88,7 +88,9 @@ def _block_text(block: Dict) -> Optional[str]:
         text = (caption + "\n" + body) if body else caption
         return text.strip() or None
     if btype in IMAGE_TYPES:
-        return (block.get("content") or block.get("md") or "") or None
+        image_caption = ".".join(block.get("image_caption", []))
+        image_footnote = ".".join(block.get("image_footnote", []))
+        return block.get("content") or image_caption or image_footnote or block.get("md") or ""
     return None
 
 
@@ -299,13 +301,8 @@ def build_parsed_documents(
             native_text = _block_text(block)
             if native_text is None:
                 continue  # unknown block with no text — skip
-
+            
             if btype in IMAGE_TYPES:
-                sub_type = block.get("sub_type", "")
-                if btype == "chart":
-                    native_text = f"A {sub_type} chart: {native_text}"
-                if sub_type == "flowchart":
-                    native_text = f"A {sub_type}: {native_text}"
                 src_img = _block_image_path(block, cl_path.parent)
                 if src_img is None:
                     continue
@@ -336,37 +333,35 @@ def build_parsed_documents(
                 target_crop.parent.mkdir(parents=True, exist_ok=True)
                 if not target_crop.exists():
                     shutil.copyfile(src_img, target_crop)
-                rows = _parse_html_to_table(doc_id, native_text)
+                # rows = _parse_html_to_table(doc_id, native_text)
 
-                table_data = []
-                c_counter = 1
-                for row in rows:
-                    row_data = []
-                    for cell in row:
-                        if "<Image" in cell:
-                            text, img_data = _extract_text_and_image(cell)
-                            src_img = cl_path.parent / img_data
-                            row_data.append({
-                                "text": text,
-                                "image": {"filename": _crop_fname(crops_out_dir, doc_id, src_img, c_counter, 'c')}
-                            })
-                            c_counter += 1  # Clean, readable incrementation
-                        else:
-                            row_data.append({"text": cell})
-                    table_data.append(row_data)
+                # table_data = []
+                # c_counter = 1
+                # for row in rows:
+                #     row_data = []
+                #     for cell in row:
+                #         if "<Image" in cell:
+                #             text, img_data = _extract_text_and_image(cell)
+                #             src_img = cl_path.parent / img_data
+                #             row_data.append({
+                #                 "text": text,
+                #                 "image": {"filename": _crop_fname(crops_out_dir, doc_id, src_img, c_counter, 'c')}
+                #             })
+                #             c_counter += 1  # Clean, readable incrementation
+                #         else:
+                #             row_data.append({"text": cell})
+                #     table_data.append(row_data)
 
                 table_entries[cid] = {
                     **common_meta,
                     "text": native_text,
                     "table_caption": block.get('table_caption', ''), 
-                    "rows": len(rows),
-                    "table": table_data,
                     "filename": crop_fname,
                     "edges": [],
                 }
             else:  # text-like
-                if "no text" in native_text.lower():
-                    break
+                # if "no text" in native_text.lower():
+                #     break
                 p_counter += 1
                 cid = f"i_1_p{p_counter}"
                 text_entries[cid] = {
@@ -381,23 +376,23 @@ def build_parsed_documents(
             "hierarchy": {},
             "id_sequence": id_sequence,
             "header": {},
-            "text": text_entries,
-            "table": table_entries,
+            "text": {},
+            "table": {},
             "image": {
                 "i_1": {
                     "filename": page_img.name,
                     "caption": {"text": "", "edges": []},
                 }
             },
-            "sentence": {},
+            "sentence": text_entries,
             "proposition": {},
-            "table_segment": {},
+            "table_segment": table_entries,
             "subimage": subimage_entries,
             "id_to_html": {},
         }
         
-        parsed_doc = transform_text_to_sentence(parsed_doc)
-        parsed_doc = transform_table_to_table_segment(parsed_doc)
+        # parsed_doc = transform_text_to_sentence(parsed_doc)
+        # parsed_doc = transform_table_to_table_segment(parsed_doc)
 
         with open(parsed_documents_out_dir / f"{doc_id}.json", "w", encoding="utf-8") as f:
             json.dump(parsed_doc, f, indent=4, ensure_ascii=False)
@@ -479,50 +474,52 @@ def _fix_mineru_sticky_text(text):
     return cleaned.strip()
 
 def merge_subimage_captions(parsed_documents_out_dir: Path, crops_out_dir: Path) -> None:
-    """Read per-crop .txt sidecars and merge into subimage[*].caption.text."""
+    """Read per-crop .txt sidecars and merge/append into subimage[*].caption.text."""
     files = sorted(parsed_documents_out_dir.glob("*.json"))
     merged, missing = 0, 0
+    
     for pd_path in files:
-        with open(pd_path, "r", encoding="utf-8") as f:
+        with open(pd_path) as f:
             pd = json.load(f)
         doc_id = pd_path.stem
         any_updated = False
+        
         for sid, sv in pd.get("subimage", {}).items():
-            print(f"sid: {sid}")
-            # 1. Lấy text hiện tại trong JSON ra trước (nếu không có thì mặc định là chuỗi rỗng "")
-            current_text = (sv.get("caption") or {}).get("text", "")
-
-            # 2. KIỂM TRA ĐIỀU KIỆN: Chỉ xử lý NẾU text hiện tại đang TRỐNG
-            if not current_text:  
-                print(f"text in parsed_doc is empty")
-                crop_fname = sv.get("filename", "")
-                if not crop_fname:
-                    missing += 1
-                    continue
+            crop_fname = sv.get("filename", "")
+            if not crop_fname:
+                missing += 1
+                continue
                 
-                txt_path = (crops_out_dir / doc_id / crop_fname).with_suffix(".txt")
+            txt_path = (crops_out_dir / doc_id / crop_fname).with_suffix(".txt")
+            
+            if txt_path.exists():
+                new_text = txt_path.read_text(encoding="utf-8").strip()
                 
-                if txt_path.exists():
-                    content = txt_path.read_text(encoding="utf-8").strip()
-                    
-                    # (Tùy chọn) Chặn luôn nếu file .txt chứa chữ "None" hoặc bị trống rỗng
-                    if content == "" or content == "None":
-                        missing += 1
-                        continue
-                    
-                    if "caption" not in sv or sv["caption"] is None:
-                        sv["caption"] = {}
-                        
-                    # Tiến hành thêm vào vì chỗ này đang trống
-                    sv["caption"]["text"] = content
-                    merged += 1
-                    any_updated = True
+                # Đảm bảo key "caption" tồn tại và là một dictionary
+                if "caption" not in sv or not isinstance(sv["caption"], dict):
+                    sv["caption"] = {}
+                
+                # Lấy text hiện tại ra (nếu không có hoặc là None thì mặc định là chuỗi rỗng "")
+                current_text = sv["caption"].get("text") or ""
+                
+                if current_text:
+                    # Nếu đã có text cũ: tiến hành APPEND (nối thêm vào, cách nhau bằng 1 khoảng trắng)
+                    # Bạn có thể đổi " " thành "\n" nếu muốn xuống dòng khi append
+                    sv["caption"]["text"] = f"{current_text}\n{new_text}"
                 else:
-                    missing += 1
+                    # Nếu chưa có text (hoặc text rỗng): ĐIỀN MỚI hoàn toàn
+                    sv["caption"]["text"] = new_text
+                    
+                merged += 1
+                any_updated = True
+            else:
+                missing += 1
+                
         if any_updated:
-            with open(pd_path, "w", encoding="utf-8") as f:
-                json.dump(pd, f, indent=4, ensure_ascii=False,)
-    print(f"[adapter/mineru] merged {merged} image captions; {missing} crops still uncaptioned")
+            with open(pd_path, "w") as f:
+                json.dump(pd, f, indent=4)
+                
+    print(f"[adapter/mineru] processed {merged} image captions; {missing} crops still uncaptioned")
 
 def _create_subimage_folder(crops_out_dir, subimage_dir):
     subimage_dir.mkdir(parents=True, exist_ok=True)
@@ -532,29 +529,12 @@ def _create_subimage_folder(crops_out_dir, subimage_dir):
         shutil.copy2(img, dest_dir)
     return 
 
-def _create_subimage_summaries_folder(crops_out_dir, parsed_doc_dir, subimage_summaries_dir):
+def _create_subimage_summaries_folder(crops_out_dir, subimage_summaries_dir):
     subimage_summaries_dir.mkdir(parents=True, exist_ok=True)
 
-    parsed_docs = parsed_doc_dir.rglob("*.json")
-    content = ""
-
-    for parsed_doc in parsed_docs:
-        with open(parsed_doc, 'r') as file:
-            content = json.load(file)
-        subimages = content.get("subimage", {})
-
-        for subimg_id, subimg in subimages.items():
-            filename_str = subimg.get('filename')
-            if not filename_str:
-                continue
-
-            subimg_filename = Path(filename_str).stem
-            caption_data = subimg.get('caption', {})
-            subimg_text = caption_data.get('text', '')
-
-            dest_summary_file = subimage_summaries_dir / f"{subimg_filename}.txt"
-            with open(dest_summary_file, 'w', encoding="utf-8") as file:
-                file.write(subimg_text)
+    for text in crops_out_dir.rglob("*.txt"):
+        dest_dir = subimage_summaries_dir / text.name
+        shutil.copy2(text, dest_dir)
     return 
 
 def main():
@@ -579,26 +559,28 @@ def main():
     # merge_subimage_captions(pd_out, crops_out)
     _add_dla_idx()
     crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
-    _create_subimage_folder(crops_out, subimage_dir)
-    _create_subimage_summaries_folder(crops_out, pd_out, subimage_summaries_dir)
 
-    if not args.skip_caption and crops:
-        img_paths = [str(p) for p in crops]
-        out_paths = [str(p.with_suffix(".txt")) for p in crops]
-        caption_images(
-            image_paths=img_paths,
-            output_paths=out_paths,
-            prompt=SUMMARY_PROMPT,
-            max_tokens=args.max_tokens,
-            num_gpus=(args.num_gpus or None),
-        )
-        merge_subimage_captions(pd_out, crops_out)
-    elif not crops:
-        print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
+    # if not args.skip_caption and crops:
+    #     img_paths = [str(p) for p in crops]
+    #     out_paths = [str(p.with_suffix(".txt")) for p in crops]
+    #     caption_images(
+    #         image_paths=img_paths,
+    #         output_paths=out_paths,
+    #         prompt=SUMMARY_PROMPT,
+    #         max_tokens=args.max_tokens,
+    #         num_gpus=(args.num_gpus or None),
+    #     )
+    #     # merge_subimage_captions(pd_out, crops_out)
+    # elif not crops:
+    #     print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
+
+    # _create_subimage_folder(crops_out, subimage_dir)
+    # _create_subimage_summaries_folder(crops_out, subimage_summaries_dir)
 
 
 if __name__ == "__main__":
     main()
+    # _create_subimage_summaries_folder(crops_out, subimage_summaries_dir)
     # _create_subimage_folder()
 
     # layout_dir = Path("artifacts/InfoVQA/mineru_outputs/dev")

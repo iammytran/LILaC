@@ -75,7 +75,7 @@ class QueryEmbedder:
     def _process_dataset(self, dname: str) -> None:
 
         decomp_dir  = artifact_subpath(self._meta, dname, "query_decomposition_dirname", "dev")
-        subq_path   = os.path.join(decomp_dir, self._mconf["subqueries"])
+        subq_path   = os.path.join(decomp_dir, self._mconf["revised_subqueries"])
         if not check_file_exists(subq_path):
             print(f"⚠️  {dname}: subqueries.json missing - skip")
             return

@@ -14,33 +14,33 @@ def main():
     #     output_path = output_path
     # )
     
-    pages_dir = f"{REPO_ROOT}/datasets/MultimodalQA/pdf_pages/dev"
-    output_path = f"{REPO_ROOT}/datasets/MultimodalQA/embeddings/serializations/page.json"
-    generate_dict(  
-        pages_dir = pages_dir,
-        output_path = output_path
-    )
+    # pages_dir = f"{REPO_ROOT}/datasets/MultimodalQA/pdf_pages/dev"
+    # output_path = f"{REPO_ROOT}/datasets/MultimodalQA/embeddings/serializations/page.json"
+    # generate_dict(  
+    #     pages_dir = pages_dir,
+    #     output_path = output_path
+    # )
     
     pages_dir = f"{REPO_ROOT}/datasets/InfoVQA/image_components/dev"
-    output_path = f"{REPO_ROOT}/datasets/InfoVQA/embeddings/serializations/page.json"
+    output_path = f"{REPO_ROOT}/artifacts/InfoVQA/embeddings/serializations/page.json"
     generate_dict(
         pages_dir = pages_dir,
         output_path = output_path
     )
     
-    pages_dir = f"{REPO_ROOT}/datasets/SlideVQA/image_components/dev"
-    output_path = f"{REPO_ROOT}/datasets/SlideVQA/embeddings/serializations/page.json"
-    generate_dict(
-        pages_dir = pages_dir,
-        output_path = output_path
-    )
+    # pages_dir = f"{REPO_ROOT}/datasets/SlideVQA/image_components/dev"
+    # output_path = f"{REPO_ROOT}/datasets/SlideVQA/embeddings/serializations/page.json"
+    # generate_dict(
+    #     pages_dir = pages_dir,
+    #     output_path = output_path
+    # )
     
-    pages_dir = f"{REPO_ROOT}/datasets/MP-DocVQA/image_components/dev"
-    output_path = f"{REPO_ROOT}/datasets/MP-DocVQA/embeddings/serializations/page.json"
-    generate_dict(
-        pages_dir = pages_dir,
-        output_path = output_path
-    )
+    # pages_dir = f"{REPO_ROOT}/datasets/MP-DocVQA/image_components/dev"
+    # output_path = f"{REPO_ROOT}/datasets/MP-DocVQA/embeddings/serializations/page.json"
+    # generate_dict(
+    #     pages_dir = pages_dir,
+    #     output_path = output_path
+    # )
     
     
     return
