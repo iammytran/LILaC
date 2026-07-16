@@ -124,7 +124,7 @@ class ModalityEstimator:
     def estimate_modalities(self, qid_to_question: dict[str, str]):
 
         # ---------- 1. locate the decomposition file ----------
-        decomp_path = os.path.join(self._decomposition_dir, "subqueries.json")
+        decomp_path = os.path.join(self._decomposition_dir, "revised_subqueries.json")
         assert check_file_exists(decomp_path), f"❌ {decomp_path} not found"
         decomposed = read_json_or_jsonl(decomp_path)
 

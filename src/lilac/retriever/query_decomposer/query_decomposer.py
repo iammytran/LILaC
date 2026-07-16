@@ -209,7 +209,7 @@ class QueryDecomposer:
             }
             for i, subquery in enumerate(subqueries):
                 decomposed[p["qid"]]["subqueries"].append({
-                    "sqid": p["qid"] + "___" + str(i + 1),
+                    "sqid": str(p["qid"]) + "___" + str(i + 1),
                     "subquery": subquery
                 })
             

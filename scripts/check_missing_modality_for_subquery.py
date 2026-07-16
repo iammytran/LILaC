@@ -4,6 +4,8 @@ import logging
 import os
 
 subquery_file = "artifacts/InfoVQA/query_decomposition/dev/subqueries.json"
+
+revised_subquery_file_1 = "artifacts/InfoVQA/query_decomposition/dev/revised_subqueries_1.json"
 revised_subquery_file = "artifacts/InfoVQA/query_decomposition/dev/revised_subqueries.json"
 subquery_with_modality_file = "artifacts/InfoVQA/query_decomposition/dev/subqueries_with_modality.json"
 revised_subquery_with_modality_file = 'artifacts/InfoVQA/query_decomposition/dev/revised_subqueries_with_modality.json'
@@ -109,7 +111,53 @@ def compare_subqueries(subqueries_file, subqueries_with_modality_file):
     # print(len(subquery_with_modality_content.items()))
     return 
 
+def check_for_subquery_duplicate():
+    content = ""
+    has_duplicate = {}
+    dup = 0
+    updated = 0
+
+    with open(subquery_with_modality_file, 'r') as file:
+        content = json.load(file)
+
+    for qid, q_content in content.items():
+        seen = set()
+        subqueries = q_content.get("subqueries", [])
+        # name_set = set()
+        unique_subqueries = []
+        for subquery in subqueries:
+            subquery_name = subquery.get('subquery', '').lower()
+            if subquery_name not in seen:
+                seen.add(subquery_name)
+                unique_subqueries.append(subquery)
+            else:
+                print(f"found duplicate for {qid}: {subquery}")
+                updated += 1
+        if unique_subqueries is not []:
+            subqueries = unique_subqueries
+        
+        # content[qid]["subqueries"] = subqueries
+                # updated += 1
+        
+        # if len(name_set) != len(subqueries):
+        #     dup += 1
+        #     has_duplicate[qid] = q_content
+
+    # remove duplicate
+
+    # with open(revised_subquery_file, 'w') as file:
+    #     json.dump(content, file, indent = 4)
+    
+
+    
+    # print(f"có {len(has_duplicate)} cases bị duplicate!")
+    # print(has_duplicate)
+    # assert len(name_set) === len(subqueries)
+
+
+
 if __name__ == "__main__":
     # main()
-    # print(check_for_missing_modality(revised_subquery_with_modality_file))
-    compare_subqueries(revised_subquery_file, revised_subquery_with_modality_file)
+    print(check_for_missing_modality(subquery_with_modality_file))
+    # compare_subqueries(revised_subquery_file, revised_subquery_with_modality_file)
+    # check_for_subquery_duplicate()

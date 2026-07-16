@@ -376,22 +376,22 @@ def build_parsed_documents(
             "hierarchy": {},
             "id_sequence": id_sequence,
             "header": {},
-            "text": {},
-            "table": {},
+            "text": text_entries,
+            "table": table_entries,
             "image": {
                 "i_1": {
                     "filename": page_img.name,
                     "caption": {"text": "", "edges": []},
                 }
             },
-            "sentence": text_entries,
+            "sentence": {},
             "proposition": {},
-            "table_segment": table_entries,
+            "table_segment": {},
             "subimage": subimage_entries,
             "id_to_html": {},
         }
         
-        # parsed_doc = transform_text_to_sentence(parsed_doc)
+        parsed_doc = transform_text_to_sentence(parsed_doc)
         # parsed_doc = transform_table_to_table_segment(parsed_doc)
 
         with open(parsed_documents_out_dir / f"{doc_id}.json", "w", encoding="utf-8") as f:
@@ -560,19 +560,19 @@ def main():
     _add_dla_idx()
     crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
 
-    # if not args.skip_caption and crops:
-    #     img_paths = [str(p) for p in crops]
-    #     out_paths = [str(p.with_suffix(".txt")) for p in crops]
-    #     caption_images(
-    #         image_paths=img_paths,
-    #         output_paths=out_paths,
-    #         prompt=SUMMARY_PROMPT,
-    #         max_tokens=args.max_tokens,
-    #         num_gpus=(args.num_gpus or None),
-    #     )
-    #     # merge_subimage_captions(pd_out, crops_out)
-    # elif not crops:
-    #     print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
+    if not args.skip_caption and crops:
+        img_paths = [str(p) for p in crops]
+        out_paths = [str(p.with_suffix(".txt")) for p in crops]
+        caption_images(
+            image_paths=img_paths,
+            output_paths=out_paths,
+            prompt=SUMMARY_PROMPT,
+            max_tokens=args.max_tokens,
+            num_gpus=(args.num_gpus or None),
+        )
+        # merge_subimage_captions(pd_out, crops_out)
+    elif not crops:
+        print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
 
     # _create_subimage_folder(crops_out, subimage_dir)
     # _create_subimage_summaries_folder(crops_out, subimage_summaries_dir)
