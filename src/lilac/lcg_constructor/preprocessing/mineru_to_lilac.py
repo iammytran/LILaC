@@ -239,6 +239,8 @@ def _add_dla_idx():
     return updated_docs  # Trả về list này để hàm khác có thể tái sử dụng nếu cần
 
 def _crop_fname(crops_out_dir, doc_id, img_src, counter, key):
+    # print("in crop_fname")
+    # subimage_dir = Path("artifacts/InfoVQA/image_components_sub/dev")
     crop_fname = f"{doc_id}___{key}_{counter}{Path(img_src).suffix or '.jpg'}"
     target_crop = crops_out_dir / doc_id / crop_fname
     target_crop.parent.mkdir(parents=True, exist_ok=True)
@@ -333,29 +335,31 @@ def build_parsed_documents(
                 target_crop.parent.mkdir(parents=True, exist_ok=True)
                 if not target_crop.exists():
                     shutil.copyfile(src_img, target_crop)
-                # rows = _parse_html_to_table(doc_id, native_text)
+                rows = _parse_html_to_table(doc_id, native_text)
 
-                # table_data = []
-                # c_counter = 1
-                # for row in rows:
-                #     row_data = []
-                #     for cell in row:
-                #         if "<Image" in cell:
-                #             text, img_data = _extract_text_and_image(cell)
-                #             src_img = cl_path.parent / img_data
-                #             row_data.append({
-                #                 "text": text,
-                #                 "image": {"filename": _crop_fname(crops_out_dir, doc_id, src_img, c_counter, 'c')}
-                #             })
-                #             c_counter += 1  # Clean, readable incrementation
-                #         else:
-                #             row_data.append({"text": cell})
-                #     table_data.append(row_data)
+                table_data = []
+                c_counter = 1
+                for row in rows:
+                    row_data = []
+                    for cell in row:
+                        if "<Image" in cell:
+                            text, img_data = _extract_text_and_image(cell)
+                            src_img = cl_path.parent / img_data
+                            row_data.append({
+                                "text": text,
+                                "image": {"filename": _crop_fname(crops_out_dir, doc_id, src_img, c_counter, 'c')}
+                            })
+                            c_counter += 1  # Clean, readable incrementation
+                        else:
+                            row_data.append({"text": cell})
+                    table_data.append(row_data)
 
                 table_entries[cid] = {
                     **common_meta,
                     "text": native_text,
                     "table_caption": block.get('table_caption', ''), 
+                    "rows": len(rows),
+                    "table": table_data,
                     "filename": crop_fname,
                     "edges": [],
                 }
@@ -392,7 +396,7 @@ def build_parsed_documents(
         }
         
         parsed_doc = transform_text_to_sentence(parsed_doc)
-        # parsed_doc = transform_table_to_table_segment(parsed_doc)
+        parsed_doc = transform_table_to_table_segment(parsed_doc)
 
         with open(parsed_documents_out_dir / f"{doc_id}.json", "w", encoding="utf-8") as f:
             json.dump(parsed_doc, f, indent=4, ensure_ascii=False)
@@ -574,8 +578,8 @@ def main():
     elif not crops:
         print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
 
-    # _create_subimage_folder(crops_out, subimage_dir)
-    # _create_subimage_summaries_folder(crops_out, subimage_summaries_dir)
+    _create_subimage_folder(crops_out, subimage_dir)
+    _create_subimage_summaries_folder(crops_out, subimage_summaries_dir)
 
 
 if __name__ == "__main__":
