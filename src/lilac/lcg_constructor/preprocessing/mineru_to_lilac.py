@@ -173,6 +173,7 @@ def _parse_html_to_table(doc_id, html_str):
         return []
 
 def _add_dla_idx():
+    # TODO: Add check if mineru_outputs exists
     mineru_outputs_dir = Path("artifacts/InfoVQA/mineru_outputs/dev")
     middle_file_paths = sorted(mineru_outputs_dir.rglob("*_middle.json"))
     content_list_file_paths = sorted(mineru_outputs_dir.rglob("*_content_list.json"))
@@ -259,6 +260,7 @@ def build_parsed_documents(
 
     # # Create the subset (ignoring keys that might not exist)
     # content_lists = {k: content_lists_full[k] for k in keys_to_keep if k in content_lists_full}
+    # TODO: Add a check if layout_dir exists
     print(f"[adapter/mineru] {len(content_lists)} content_list.json under {layout_dir}")
 
     crops_to_summarize: List[Path] = []
@@ -289,6 +291,8 @@ def build_parsed_documents(
 
         for block in blocks:
             btype = block.get("type", "")
+            # if btype in IMAGE_TYPES:
+            #     print("có image")
             type_counts[btype] = type_counts.get(btype, 0) + 1
             common_meta = {
                 "dla_idx": v if (v := block.get("dla_idx")) is not None else block.get("idx"),
@@ -297,10 +301,13 @@ def build_parsed_documents(
             }
 
             native_text = _block_text(block)
-            if native_text is None:
+            if native_text is None and btype not in IMAGE_TYPES:
                 continue  # unknown block with no text — skip
 
             if btype in IMAGE_TYPES:
+                # print("có image")
+                # print(f"doc_id: {doc_id}")
+                # print(f"block: {block}")
                 sub_type = block.get("sub_type", "")
                 if btype == "chart":
                     native_text = f"A {sub_type} chart: {native_text}"
@@ -326,6 +333,7 @@ def build_parsed_documents(
                 continue
 
             if btype in TABLE_TYPES:
+                # print('có table')
                 src_img = _block_image_path(block, cl_path.parent)
                 if src_img is None:
                     continue  
@@ -532,29 +540,12 @@ def _create_subimage_folder(crops_out_dir, subimage_dir):
         shutil.copy2(img, dest_dir)
     return 
 
-def _create_subimage_summaries_folder(crops_out_dir, parsed_doc_dir, subimage_summaries_dir):
+def _create_subimage_summaries_folder(crops_out_dir, subimage_summaries_dir):
     subimage_summaries_dir.mkdir(parents=True, exist_ok=True)
 
-    parsed_docs = parsed_doc_dir.rglob("*.json")
-    content = ""
-
-    for parsed_doc in parsed_docs:
-        with open(parsed_doc, 'r') as file:
-            content = json.load(file)
-        subimages = content.get("subimage", {})
-
-        for subimg_id, subimg in subimages.items():
-            filename_str = subimg.get('filename')
-            if not filename_str:
-                continue
-
-            subimg_filename = Path(filename_str).stem
-            caption_data = subimg.get('caption', {})
-            subimg_text = caption_data.get('text', '')
-
-            dest_summary_file = subimage_summaries_dir / f"{subimg_filename}.txt"
-            with open(dest_summary_file, 'w', encoding="utf-8") as file:
-                file.write(subimg_text)
+    for text in crops_out_dir.rglob("*.txt"):
+        dest_dir = subimage_summaries_dir / text.name
+        shutil.copy2(text, dest_dir)
     return 
 
 def main():
@@ -579,8 +570,6 @@ def main():
     # merge_subimage_captions(pd_out, crops_out)
     _add_dla_idx()
     crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
-    _create_subimage_folder(crops_out, subimage_dir)
-    _create_subimage_summaries_folder(crops_out, pd_out, subimage_summaries_dir)
 
     if not args.skip_caption and crops:
         img_paths = [str(p) for p in crops]
@@ -595,6 +584,9 @@ def main():
         merge_subimage_captions(pd_out, crops_out)
     elif not crops:
         print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
+
+    _create_subimage_folder(crops_out, subimage_dir)
+    _create_subimage_summaries_folder(crops_out, pd_out, subimage_summaries_dir)
 
 
 if __name__ == "__main__":
