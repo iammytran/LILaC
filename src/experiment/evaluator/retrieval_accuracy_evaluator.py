@@ -48,10 +48,10 @@ class VQABenchmarkRetrievalAccuracyEvaluator(RetrievalAccuracyEvaluator):
         qid_to_retrieved_components = self._retrieval_results.pack_qid_to_component()
         qrels = self._labeled_benchmark.pack_qrels_for_vqa()
     
-        retrieval_accuracy = eval_mrr(qrels, qid_to_retrieved_components, cutoff = 10)
+        retrieval_accuracy = eval_mrr(qrels, qid_to_retrieved_components, cutoff = 9)
         
         self._accuracy_dict = {
-            str(RetrievalMetric.PAGE_RECALL.value): eval_recall(qrels, qid_to_retrieved_components, cutoff = 3),
+            str(RetrievalMetric.PAGE_RECALL.value): eval_recall(qrels, qid_to_retrieved_components, cutoff = 9),
             str(RetrievalMetric.MRR.value): retrieval_accuracy
         }
         

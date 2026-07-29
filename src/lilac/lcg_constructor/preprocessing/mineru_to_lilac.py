@@ -360,7 +360,7 @@ def build_parsed_documents(
                     "table_caption": block.get('table_caption', ''), 
                     "rows": len(rows),
                     "table": table_data,
-                    "filename": crop_fname,
+                    # "filename": crop_fname,
                     "edges": [],
                 }
             else:  # text-like
@@ -380,7 +380,7 @@ def build_parsed_documents(
             "hierarchy": {},
             "id_sequence": id_sequence,
             "header": {},
-            "text": text_entries,
+            "text": {},
             "table": table_entries,
             "image": {
                 "i_1": {
@@ -388,14 +388,14 @@ def build_parsed_documents(
                     "caption": {"text": "", "edges": []},
                 }
             },
-            "sentence": {},
+            "sentence": text_entries,
             "proposition": {},
             "table_segment": {},
             "subimage": subimage_entries,
             "id_to_html": {},
         }
         
-        parsed_doc = transform_text_to_sentence(parsed_doc)
+        # parsed_doc = transform_text_to_sentence(parsed_doc)
         parsed_doc = transform_table_to_table_segment(parsed_doc)
 
         with open(parsed_documents_out_dir / f"{doc_id}.json", "w", encoding="utf-8") as f:
