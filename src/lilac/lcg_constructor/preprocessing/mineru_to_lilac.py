@@ -257,20 +257,21 @@ def main():
 
     crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
 
-    if not args.skip_caption and crops:
-        img_paths = [str(p) for p in crops]
-        out_paths = [str(p.with_suffix(".txt")) for p in crops]
-        caption_images(
-            image_paths=img_paths,
-            output_paths=out_paths,
-            prompt=SUMMARY_PROMPT,
-            max_tokens=args.max_tokens,
-            num_gpus=(args.num_gpus or None),
-        )
-        merge_subimage_captions(pd_out, crops_out)
-        _create_subimage_folder(crops_out, subimage_dir)
-    elif not crops:
-        print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
+    # if not args.skip_caption and crops:
+    #     img_paths = [str(p) for p in crops]
+    #     out_paths = [str(p.with_suffix(".txt")) for p in crops]
+    #     caption_images(
+    #         image_paths=img_paths,
+    #         output_paths=out_paths,
+    #         prompt=SUMMARY_PROMPT,
+    #         max_tokens=args.max_tokens,
+    #         num_gpus=(args.num_gpus or None),
+    #     )
+    #     merge_subimage_captions(pd_out, crops_out)
+    # elif not crops:
+    #     print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
+
+    _create_subimage_folder(crops_out, subimage_dir)
 
 if __name__ == "__main__":
     main()
