@@ -391,9 +391,9 @@ def run_layout_analyzer_path(args, analyzer: str):
     """Run DocLayoutYOLO or MinerU on page images → adapter → parsed_documents."""
     target = args.target_data
     images_dir = f"{REPO_ROOT}/datasets/{target}/image_components/dev"
-    layout_out = f"{REPO_ROOT}/artifacts/{target}/layout_{analyzer}/dev"
+    layout_out = f"{REPO_ROOT}/artifacts/{target}/layout/dev"
     pd_out = f"{REPO_ROOT}/datasets/{target}/parsed_documents/dev"
-    crops_out = f"{REPO_ROOT}/datasets/{target}/image_components_sub"
+    crops_out = f"{REPO_ROOT}/artifacts/{target}/image_components_sub"
 
     if not os.path.isdir(images_dir):
         raise FileNotFoundError(f"Page images not found: {images_dir}")
@@ -407,17 +407,17 @@ def run_layout_analyzer_path(args, analyzer: str):
     adapter_module = ADAPTER_MODULE[analyzer]
 
     # ── Stage A: run analyzer in its own conda env ──────────────────────────
-    print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
-    subprocess.run(
-        [
-            _conda_python(env_name),
-            "-m", analyzer_module,
-            "--input_dir",  images_dir,
-            "--output_dir", layout_out,
-        ],
-        check=True,
-        cwd=REPO_ROOT,
-    )
+    # print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
+    # subprocess.run(
+    #     [
+    #         _conda_python(env_name),
+    #         "-m", analyzer_module,
+    #         "--input_dir",  images_dir,
+    #         "--output_dir", layout_out,
+    #     ],
+    #     check=True,
+    #     cwd=REPO_ROOT,
+    # )
 
     # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
     print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")

@@ -119,7 +119,8 @@ class Table(Component):
         serialized_text = serialized_text.strip()
         serialized_text = re.sub(r'\[SEP\]$', '', serialized_text).strip()
 
-        in_table_image_filepaths.append(self._get_image_abs_path(self.component_obj.get("filename")))
+        if self.component_obj.get("filename") is not None:
+            in_table_image_filepaths.append(self._get_image_abs_path(self.component_obj.get("filename")))
 
         if EmbeddingMode.IMAGE.value not in mode:
             in_table_image_filepaths = []
