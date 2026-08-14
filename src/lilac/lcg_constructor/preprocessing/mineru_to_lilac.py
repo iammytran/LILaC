@@ -173,8 +173,7 @@ def _parse_html_to_table(doc_id, html_str):
         return []
 
 def _add_dla_idx():
-    # TODO: Add check if mineru_outputs exists
-    mineru_outputs_dir = Path("artifacts/InfoVQA/mineru_outputs/dev")
+    mineru_outputs_dir = Path("artifacts/InfoVQA/mineru_outputs_pipeline/dev")
     middle_file_paths = sorted(mineru_outputs_dir.rglob("*_middle.json"))
     content_list_file_paths = sorted(mineru_outputs_dir.rglob("*_content_list.json"))
     

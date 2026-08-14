@@ -15,4 +15,4 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
-CUDA_VISIBLE_DEVICES=0,1 HF_HUB_OFFLINE=1 python3 -m src.lilac.lcg_constructor.step8_embed_mmembed "$@"
+CUDA_VISIBLE_DEVICES=0,1,2,3 HF_HUB_OFFLINE=1 python3 -m src.lilac.lcg_constructor.step8_embed_mmembed "$@"

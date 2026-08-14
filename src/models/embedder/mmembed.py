@@ -253,14 +253,17 @@ class MMEmbed(Embedder):
 
         all_inputs = []
         idx_to_data_id = {}
+        
+        # Đảm bảo tokenizer đã được nạp để tính token count cho Dynamic Length
+        if not hasattr(self, 'tokenizer') or self.tokenizer is None:
+            self.load_tokenizer()
+
         for i, data_obj in enumerate(data):
-            
             data_id = data_obj['id']
             data_txt = data_obj['target']["text"]
             image_paths = data_obj["target"]["images"]
             
             clean_text = data_txt.strip()
-            clean_text = clean_text.replace("<image>", "image")
 
             image = None
             success = False
@@ -273,10 +276,21 @@ class MMEmbed(Embedder):
                 if success:
                     break
 
-            input_obj = {'txt': clean_text}
-            if image is not None: input_obj['img'] = image
+            # Đếm số lượng token để phục vụ tính Dynamic Max Length
+            if hasattr(self, 'tokenizer') and self.tokenizer is not None:
+                token_count = len(self.tokenizer.encode(clean_text, add_special_tokens=False))
+            else:
+                token_count = len(clean_text) // 4
+
+            input_obj = {
+                'txt': clean_text,
+                'token_count': token_count,
+                'has_img': image is not None
+            }
+            if image is not None: 
+                input_obj['img'] = image
+                
             all_inputs.append(input_obj)
-            
             idx_to_data_id[i] = data_id
         
         if start_idx != None:
@@ -293,13 +307,38 @@ class MMEmbed(Embedder):
             iterating = tqdm(range(0, len(all_inputs), batch_size))
         else:
             iterating = range(0, len(all_inputs), batch_size)
+            
         for i in iterating:
             batch_inputs = all_inputs[i : i + batch_size]
+            
+            # =========================================================================
+            # 🎯 TÍNH DYNAMIC MAX LENGTH CHO BATCH HIỆN TẠI
+            # =========================================================================
+            # Lấy độ dài token lớn nhất trong batch này
+            max_tokens_in_batch = max(inp['token_count'] for inp in batch_inputs)
+            
+            # Nếu batch có chứa ảnh, đặt độ dài tối thiểu 256 để chứa Vision Tokens
+            if any(inp['has_img'] for inp in batch_inputs):
+                max_tokens_in_batch = max(max_tokens_in_batch, 256)
+                
+            # dynamic_max_len = max_tokens_in_batch + 16 (buffer), nhưng không vượt trần max_length
+            dynamic_max_len = min(max_tokens_in_batch + 16, max_length)
+
+            # Chuẩn hóa lại batch_inputs sạch (chỉ giữ 'txt' và 'img') truyền vào model
+            model_batch_inputs = []
+            for inp in batch_inputs:
+                item_dict = {'txt': inp['txt']}
+                if 'img' in inp:
+                    item_dict['img'] = inp['img']
+                model_batch_inputs.append(item_dict)
+
             with torch.no_grad():
                 try:
-                    logging.info(f"\n----- Batch từ {i} đến {i + len(batch_inputs)} -----")
-                    logging.info(f"batch_inputs: {batch_inputs}")
-                    outputs = self.model.encode(batch_inputs, instruction = instruction, max_length = max_length)
+                    logging.info(f"\n----- Batch từ {i} đến {i + len(batch_inputs)} | Dynamic Max Length: {dynamic_max_len} (Max limit: {max_length}) -----")
+                    logging.info(f"batch_inputs: {model_batch_inputs}")
+                    
+                    # Truyền dynamic_max_len vào encode()
+                    outputs = self.model.encode(model_batch_inputs, instruction = instruction, max_length = dynamic_max_len)
                     embeddings = outputs['hidden_states']
                 except Exception as batch_error:
                     logging.error(f"[DEBUG] Phát hiện lỗi {batch_error}")
@@ -309,16 +348,15 @@ class MMEmbed(Embedder):
                     backfill_embeddings = []
                     
                     # Duyệt qua từng dòng một trong batch bị lỗi
-                    for sub_idx, single_input in enumerate(batch_inputs):
+                    for sub_idx, single_input in enumerate(model_batch_inputs):
                         try:
-                            # Chạy mô hình cho duy nhất 1 dòng này
-                            # Lưu ý: Truyền [single_input] dưới dạng list có 1 phần tử
-                            single_output = self.model.encode([single_input], instruction=instruction, max_length=max_length)
+                            # Chạy mô hình cho duy nhất 1 dòng này với dynamic_max_len
+                            single_output = self.model.encode([single_input], instruction=instruction, max_length=dynamic_max_len)
                             single_emb = single_output['hidden_states']
                             backfill_embeddings.append(single_emb)
                         except Exception as single_error:
                             # 🎯 ĐÂY CHÍNH LÀ NƠI BẠN TÌM RA THỦ PHẠM!
-                            actual_index = i + sub_idx
+                            actual_index = (start_idx if start_idx is not None else 0) + i + sub_idx
                             logging.info("-" * 60)
                             logging.error(f"🚨 PHÁT HIỆN DÒNG BỊ LỖI tại chỉ mục tổng: {actual_index}")
                             logging.error(f"Nội dung dòng lỗi: {single_input}")
@@ -332,6 +370,14 @@ class MMEmbed(Embedder):
                     
                 embeddings = embeddings.cpu()
                 all_embeddings.append(embeddings)
+
+            # 🧹 Giải phóng RAM của ảnh PIL ngay sau khi batch hoàn thành
+            for inp in batch_inputs:
+                if 'img' in inp and inp['img'] is not None:
+                    try:
+                        inp['img'].close()
+                    except Exception:
+                        pass
 
         all_embeddings = torch.cat(all_embeddings, dim = 0)
         
@@ -347,7 +393,6 @@ class MMEmbed(Embedder):
             json.dump(idx_to_data_id, f, indent = 4)
 
         return all_embeddings
-
 
 
 

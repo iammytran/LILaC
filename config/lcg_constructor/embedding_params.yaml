@@ -43,13 +43,13 @@ embedders:
 
     params_by_type:
       vqa:
-        text:                          {max_length: 256,  batch_size: 32}
-        sentence:                      {max_length: 128,  batch_size: 32}
-        table+image+summary:           {max_length: 256,  batch_size: 32}
-        table_segment+image+summary:   {max_length: 128,  batch_size: 32}
-        image+image+summary:           {max_length: 4096, batch_size: 1}
-        subimage+image+summary:        {max_length: 256,  batch_size: 8}
-        page:                          {max_length: 4096, batch_size: 1}
+        text:                          {max_length: 4096,  batch_size: 4}
+        sentence:                      {max_length: 4096,  batch_size: 8}
+        table+image+summary:           {max_length: 4096,  batch_size: 1}
+        table_segment+image+summary:   {max_length: 4096,  batch_size: 4}
+        image+image+summary:           {max_length: 4096,  batch_size: 1}
+        subimage+image+summary:        {max_length: 4096,  batch_size: 4}
+        page:                          {max_length: 4096,  batch_size: 1}
       multimodalqa:
         text:                          {max_length: 1024, batch_size: 16}
         sentence:                      {max_length: 128,  batch_size: 64}

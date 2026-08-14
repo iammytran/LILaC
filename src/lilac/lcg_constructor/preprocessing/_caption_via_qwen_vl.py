@@ -50,28 +50,39 @@ def _worker(
     """Load Qwen2.5-VL on the assigned GPU, caption each (img, out) one at a time."""
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
     # Imports happen AFTER setting CUDA_VISIBLE_DEVICES so torch sees only this GPU.
+    import gc
+    import torch
     from src.models.mllm.qwen2_5_vl_7b import Qwen2_5_VL
     from tqdm import tqdm
 
     model = Qwen2_5_VL()
     iterator = tqdm(slice_, desc=f"qwen-vl gpu={gpu_id}", disable=not show_progress)
-    for img_path, out_path in iterator:
-        out_p = Path(out_path)
-        if out_p.exists():
-            continue
-        try:
-            obj = {"text": prompt, "images": [str(img_path)]}
-            result = model.infer([obj], batch_size=1, max_tokens=max_tokens)
-            text = (result[0] if result else "").strip()
-            out_p.parent.mkdir(parents=True, exist_ok=True)
-            tmp_path = out_p.with_suffix(out_p.suffix + ".tmp")
-            tmp_path.write_text(text, encoding="utf-8")
-            tmp_path.replace(out_p)
-        except Exception as e:
-            print(f"[gpu{gpu_id}] error on {img_path}: {e}", file=sys.stderr)
-            traceback.print_exc(limit=2)
-            continue
-
+    
+    # Ép PyTorch không lưu Gradient (Tiết kiệm VRAM tối đa)
+    with torch.no_grad():
+        for i, (img_path, out_path) in enumerate(iterator):
+            out_p = Path(out_path)
+            if out_p.exists():
+                continue
+            try:
+                obj = {"text": prompt, "images": [str(img_path)]}
+                result = model.infer([obj], batch_size=1, max_tokens=max_tokens)
+                text = (result[0] if result else "").strip()
+                out_p.parent.mkdir(parents=True, exist_ok=True)
+                tmp_path = out_p.with_suffix(out_p.suffix + ".tmp")
+                tmp_path.write_text(text, encoding="utf-8")
+                tmp_path.replace(out_p)
+            except Exception as e:
+                print(f"[gpu{gpu_id}] error on {img_path}: {e}", file=sys.stderr)
+                traceback.print_exc(limit=2)
+                # Giải phóng VRAM ngay lập tức nếu bức ảnh này bị lỗi/tràn bộ nhớ
+                torch.cuda.empty_cache()
+                continue
+            finally:
+                # Cứ sau 20 ảnh, dọn sạch rác VRAM & RAM đệm 1 lần
+                if i % 20 == 0:
+                    torch.cuda.empty_cache()
+                    gc.collect()
 
 def caption_images(
     image_paths: List[str],
