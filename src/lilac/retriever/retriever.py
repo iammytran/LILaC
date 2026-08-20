@@ -150,7 +150,7 @@ class Retriever:
         Load the questions and subqueries from the JSONL files.
         """
         questions_path                              = os.path.join(self._benchmark_dir, self._metadata_config["dataset_metadata"][self._target_dataset]["filename"])
-        subqueries_path                             = artifact_subpath(self._metadata_config, self._target_dataset, "query_decomposition_dirname", "dev", self._metadata_config["metadata_files"]["revised_subqueries"])
+        subqueries_path                             = artifact_subpath(self._metadata_config, self._target_dataset, "query_decomposition_dirname", "dev", self._metadata_config["metadata_files"]["subqueries"])
 
         emb_dir = artifact_subpath(self._metadata_config, self._target_dataset, "embeddings_dirname", self._target_embedder)
 

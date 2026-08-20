@@ -585,7 +585,7 @@ def main():
         print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
 
     _create_subimage_folder(crops_out, subimage_dir)
-    _create_subimage_summaries_folder(crops_out, pd_out, subimage_summaries_dir)
+    _create_subimage_summaries_folder(crops_out, subimage_summaries_dir)
 
 
 if __name__ == "__main__":
