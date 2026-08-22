@@ -12,6 +12,12 @@ logging.basicConfig(level=logging.INFO,
 output_file = "debug/pickle.json"
 
 pickle_file = "artifacts/InfoVQA/components/graph.pickle"
+
+def custom_serializer(obj):
+    if hasattr(obj, "component_id"):
+        return f"{obj.component_id}"
+    return str(obj)
+
 def main():
     # df = pd.read_pickle("artifacts/InfoVQA/components/graph.pickle")
     # with open(pickle_file, 'rb') as pickle_file:
@@ -22,8 +28,9 @@ def main():
 
     # print(type(G))
     with open(output_file, 'w') as file:
-        json.dump(G.get_inter_document_edges_dict(), file, indent=2)
-    # logging.info(G.get_inter_document_edges_dict())
+        json.dump(G.get_intra_document_edges_dict(), file, indent=2, default=custom_serializer)
+    
+    # logging.info(G.)
     
     # print(f"Đang xử lý đồ thị có: {G.number_of_nodes()} nodes và {G.number_of_edges()} edges.")
     

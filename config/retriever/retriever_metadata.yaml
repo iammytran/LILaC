@@ -57,7 +57,7 @@ dataset_metadata:
   InfoVQA:
     name: InfoVQA
     type: vqa
-    filename: QAs_dev.json
+    filename: QAs_test.json
     qa_schema: vqa_evidence
     document_granularity: page
     needs_dereference: false
