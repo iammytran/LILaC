@@ -31,6 +31,10 @@ import json
 import shutil
 from pathlib import Path
 from typing import Dict, List, Optional
+from bs4 import BeautifulSoup
+import re
+import pandas as pd
+from io import StringIO
 
 from src.lilac.lcg_constructor.preprocessing._caption_via_qwen_vl import caption_images
 
@@ -52,7 +56,8 @@ SUMMARY_PROMPT = (
 def _find_content_lists(layout_dir: Path) -> Dict[str, Path]:
     """Locate every `*_content_list.json` under layout_dir, keyed by doc_id."""
     found: Dict[str, Path] = {}
-    for p in layout_dir.rglob("*_content_list.json"):
+    folders = layout_dir.rglob("*_content_list.json")
+    for p in folders:
         try:
             rel = p.relative_to(layout_dir)
         except ValueError:
@@ -94,7 +99,12 @@ def build_parsed_documents(
     """Build skeleton parsed_documents + image crops. Returns crops needing Qwen-VL summary."""
     parsed_documents_out_dir.mkdir(parents=True, exist_ok=True)
     crops_out_dir.mkdir(parents=True, exist_ok=True)
+
     content_lists = _find_content_lists(layout_dir)
+    # keys_to_keep = ['10183']
+
+    # # # Create the subset (ignoring keys that might not exist)
+    # content_lists = {k: content_lists[k] for k in keys_to_keep if k in content_lists}
     print(f"[adapter/mineru] {len(content_lists)} content_list.json under {layout_dir}")
 
     crops_to_summarize: List[Path] = []
@@ -120,7 +130,7 @@ def build_parsed_documents(
 
         subimage_entries: Dict[str, Dict] = {}
         sentence_entries: Dict[str, Dict] = {}
-        table_segment_entries: Dict[str, Dict] = {}
+        table_entries: Dict[str, Dict] = {}
         id_sequence: List[str] = ["i_1"]
 
         for block in blocks:
@@ -159,11 +169,29 @@ def build_parsed_documents(
             if btype in TABLE_TYPES:
                 t_counter += 1
                 cid = f"i_1_t{t_counter}"
-                table_segment_entries[cid] = {
+                rows = _parse_html_to_table(doc_id, native_text)
+
+                table_data = []
+                for row in rows:
+                    row_data = []
+                    for cell in row:
+                        row_data.append({"text": cell})
+                    table_data.append(row_data)
+
+                table_entries[cid] = {
                     **common_meta,
-                    "text": remove_img_tag_from_html_text(native_text),
+                    "text": native_text,
+                    "table_caption": block.get('table_caption', ''), 
+                    "rows": len(rows),
+                    "table": table_data,
+                    "filename": crop_fname,
                     "edges": [],
                 }
+                # table_entries[cid] = {
+                #     **common_meta,
+                #     "text": _parse_html_to_table(doc_id, native_text),
+                #     "edges": [],
+                # }
             else:  # text-like
                 p_counter += 1
                 cid = f"i_1_p{p_counter}"
@@ -180,7 +208,7 @@ def build_parsed_documents(
             "id_sequence": id_sequence,
             "header": {},
             "text": {},
-            "table": {},
+            "table": table_entries,
             "image": {
                 "i_1": {
                     "filename": page_img.name,
@@ -189,10 +217,13 @@ def build_parsed_documents(
             },
             "sentence": sentence_entries,
             "proposition": {},
-            "table_segment": table_segment_entries,
+            "table_segment": {},
             "subimage": subimage_entries,
             "id_to_html": {},
         }
+
+        parsed_doc = transform_table_to_table_segment(parsed_doc)
+
         with open(parsed_documents_out_dir / f"{doc_id}.json", "w", encoding="utf-8") as f:
             json.dump(parsed_doc, f, indent=4)
 
@@ -200,19 +231,185 @@ def build_parsed_documents(
         print(f"[adapter/mineru] block type counts: {type_counts}")
     return crops_to_summarize
 
+def transform_table_to_table_segment(parsed_doc):
+    table_entries = parsed_doc.get("table", {})
+    table_segment_entries = {}
+
+    for block_id, block_content in table_entries.items():
+        ts_counter = 0
+        table_content = block_content.get('table', [])
+        if len(table_content) == 0:
+            return parsed_doc
+        header = table_content[0]
+        body = table_content[1:]
+        imagename = block_content.get('filename', '')
+        parent_id = f"{block_id}"
+        for row in body:
+            ts_counter += 1
+            table_segment_id = f"{parent_id}_ts{ts_counter}"
+            table_segment_entries[table_segment_id] = {
+                "dla_type": "table",
+                "table": [
+                    header,
+                    row
+                ],
+                # "filename": imagename,
+                "edges": [],
+            }
+
+    parsed_doc["table_segment"] = table_segment_entries
+
+    return parsed_doc
+
 def remove_img_tag_from_html_text(html_data):
-    from bs4 import BeautifulSoup
-    import re
-
-    # html_data = """..."""  # chuỗi text của bạn
-
     # 1. Bỏ thẻ img
     clean_html = re.sub(r"<img[^>]*>", "", html_data)
 
     # 2. Xóa các tiền tố thừa như ID / [SEP] nếu không cần thiết
     clean_html = re.sub(r"^\d+\s*\[SEP\]\s*", "", clean_html)
     return clean_html
+
+def _fix_mineru_sticky_text(text):
+    if not isinstance(text, str):
+        return text
     
+    # 1. Phát hiện chữ thường/số dính liền chữ hoa (ví dụ: eL trong peopleLarger)
+    # Tiến hành chèn dấu chấm và khoảng trắng vào giữa chúng để tách câu rõ ràng
+    cleaned = re.sub(r'([a-z0-9])([A-Z])', r'\1. \2', text)
+    
+    # 2. Xử lý thêm trường hợp dấu đóng ngoặc dính liền chữ (nếu có, ví dụ: 'pickforks)Lawnmowers')
+    cleaned = re.sub(r'(\))([A-Z])', r'\1. \2', cleaned)
+
+    cleaned = re.sub(r'(?<!<Image)(?<!http)(?<!https):([A-Z])', r': \1', cleaned)
+    
+    # 3. Thu gọn các khoảng trắng thừa thành 1 khoảng trắng duy nhất
+    cleaned = re.sub(r'\s+', ' ', cleaned)
+    
+    return cleaned.strip()
+
+def _parse_html_to_table(doc_id, html_str):
+    html_str = remove_img_tag_from_html_text(html_str)
+    soup = BeautifulSoup(html_str, 'html.parser')
+    table = soup.find('table')
+
+    # Trường hợp không tìm thấy thẻ table để tránh crash
+    if not table:
+        return []
+        
+    # 1. DUYỆT QUA TỪNG Ô ĐỂ LÀM SẠCH TEXT TRƯỚC (Giữ nguyên logic custom của bạn)
+    for cell in table.find_all(["td", "th"]):
+        raw_content = _process_cell_preserving_tags(cell)
+        # print(f"before fixe_mineru: {raw_content}")
+        fixed_sticky_text = _fix_mineru_sticky_text(raw_content)
+        
+        # Thay thế nội dung bên trong ô bằng đoạn text đã xử lý sạch
+        cell.string = fixed_sticky_text
+    
+    if not table.get_text(strip=True):
+        rows = table.find_all('tr')
+        if not rows: return []
+        num_cols = len(rows[0].find_all(['td', 'th']))
+        return [["" for _ in range(num_cols)] for _ in range(len(rows))]
+
+    # 2. DÙNG PANDAS ĐỂ PARSE BẢNG ĐÃ ĐƯỢC LÀM SẠCH
+    try:
+        html_io = StringIO(str(table))
+        dfs = pd.read_html(html_io, header=None) 
+        df = dfs[0]
+        
+        # Bước 1: Ép kiểu toàn bộ bảng sang string (ô NaN sẽ tạm thời biến thành chuỗi "nan")
+        df = df.astype(str)
+        
+        # Bước 2: Thay thế chuỗi "nan" thành chuỗi rỗng "" một cách đồng bộ
+        df.replace("nan", "", inplace=True)
+        return df.values.tolist()
+
+    except Exception as e:
+        print(f"Error for doc_id {doc_id}: {e}")
+        return []
+
+def _process_cell_preserving_tags(cell):
+    parts = []
+    # Duyệt qua từng phần tử con bên trong ô <td> theo đúng thứ tự đọc từ trái qua phải
+    for content in cell.contents:
+        if content.name == "img":
+            print(f"found image: {content}")
+            # # Nếu là thẻ img, lấy thuộc tính src và bọc nó lại thành dạng text đại diện
+            # img_src = content.get("src", "")
+            # parts.append(f" <Image: {img_src}> ")
+        else:
+            # print(f"not found image: {content}")
+            # Nếu là text thuần, chỉ cần ép kiểu về chuỗi và clear khoảng trắng thừa
+            text_inside = str(content).strip()
+            if text_inside:
+                parts.append(text_inside)
+                
+    # Gộp lại thành một chuỗi duy nhất của ô đó
+    return "".join(parts).strip()
+    
+def _add_dla_idx():
+    mineru_outputs_dir = Path("artifacts/InfoVQA/mineru_outputs_pipeline/dev")
+    middle_file_paths = sorted(mineru_outputs_dir.rglob("*_middle.json"))
+    content_list_file_paths = sorted(mineru_outputs_dir.rglob("*_content_list.json"))
+    
+    # Tạo list để lưu lại các doc_id thực sự được update trong lần chạy này
+    updated_docs = []
+    skipped_count = 0
+
+    for middle_file_path in middle_file_paths:
+        middle_file_path_name = middle_file_path.stem
+        doc_id = middle_file_path_name.split("_")[0]
+
+        content_list_name = f"{doc_id}_content_list.json"
+        content_list_filepath = next((f for f in content_list_file_paths if f.name == content_list_name), None)
+        
+        if not content_list_filepath:
+            print(f"❌ [Error] content_list file not found for doc_id: {doc_id}")
+            continue
+
+        with open(content_list_filepath, 'r', encoding="utf-8") as file:
+            content_list_content = json.load(file)
+
+        # Kiểm tra xem file đã được xử lý từ trước chưa
+        if content_list_content and 'dla_idx' in content_list_content[0]:
+            # print(f"⏭️ [Skipped] doc_id {doc_id} is already processed.")
+            skipped_count += 1
+            continue
+
+        with open(middle_file_path, 'r', encoding="utf-8") as file:
+            middle_file_content = json.load(file)
+
+        # Get the blocks' dla_idx
+        pdf_info_first = next(iter(middle_file_content.get("pdf_info", [])), {})
+
+        preproc_blocks = pdf_info_first.get("preproc_blocks", [])
+        discarded_blocks = pdf_info_first.get("discarded_blocks", [])
+        all_blocks = preproc_blocks + discarded_blocks
+
+        block_ids = []
+        for block in all_blocks:
+            block_id = block.get("index", -1)
+            block_ids.append(block_id)
+        
+        print(f"block_ids: {block_ids}")
+        # Attach the dla_idx
+        for content_list_block, block_id in zip(content_list_content, block_ids):
+            content_list_block['dla_idx'] = block_id
+
+        # Write to JSON file
+        with open(content_list_filepath, 'w', encoding="utf-8") as file:
+            json.dump(content_list_content, file, indent=4, ensure_ascii=False)
+
+        print(f"✅ [Success] Updated 'dla_idx' for doc_id: {doc_id}")
+        print(f"   - Total blocks processed: {len(block_ids)}")
+        print("-" * 60)
+        
+        # Thêm doc_id vào danh sách cập nhật thành công
+        updated_docs.append(doc_id)
+
+    print(f"[adapter/mineru] adding dla_idx for content_list.json: updated {len(updated_docs)} docs, and skipped {skipped_count} docs")
+            
+    return updated_docs  # Trả về list này để hàm khác có thể tái sử dụng nếu cần
 
 def merge_subimage_captions(parsed_documents_out_dir: Path, crops_out_dir: Path) -> None:
     """Read per-crop .txt sidecars and merge into subimage[*].caption.text."""
@@ -260,6 +457,7 @@ def main():
     pd_out = Path(args.output)
     crops_out = Path(args.crops_out)
 
+    _add_dla_idx()
     crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
 
     if not args.skip_caption and crops:
@@ -278,4 +476,13 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+
+    layout_dir = Path("/Users/mytnguyen/Documents/LILaC/artifacts/InfoVQA/mineru_outputs_pipeline/InfoVQA/mineru_outputs_pipeline/dev")
+    images_dir = Path("datasets/InfoVQA/image_components/dev")
+    pd_out = Path("datasets/InfoVQA/parsed_documents/dev")
+    crops_out = Path("artifacts/InfoVQA/crops_out/dev")
+    subimage_dir = Path("artifacts/InfoVQA/image_components_sub/dev")
+    subimage_summaries_dir = Path("artifacts/InfoVQA/image_summaries_sub/dev")
+
+    crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
