@@ -115,24 +115,30 @@ def filter_test_crops_out(target_corpus):
     test_crops_out_path = Path("artifacts/InfoVQA/crops_out/test")
 
     target_ids = {str(item["corpus-id"]).split(".")[0] for item in target_corpus}
+    count = 0
 
     for folder in dev_crops_out_path.iterdir():
         if folder.name in target_ids:
             dst_dir = test_crops_out_path / folder.name
             shutil.copytree(folder, dst_dir, dirs_exist_ok=True)
-    return
+            count += 1
+
+    return count
 
 def filter_test_mineru_outputs(target_corpus):
     dev_crops_out_path = Path("artifacts/InfoVQA/mineru_outputs_pipeline/InfoVQA/dev")
     test_crops_out_path = Path("artifacts/InfoVQA/mineru_outputs_pipeline/InfoVQA/test")
 
     target_ids = {str(item["corpus-id"]).split(".")[0] for item in target_corpus}
+    count = 0
 
     for folder in dev_crops_out_path.iterdir():
         if folder.name in target_ids:
             dst_dir = test_crops_out_path / folder.name
             shutil.copytree(folder, dst_dir, dirs_exist_ok=True)
-    return
+            count += 1
+        
+    return count
 
 def main():
     return
@@ -144,5 +150,7 @@ if __name__ == "__main__":
     corpus = get_corpus_from_hf()
     test_images = filter_images_from_corpus(corpus)
     print(len(test_images))
-    filter_test_crops_out(corpus)
-    filter_test_mineru_outputs(corpus)
+    count_move_crops_out = filter_test_crops_out(corpus)
+    count_move_mineru_outputs = filter_test_mineru_outputs(corpus)
+    print(f"moved {count_move_crops_out} crops_out folder")
+    print(f"moved {count_move_mineru_outputs} mineru_outputs folder")
