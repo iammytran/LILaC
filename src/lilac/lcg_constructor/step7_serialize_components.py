@@ -77,15 +77,15 @@ class ComponentSerializer:
 
         # parsed_documents: read from artifacts/ if populated, else fall back to datasets/ seed.
         self._parsed_documents_path = parsed_documents_path(config, dataset_name)
-        self._output_documents_path = artifact_subpath(config, dataset_name, "temp_dirname", "dev")
+        self._output_documents_path = artifact_subpath(config, dataset_name, "temp_dirname", "test")
         os.makedirs(self._output_documents_path, exist_ok=True)
         self._serializations_path   = artifact_subpath(config, dataset_name, "embedding_serializations_dirname")
         os.makedirs(self._serializations_path, exist_ok=True)
         # image_components is an input; summaries/sub-images are artifacts.
-        self._images_dir       = input_subpath(config, dataset_name, "image_components_dirname", "dev")
-        self._summaries_dir    = artifact_subpath(config, dataset_name, "image_summaries_dirname", "dev")
-        self._subsummaries_dir = artifact_subpath(config, dataset_name, "image_subsummaries_dirname", "dev")
-        self._subimages_dir    = artifact_subpath(config, dataset_name, "subimage_components_dirname", "dev")
+        self._images_dir       = input_subpath(config, dataset_name, "image_components_dirname", "test")
+        self._summaries_dir    = artifact_subpath(config, dataset_name, "image_summaries_dirname", "test")
+        self._subsummaries_dir = artifact_subpath(config, dataset_name, "image_subsummaries_dirname", "test")
+        self._subimages_dir    = artifact_subpath(config, dataset_name, "subimage_components_dirname", "test")
 
         # Subimage summary convention:
         #   • multimodalqa-type (MMCoQA, MultimodalQA): no per-subimage summary;

@@ -439,6 +439,13 @@ def merge_subimage_captions(parsed_documents_out_dir: Path, crops_out_dir: Path)
                 json.dump(pd, f, indent=4)
     print(f"[adapter/mineru] merged {merged} image captions; {missing} crops still uncaptioned")
 
+def _create_subimage_folder(crops_out_dir, subimage_dir):
+    subimage_dir.mkdir(parents=True, exist_ok=True)
+
+    for img in crops_out_dir.rglob("*.jpg"):
+        dest_dir = subimage_dir / img.name
+        shutil.copy2(img, dest_dir)
+    return 
 
 def main():
     ap = argparse.ArgumentParser()
@@ -456,33 +463,35 @@ def main():
     images_dir = Path(args.images)
     pd_out = Path(args.output)
     crops_out = Path(args.crops_out)
+    subimage_dir = Path("/Users/mytnguyen/Documents/LILaC/artifacts/InfoVQA/image_components_sub/test")
 
     _add_dla_idx()
     crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
 
     if not args.skip_caption and crops:
-        img_paths = [str(p) for p in crops]
-        out_paths = [str(p.with_suffix(".txt")) for p in crops]
-        caption_images(
-            image_paths=img_paths,
-            output_paths=out_paths,
-            prompt=SUMMARY_PROMPT,
-            max_tokens=args.max_tokens,
-            num_gpus=(args.num_gpus or None),
-        )
+        # img_paths = [str(p) for p in crops]
+        # out_paths = [str(p.with_suffix(".txt")) for p in crops]
+        # caption_images(
+        #     image_paths=img_paths,
+        #     output_paths=out_paths,
+        #     prompt=SUMMARY_PROMPT,
+        #     max_tokens=args.max_tokens,
+        #     num_gpus=(args.num_gpus or None),
+        # )
         merge_subimage_captions(pd_out, crops_out)
     elif not crops:
         print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
 
+    _create_subimage_folder(crops_out, subimage_dir)
 
 if __name__ == "__main__":
-    # main()
+    main()
 
-    layout_dir = Path("/Users/mytnguyen/Documents/LILaC/artifacts/InfoVQA/mineru_outputs_pipeline/InfoVQA/mineru_outputs_pipeline/dev")
-    images_dir = Path("datasets/InfoVQA/image_components/dev")
-    pd_out = Path("datasets/InfoVQA/parsed_documents/dev")
-    crops_out = Path("artifacts/InfoVQA/crops_out/dev")
-    subimage_dir = Path("artifacts/InfoVQA/image_components_sub/dev")
-    subimage_summaries_dir = Path("artifacts/InfoVQA/image_summaries_sub/dev")
+    # layout_dir = Path("/Users/mytnguyen/Documents/LILaC/artifacts/InfoVQA/mineru_outputs_pipeline/InfoVQA/mineru_outputs_pipeline/dev")
+    # images_dir = Path("datasets/InfoVQA/image_components/dev")
+    # pd_out = Path("datasets/InfoVQA/parsed_documents/dev")
+    # crops_out = Path("artifacts/InfoVQA/crops_out/dev")
+    # subimage_dir = Path("artifacts/InfoVQA/image_components_sub/dev")
+    # subimage_summaries_dir = Path("artifacts/InfoVQA/image_summaries_sub/dev")
 
-    crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
+    # crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)

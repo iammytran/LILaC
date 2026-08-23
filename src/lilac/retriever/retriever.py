@@ -108,9 +108,9 @@ class Retriever:
         self._benchmark_dir         = dataset_root(self._metadata_config, self._target_dataset)
         self._artifact_dir          = artifact_root(self._metadata_config, self._target_dataset)
         self._parsed_documents_dir  = parsed_documents_path(self._metadata_config, self._target_dataset)
-        self._images_dir            = input_subpath(self._metadata_config,  self._target_dataset, "image_components_dirname", "dev")
-        self._subimages_dir         = artifact_subpath(self._metadata_config, self._target_dataset, "subimage_components_dirname", "dev")
-        self._summaries_dir         = artifact_subpath(self._metadata_config, self._target_dataset, "image_summaries_dirname", "dev")
+        self._images_dir            = input_subpath(self._metadata_config,  self._target_dataset, "image_components_dirname", "test")
+        self._subimages_dir         = artifact_subpath(self._metadata_config, self._target_dataset, "subimage_components_dirname", "test")
+        self._summaries_dir         = artifact_subpath(self._metadata_config, self._target_dataset, "image_summaries_dirname", "test")
         
         self._target_embedder       = self._run_config["embedding_model"]
         
@@ -150,7 +150,7 @@ class Retriever:
         Load the questions and subqueries from the JSONL files.
         """
         questions_path                              = os.path.join(self._benchmark_dir, self._metadata_config["dataset_metadata"][self._target_dataset]["filename"])
-        subqueries_path                             = artifact_subpath(self._metadata_config, self._target_dataset, "query_decomposition_dirname", "dev", self._metadata_config["metadata_files"]["subqueries"])
+        subqueries_path                             = artifact_subpath(self._metadata_config, self._target_dataset, "query_decomposition_dirname", "test", self._metadata_config["metadata_files"]["subqueries"])
 
         emb_dir = artifact_subpath(self._metadata_config, self._target_dataset, "embeddings_dirname", self._target_embedder)
 
