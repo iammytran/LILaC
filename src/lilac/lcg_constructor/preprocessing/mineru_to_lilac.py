@@ -130,7 +130,7 @@ def build_parsed_documents(
 
         subimage_entries: Dict[str, Dict] = {}
         sentence_entries: Dict[str, Dict] = {}
-        table_entries: Dict[str, Dict] = {}
+        table_segment_entries: Dict[str, Dict] = {}
         id_sequence: List[str] = ["i_1"]
 
         for block in blocks:
@@ -169,22 +169,9 @@ def build_parsed_documents(
             if btype in TABLE_TYPES:
                 t_counter += 1
                 cid = f"i_1_t{t_counter}"
-                rows = _parse_html_to_table(doc_id, native_text)
-
-                table_data = []
-                for row in rows:
-                    row_data = []
-                    for cell in row:
-                        row_data.append({"text": cell})
-                    table_data.append(row_data)
-
-                table_entries[cid] = {
+                table_segment_entries[cid] = {
                     **common_meta,
                     "text": native_text,
-                    "table_caption": block.get('table_caption', ''), 
-                    "rows": len(rows),
-                    "table": table_data,
-                    "filename": crop_fname,
                     "edges": [],
                 }
                 # table_entries[cid] = {
@@ -208,7 +195,7 @@ def build_parsed_documents(
             "id_sequence": id_sequence,
             "header": {},
             "text": {},
-            "table": table_entries,
+            "table": {},
             "image": {
                 "i_1": {
                     "filename": page_img.name,
@@ -217,12 +204,12 @@ def build_parsed_documents(
             },
             "sentence": sentence_entries,
             "proposition": {},
-            "table_segment": {},
+            "table_segment": table_segment_entries,
             "subimage": subimage_entries,
             "id_to_html": {},
         }
 
-        parsed_doc = transform_table_to_table_segment(parsed_doc)
+        # parsed_doc = transform_table_to_table_segment(parsed_doc)
 
         with open(parsed_documents_out_dir / f"{doc_id}.json", "w", encoding="utf-8") as f:
             json.dump(parsed_doc, f, indent=4)
