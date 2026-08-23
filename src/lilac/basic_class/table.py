@@ -46,7 +46,10 @@ class Table(Component):
         """
 
         # 1) gather image filepaths as we serialize rows
+        table_filename = self.component_obj["filename"]
+        table_filepath = self._get_image_abs_path(table_filename)
         in_table_image_filepaths: List[str] = []
+        in_table_image_filepaths.append(table_filepath)
 
         # 2) serialize header
         serialized_text = (

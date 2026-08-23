@@ -170,7 +170,7 @@ def build_parsed_documents(
                 t_counter += 1
                 cid = f"i_1_t{t_counter}"
                 rows = _parse_html_to_table(doc_id, native_text)
-
+                crop_fname = f"{doc_id}___t_{t_counter}.jpg"
                 table_data = []
                 for row in rows:
                     row_data = []
