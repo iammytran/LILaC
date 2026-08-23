@@ -76,7 +76,7 @@ class ComponentSerializer:
     def serialize_dataset(self, args, config, dataset_name):
 
         # parsed_documents: read from artifacts/ if populated, else fall back to datasets/ seed.
-        self._parsed_documents_path = parsed_documents_path(config, dataset_name)
+        self._parsed_documents_path = parsed_documents_path(config, dataset_name, "test")
         self._output_documents_path = artifact_subpath(config, dataset_name, "temp_dirname", "test")
         os.makedirs(self._output_documents_path, exist_ok=True)
         self._serializations_path   = artifact_subpath(config, dataset_name, "embedding_serializations_dirname")

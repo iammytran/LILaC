@@ -463,7 +463,7 @@ def main():
     images_dir = Path(args.images)
     pd_out = Path(args.output)
     crops_out = Path(args.crops_out)
-    subimage_dir = Path("/Users/mytnguyen/Documents/LILaC/artifacts/InfoVQA/image_components_sub/test")
+    subimage_dir = Path("artifacts/InfoVQA/image_components_sub/test")
 
     _add_dla_idx()
     crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)

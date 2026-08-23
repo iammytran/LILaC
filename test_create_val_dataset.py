@@ -116,41 +116,64 @@ def filter_test_crops_out(target_corpus):
 
     target_ids = {str(item["corpus-id"]).split(".")[0] for item in target_corpus}
     count = 0
+    moved = []
 
     for folder in dev_crops_out_path.iterdir():
         if folder.name in target_ids:
             dst_dir = test_crops_out_path / folder.name
             shutil.copytree(folder, dst_dir, dirs_exist_ok=True)
             count += 1
+            moved.append(folder.name)
 
-    return count
+    diff_a_b = list(set(target_ids) - set(moved))
+    return count, diff_a_b
 
 def filter_test_mineru_outputs(target_corpus):
-    dev_crops_out_path = Path("artifacts/InfoVQA/mineru_outputs_pipeline/InfoVQA/dev")
-    test_crops_out_path = Path("artifacts/InfoVQA/mineru_outputs_pipeline/InfoVQA/test")
+    dev_mineru_output_path = Path("artifacts/InfoVQA/mineru_outputs_pipeline/dev")
+    test_mineru_output_path = Path("artifacts/InfoVQA/mineru_outputs_pipeline/test")
 
     target_ids = {str(item["corpus-id"]).split(".")[0] for item in target_corpus}
     count = 0
 
-    for folder in dev_crops_out_path.iterdir():
+    for folder in dev_mineru_output_path.iterdir():
         if folder.name in target_ids:
-            dst_dir = test_crops_out_path / folder.name
+            dst_dir = test_mineru_output_path / folder.name
             shutil.copytree(folder, dst_dir, dirs_exist_ok=True)
             count += 1
-        
+
     return count
+
+def filter_test_image_summarization(target_corpus):
+    dev_image_summaries_path = Path("artifacts/InfoVQA/image_summaries/dev")
+    test_image_summaries_path = Path("artifacts/InfoVQA/image_summaries/test")
+
+    target_ids = {str(item["corpus-id"]).split(".")[0] for item in target_corpus}
+
+    copied_txt = []
+    for txt_path in dev_image_summaries_path.iterdir():
+        if txt_path.stem in target_ids:
+            dest_path = test_image_summaries_path / txt_path.name
+
+            # Copy file sang folder đích
+            shutil.copy2(txt_path, dest_path)
+            copied_txt.append(dest_path)
+
+    return copied_txt
 
 def main():
     return
 
 if __name__ == "__main__":
-    # download_visrag_ret_test()
+    download_visrag_ret_test()
     # query_records = get_queries_from_hf()
     # map_query_with_qa_val(query_records)
     corpus = get_corpus_from_hf()
     test_images = filter_images_from_corpus(corpus)
     print(len(test_images))
-    count_move_crops_out = filter_test_crops_out(corpus)
+    count_move_crops_out,diff = filter_test_crops_out(corpus)
     count_move_mineru_outputs = filter_test_mineru_outputs(corpus)
     print(f"moved {count_move_crops_out} crops_out folder")
-    print(f"moved {count_move_mineru_outputs} mineru_outputs folder")
+    # print(f"moved {count_move_mineru_outputs} mineru_outputs folder")
+    # print(diff)
+    copied_summaries = filter_test_image_summarization(corpus)
+    print(f"copied_summaries: {len(copied_summaries)}")

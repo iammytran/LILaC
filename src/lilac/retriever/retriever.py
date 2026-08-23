@@ -107,7 +107,7 @@ class Retriever:
         self._target_dataset        = self._run_config["target_dataset"]
         self._benchmark_dir         = dataset_root(self._metadata_config, self._target_dataset)
         self._artifact_dir          = artifact_root(self._metadata_config, self._target_dataset)
-        self._parsed_documents_dir  = parsed_documents_path(self._metadata_config, self._target_dataset)
+        self._parsed_documents_dir  = parsed_documents_path(self._metadata_config, self._target_dataset, "test")
         self._images_dir            = input_subpath(self._metadata_config,  self._target_dataset, "image_components_dirname", "test")
         self._subimages_dir         = artifact_subpath(self._metadata_config, self._target_dataset, "subimage_components_dirname", "test")
         self._summaries_dir         = artifact_subpath(self._metadata_config, self._target_dataset, "image_summaries_dirname", "test")
