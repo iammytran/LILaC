@@ -35,8 +35,15 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 from io import StringIO
+import cv2
 
 from src.lilac.lcg_constructor.preprocessing._caption_via_qwen_vl import caption_images
+from src.lilac.lcg_constructor.preprocessing.tiling import (
+    build_crowded_layout_tiles,
+    decide_tiling_with_mllm,
+    estimate_subcomponent_count,
+    load_tiling_decisions,
+)
 
 
 TEXT_LIKE_TYPES = {
@@ -90,11 +97,101 @@ def _block_image_path(block: Dict, content_list_dir: Path) -> Optional[Path]:
     return p if p.exists() else None
 
 
+def _write_tile_crops(
+    src_img: Path,
+    target_parent: Path,
+    stem_prefix: str,
+    overlap_ratio: float,
+    max_tiles: int,
+) -> List[Path]:
+    image = cv2.imread(str(src_img))
+    if image is None:
+        raise ValueError(f"[adapter/mineru] cannot read image for tiling: {src_img}")
+    h, w = image.shape[:2]
+    tiles = build_crowded_layout_tiles(
+        width=w,
+        height=h,
+        overlap_ratio=overlap_ratio,
+        max_tiles=max_tiles,
+    )
+    if not tiles:
+        return []
+    target_parent.mkdir(parents=True, exist_ok=True)
+    out_paths: List[Path] = []
+    ext = src_img.suffix or ".jpg"
+    for tile_idx, tile in enumerate(tiles, start=1):
+        crop = image[tile.y1:tile.y2, tile.x1:tile.x2]
+        if crop.size == 0:
+            continue
+        out_path = target_parent / f"{stem_prefix}_tile_{tile_idx}{ext}"
+        if not out_path.exists():
+            cv2.imwrite(str(out_path), crop)
+        out_paths.append(out_path)
+    return out_paths
+
+
+def _prepare_image_crops_before_build(
+    layout_dir: Path,
+    crops_out_dir: Path,
+    adaptive_tiling: bool,
+    tiling_decisions: Dict[str, Dict],
+    tiling_overlap: float,
+    tiling_max_tiles: int,
+) -> Dict[str, Dict[int, List[Path]]]:
+    """
+    Precompute image crops per (doc_id, block_index) before parsed-document building.
+
+    Returns:
+        {
+          "<doc_id>": {
+              <block_index>: [crop_path1, crop_path2, ...]
+          }
+        }
+    """
+    # content_lists = _find_content_lists(layout_dir)
+    image_path = Path("datasets/InfoVQA/image_components/test")
+    image_names = [
+        p.stem for p in sorted(image_path.iterdir()) 
+        if p.is_file()
+    ]
+
+    prepared: Dict[str, Dict[int, List[Path]]] = {}
+
+    for doc_id in image_names.items():
+        should_tile = bool((tiling_decisions.get(doc_id) or {}).get("tile", False)) if adaptive_tiling else False
+        crop_parent = crops_out_dir / doc_id
+        crop_paths: List[Path] = []
+        if should_tile:
+            tile_stem = f"{doc_id}___tiling_"
+            crop_paths = _write_tile_crops(
+                src_img=image_path,
+                target_parent=crop_parent,
+                stem_prefix=tile_stem,
+                overlap_ratio=tiling_overlap,
+                max_tiles=tiling_max_tiles,
+            )
+            if not crop_paths:
+                print(f"[adapter/mineru] tiling produced no crops for {image_path}, fallback to full crop")
+        prepared[doc_id] = crop_paths
+        # if not crop_paths:
+        #     crop_fname = f"{doc_id}___b_{block_index}{src_img.suffix or '.jpg'}"
+        #     target_crop = crop_parent / crop_fname
+        #     target_crop.parent.mkdir(parents=True, exist_ok=True)
+        #     if not target_crop.exists():
+        #         shutil.copyfile(src_img, target_crop)
+        #     crop_paths = [target_crop]
+
+        # per_block[block_index] = crop_paths
+
+    return prepared
+
+
 def build_parsed_documents(
     layout_dir: Path,
     images_dir: Path,
     parsed_documents_out_dir: Path,
     crops_out_dir: Path,
+    prepared_image_crops: Dict[str, Dict[int, List[Path]]],
 ) -> List[Path]:
     """Build skeleton parsed_documents + image crops. Returns crops needing Qwen-VL summary."""
     parsed_documents_out_dir.mkdir(parents=True, exist_ok=True)
@@ -123,7 +220,6 @@ def build_parsed_documents(
         if page_img is None:
             print(f"[adapter/mineru] page image not found for {doc_id}")
             continue
-
         i_counter = 0
         p_counter = 0
         t_counter = 0
@@ -133,7 +229,7 @@ def build_parsed_documents(
         table_entries: Dict[str, Dict] = {}
         id_sequence: List[str] = ["i_1"]
 
-        for block in blocks:
+        for block_index, block in enumerate(blocks):
             btype = block.get("type", "")
             type_counts[btype] = type_counts.get(btype, 0) + 1
             common_meta = {
@@ -143,23 +239,19 @@ def build_parsed_documents(
             }
 
             if btype in IMAGE_TYPES:
-                src_img = _block_image_path(block, cl_path.parent)
-                if src_img is None:
+                block_crops = (prepared_image_crops.get(doc_id) or {}).get(block_index, [])
+                if not block_crops:
                     continue
-                i_counter += 1
-                cid = f"i_1_i{i_counter}"
-                crop_fname = f"{doc_id}___i_{i_counter}{src_img.suffix or '.jpg'}"
-                target_crop = crops_out_dir / doc_id / crop_fname
-                target_crop.parent.mkdir(parents=True, exist_ok=True)
-                if not target_crop.exists():
-                    shutil.copyfile(src_img, target_crop)
-                subimage_entries[cid] = {
-                    **common_meta,
-                    "filename": crop_fname,
-                    "caption": {"text": "", "edges": []},
-                }
-                crops_to_summarize.append(target_crop)
-                id_sequence.append(cid)
+                for block_crop in block_crops:
+                    i_counter += 1
+                    cid = f"i_1_i{i_counter}"
+                    subimage_entries[cid] = {
+                        **common_meta,
+                        "filename": block_crop.name,
+                        "caption": {"text": "", "edges": []},
+                    }
+                    crops_to_summarize.append(block_crop)
+                    id_sequence.append(cid)
                 continue
 
             native_text = _block_text(block)
@@ -412,31 +504,49 @@ def _add_dla_idx():
     return updated_docs  # Trả về list này để hàm khác có thể tái sử dụng nếu cần
 
 def merge_subimage_captions(parsed_documents_out_dir: Path, crops_out_dir: Path) -> None:
-    """Read per-crop .txt sidecars and merge into subimage[*].caption.text."""
+    """Read per-crop .txt sidecars and append into subimage[*].caption.text."""
     files = sorted(parsed_documents_out_dir.glob("*.json"))
     merged, missing = 0, 0
+    
     for pd_path in files:
-        with open(pd_path) as f:
+        with open(pd_path, "r", encoding="utf-8") as f:
             pd = json.load(f)
+            
         doc_id = pd_path.stem
         any_updated = False
+        
         for sid, sv in pd.get("subimage", {}).items():
-            if (sv.get("caption") or {}).get("text"):
-                continue
             crop_fname = sv.get("filename", "")
             if not crop_fname:
                 missing += 1
                 continue
+                
             txt_path = (crops_out_dir / doc_id / crop_fname).with_suffix(".txt")
             if txt_path.exists():
-                sv["caption"]["text"] = txt_path.read_text(encoding="utf-8").strip()
+                sidecar_text = txt_path.read_text(encoding="utf-8").strip()
+                if not sidecar_text:
+                    continue
+
+                if not isinstance(sv.get("caption"), dict):
+                    sv["caption"] = {}
+                
+                existing_text = sv["caption"].get("text", "").strip()
+                
+                # Nếu đã có text thì nối thêm vào (dùng "\n" hoặc " "), nếu chưa có thì gán mới
+                if existing_text:
+                    sv["caption"]["text"] = f"{existing_text}\n{sidecar_text}"
+                else:
+                    sv["caption"]["text"] = sidecar_text
+                    
                 merged += 1
                 any_updated = True
             else:
                 missing += 1
+                
         if any_updated:
             with open(pd_path, "w", encoding="utf-8") as f:
-                json.dump(pd, f, indent=4)
+                json.dump(pd, f, indent=4, ensure_ascii=False)
+                
     print(f"[adapter/mineru] merged {merged} image captions; {missing} crops still uncaptioned")
 
 def _create_subimage_folder(crops_out_dir, subimage_dir):
@@ -446,6 +556,48 @@ def _create_subimage_folder(crops_out_dir, subimage_dir):
         dest_dir = subimage_dir / img.name
         shutil.copy2(img, dest_dir)
     return 
+
+
+def _build_adaptive_tiling_decisions_for_mineru(
+    images_dir: Path,
+    decisions_json: Optional[str],
+    min_subcomponents: int,
+    min_aspect_ratio: float,
+) -> Dict[str, Dict]:
+    if decisions_json:
+        decisions = load_tiling_decisions(decisions_json)
+    else:
+        decisions = {}
+
+    exts = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
+    image_paths = sorted(
+        p for p in images_dir.iterdir()
+        if p.is_file() and p.suffix.lower() in exts
+    )
+    todo = [p for p in image_paths if p.stem not in decisions]
+    if not todo:
+        return decisions
+
+    from src.models.mllm.qwen2_5_vl_7b import Qwen2_5_VL
+
+    qwen = Qwen2_5_VL()
+    for image_path in todo:
+        image = cv2.imread(str(image_path))
+        if image is None:
+            raise ValueError(f"[adapter/mineru] could not read page image for tiling decision: {image_path}")
+        height, width = image.shape[:2]
+        if width == 0:
+            raise ValueError(f"[adapter/mineru] invalid width=0 for {image_path}")
+        decision = decide_tiling_with_mllm(
+            image_path=str(image_path),
+            estimated_subcomponents=estimate_subcomponent_count(image),
+            aspect_ratio=float(height / width),
+            qwen_model=qwen,
+            min_subcomponents_hint=min_subcomponents,
+            min_aspect_ratio_hint=min_aspect_ratio,
+        )
+        decisions[image_path.stem] = decision
+    return decisions
 
 def main():
     ap = argparse.ArgumentParser()
@@ -457,6 +609,14 @@ def main():
     ap.add_argument("--num_gpus", type=int, default=0)
     ap.add_argument("--skip_caption", action="store_true",
                     help="Skip Qwen-VL caption pass on image crops")
+    ap.add_argument("--adaptive_tiling", action="store_true",
+                    help="Enable adaptive tiling for MinerU image blocks.")
+    ap.add_argument("--tiling_decisions_json", default=None,
+                    help="Optional path to precomputed tiling decisions JSON.")
+    ap.add_argument("--tiling_min_subcomponents", type=int, default=18)
+    ap.add_argument("--tiling_min_aspect_ratio", type=float, default=1.6)
+    ap.add_argument("--tiling_overlap", type=float, default=0.12)
+    ap.add_argument("--tiling_max_tiles", type=int, default=6)
     args = ap.parse_args()
 
     layout_dir = Path(args.layout)
@@ -464,9 +624,35 @@ def main():
     pd_out = Path(args.output)
     crops_out = Path(args.crops_out)
     subimage_dir = Path("artifacts/InfoVQA/image_components_sub/test")
+    tiling_decisions: Dict[str, Dict] = {}
 
     _add_dla_idx()
-    crops = build_parsed_documents(layout_dir, images_dir, pd_out, crops_out)
+    if args.adaptive_tiling:
+        tiling_decisions = _build_adaptive_tiling_decisions_for_mineru(
+            images_dir=images_dir,
+            decisions_json=args.tiling_decisions_json,
+            min_subcomponents=args.tiling_min_subcomponents,
+            min_aspect_ratio=args.tiling_min_aspect_ratio,
+        )
+        print(f"[adapter/mineru] adaptive tiling enabled for {len(tiling_decisions)} pages")
+
+    prepared_image_crops = _prepare_image_crops_before_build(
+        layout_dir=layout_dir,
+        crops_out_dir=crops_out,
+        adaptive_tiling=args.adaptive_tiling,
+        tiling_decisions=tiling_decisions,
+        tiling_overlap=args.tiling_overlap,
+        tiling_max_tiles=args.tiling_max_tiles,
+    )
+    print(f"[adapter/mineru] prepared image blocks before build: {len(prepared_image_crops)} docs")
+
+    crops = build_parsed_documents(
+        layout_dir,
+        images_dir,
+        pd_out,
+        crops_out,
+        prepared_image_crops=prepared_image_crops,
+    )
 
     if not args.skip_caption and crops:
         # img_paths = [str(p) for p in crops]

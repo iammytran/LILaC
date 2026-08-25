@@ -35,6 +35,14 @@ from src.utils.utils import (
     read_json_or_jsonl, read_yaml, REPO_ROOT,
     input_subpath, artifact_subpath, ensure_artifact_parsed_documents,
 )
+from src.lilac.lcg_constructor.preprocessing.tiling import (
+    decide_tiling_with_mllm,
+    estimate_subcomponent_count,
+)
+
+from src.lilac.lcg_constructor.preprocessing.mineru_to_lilac import (
+    _prepare_image_crops_before_build
+)
 
 LCG_CONFIG_PATH = f"{REPO_ROOT}/config/lcg_constructor/a.yaml"
 RETRIEVER_METADATA_PATH = f"{REPO_ROOT}/config/retriever/retriever_metadata.yaml"
@@ -91,6 +99,16 @@ def parse_arguments():
     parser.add_argument("--end_idx", type=int, default=0)
     parser.add_argument("--num_gpus", type=int, default=0,
                         help="Cap on parallel GPU workers in caption pass (0 = all visible)")
+    parser.add_argument("--adaptive_tiling", action="store_true",
+                        help="Enable adaptive tiling before detection.")
+    parser.add_argument("--tiling_min_subcomponents", type=int, default=18,
+                        help="Reference crowded-layout subcomponent threshold for tiling decision.")
+    parser.add_argument("--tiling_min_aspect_ratio", type=float, default=1.6,
+                        help="Reference height/width threshold for tiling decision.")
+    parser.add_argument("--tiling_overlap", type=float, default=0.12,
+                        help="Tile overlap ratio for tiled layout execution.")
+    parser.add_argument("--tiling_max_tiles", type=int, default=6,
+                        help="Max number of tiles for tiled layout execution.")
     return parser.parse_args(), lcg_config
 
 
@@ -405,35 +423,123 @@ def run_layout_analyzer_path(args, analyzer: str):
     env_name = ANALYZER_ENV[analyzer]
     analyzer_module = ANALYZER_MODULE[analyzer]
     adapter_module = ADAPTER_MODULE[analyzer]
+    tiling_decisions_path = None
 
-    # ── Stage A: run analyzer in its own conda env ──────────────────────────
-    print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
-    subprocess.run(
-        [
-            _conda_python(env_name),
-            "-m", analyzer_module,
-            "--input_dir",  images_dir,
-            "--output_dir", layout_out,
-        ],
-        check=True,
-        cwd=REPO_ROOT,
-    )
+    if args.adaptive_tiling:
+        tiling_decisions = _build_adaptive_tiling_decisions(
+            images_dir=images_dir,
+            layout_out=layout_out,
+            min_subcomponents=args.tiling_min_subcomponents,
+            min_aspect_ratio=args.tiling_min_aspect_ratio,
+        )
 
-    # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
-    print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")
-    subprocess.run(
-        [
-            sys.executable,
-            "-m", adapter_module,
-            "--layout",    layout_out,
-            "--images",    images_dir,
-            "--output",    pd_out,
-            "--crops_out", crops_out,
-            "--num_gpus",  str(args.num_gpus),
-        ],
-        check=True,
-        cwd=REPO_ROOT,
+    tiling_crops_out = "artifacts/InfoVQA/after_tiling_crops_out"
+    prepared_image_crops = _prepare_image_crops_before_build(
+            layout_dir=layout_out,
+            crops_out_dir=tiling_crops_out,
+            adaptive_tiling=args.adaptive_tiling,
+            tiling_decisions=tiling_decisions,
+            tiling_overlap=args.tiling_overlap,
+            tiling_max_tiles=args.tiling_max_tiles,
+        )
+    print(f"[adapter/mineru] prepared image blocks before build: {len(prepared_image_crops)} docs")
+    # with open(tiling_decisions_path, 'r', ''):
+    #     tiling_decisions.
+    # if tiling_decisions_path.title == "true":
+        # tile images
+        # save tiled_images to same folder 
+
+
+    # # ── Stage A: run analyzer in its own conda env ──────────────────────────
+    # print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
+    # analyzer_cmd = [
+    #     _conda_python(env_name),
+    #     "-m", analyzer_module,
+    #     "--input_dir", images_dir,
+    #     "--output_dir", layout_out,
+    # ]
+    # # if tiling_decisions_path:
+    # #     analyzer_cmd.extend(
+    # #         [
+    # #             "--adaptive_tiling",
+    # #             "--tiling_decisions_json", tiling_decisions_path,
+    # #             "--tile_overlap", str(args.tiling_overlap),
+    # #             "--tile_max_tiles", str(args.tiling_max_tiles),
+    # #         ]
+    # #     )
+    # subprocess.run(analyzer_cmd, check=True, cwd=REPO_ROOT)
+
+    # # gom tất cả tiled_images vào 1 chỗ
+    # # gom tất cả components của tiled_images vào 1 file content_list.json để pass tạo parsed_document
+
+    # # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
+    # print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")
+    # subprocess.run(
+    #     [
+    #         sys.executable,
+    #         "-m", adapter_module,
+    #         "--layout",    layout_out,
+    #         "--images",    images_dir,
+    #         "--output",    pd_out,
+    #         "--crops_out", crops_out,
+    #         "--num_gpus",  str(args.num_gpus),
+    #     ],
+    #     check=True,
+    #     cwd=REPO_ROOT,
+    # )
+
+
+def _build_adaptive_tiling_decisions(
+    images_dir: str,
+    layout_out: str,
+    min_subcomponents: int,
+    min_aspect_ratio: float,
+) -> str:
+    from src.models.mllm.qwen2_5_vl_7b import Qwen2_5_VL
+    import cv2
+
+    decisions_dir = Path(layout_out) / "_adaptive_tiling"
+    decisions_dir.mkdir(parents=True, exist_ok=True)
+    decisions_path = decisions_dir / "decisions.json"
+    if decisions_path.exists():
+        with open(decisions_path) as f:
+            decisions = json.load(f)
+        if not isinstance(decisions, dict):
+            raise ValueError(f"Invalid tiling decisions cache format: {decisions_path}")
+    else:
+        decisions = {}
+
+    exts = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
+    image_paths = sorted(
+        p for p in Path(images_dir).iterdir()
+        if p.is_file() and p.suffix.lower() in exts
     )
+    todo = [p for p in image_paths if p.stem not in decisions]
+    print(f"[step5/adaptive_tiling] decisions: {len(todo)} to infer, {len(decisions)} cached")
+    if not todo:
+        return str(decisions_path)
+
+    qwen = Qwen2_5_VL()
+    for image_path in todo:
+        image = cv2.imread(str(image_path))
+        if image is None:
+            raise ValueError(f"Could not read page image for tiling decision: {image_path}")
+        height, width = image.shape[:2]
+        if width == 0:
+            raise ValueError(f"Invalid image width=0: {image_path}")
+        aspect_ratio = float(height / width)
+        estimated = estimate_subcomponent_count(image)
+        decision = decide_tiling_with_mllm(
+            image_path=str(image_path),
+            estimated_subcomponents=estimated,
+            aspect_ratio=aspect_ratio,
+            qwen_model=qwen,
+            min_subcomponents_hint=min_subcomponents,
+            min_aspect_ratio_hint=min_aspect_ratio,
+        )
+        decisions[image_path.stem] = decision
+
+    return decisions
 
 
 if __name__ == "__main__":
