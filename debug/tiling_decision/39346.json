@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The page is dense and tall, exceeding the height-to-width ratio threshold.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The page is dense and tall, exceeding the height-to-width ratio threshold.\"}",
+  "estimated_subcomponents": 463,
+  "height_to_width_ratio": 4.19238683127572
+}

@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The height-to-width ratio exceeds the threshold.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The height-to-width ratio exceeds the threshold.\"}",
+  "estimated_subcomponents": 404,
+  "height_to_width_ratio": 3.5513513513513515
+}

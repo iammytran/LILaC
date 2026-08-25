@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The height-to-width ratio is 4.4580, which exceeds the threshold of 1.60.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The height-to-width ratio is 4.4580, which exceeds the threshold of 1.60.\"}",
+  "estimated_subcomponents": 96,
+  "height_to_width_ratio": 4.458
+}

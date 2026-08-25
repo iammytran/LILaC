@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The page is tall and dense with information.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The page is tall and dense with information.\"}",
+  "estimated_subcomponents": 124,
+  "height_to_width_ratio": 8.24400871459695
+}

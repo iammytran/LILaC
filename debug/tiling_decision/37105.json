@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The image is tall and dense with information.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The image is tall and dense with information.\"}",
+  "estimated_subcomponents": 208,
+  "height_to_width_ratio": 3.5280289330922243
+}

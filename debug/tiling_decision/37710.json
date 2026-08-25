@@ -1,0 +1,7 @@
+{
+  "tile": false,
+  "reason": "Low estimated subcomponents and height-to-width ratio",
+  "raw_response": "```json\n{\"tile\": false, \"reason\": \"Low estimated subcomponents and height-to-width ratio\"}\n```",
+  "estimated_subcomponents": 236,
+  "height_to_width_ratio": 0.6666666666666666
+}

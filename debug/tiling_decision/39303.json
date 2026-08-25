@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The image contains detailed statistics and maps, indicating a dense and tall layout.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The image contains detailed statistics and maps, indicating a dense and tall layout.\"}",
+  "estimated_subcomponents": 366,
+  "height_to_width_ratio": 2.5244444444444443
+}

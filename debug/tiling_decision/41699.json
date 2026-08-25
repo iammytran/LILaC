@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "High estimated subcomponents and dense/tall layout.",
+  "raw_response": "{\"tile\": true, \"reason\": \"High estimated subcomponents and dense/tall layout.\"}",
+  "estimated_subcomponents": 177,
+  "height_to_width_ratio": 5.757142857142857
+}

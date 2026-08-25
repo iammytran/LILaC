@@ -1,0 +1,7 @@
+{
+  "tile": false,
+  "reason": "Metrics do not meet thresholds.",
+  "raw_response": "{\n  \"tile\": false,\n  \"reason\": \"Metrics do not meet thresholds.\"\n}",
+  "estimated_subcomponents": 100,
+  "height_to_width_ratio": 1.7066666666666668
+}

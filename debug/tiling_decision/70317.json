@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The estimated subcomponents exceed the threshold.",
+  "raw_response": "{\n  \"tile\": true,\n  \"reason\": \"The estimated subcomponents exceed the threshold.\"\n}",
+  "estimated_subcomponents": 163,
+  "height_to_width_ratio": 2.335
+}

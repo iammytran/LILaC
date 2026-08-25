@@ -114,6 +114,7 @@ def _write_tile_crops(
         overlap_ratio=overlap_ratio,
         max_tiles=max_tiles,
     )
+    print(f"tiles: {tiles}")
     if not tiles:
         return []
     target_parent.mkdir(parents=True, exist_ok=True)
@@ -149,20 +150,25 @@ def _prepare_image_crops_before_build(
         }
     """
     # content_lists = _find_content_lists(layout_dir)
-    image_path = Path("datasets/InfoVQA/image_components/test")
+    image_path_dir = Path("datasets/InfoVQA/image_components/test")
     image_names = [
-        p.stem for p in sorted(image_path.iterdir()) 
+        p.stem for p in sorted(image_path_dir.iterdir()) 
         if p.is_file()
     ]
 
     prepared: Dict[str, Dict[int, List[Path]]] = {}
 
-    for doc_id in image_names.items():
-        should_tile = bool((tiling_decisions.get(doc_id) or {}).get("tile", False)) if adaptive_tiling else False
+    for doc_id in image_names:
+        # should_tile = bool((tiling_decisions.get(doc_id) or {}).get("tile", False)) if adaptive_tiling else False
+        should_tile = bool((tiling_decisions.get(doc_id) or {}).get("tile", False))
         crop_parent = crops_out_dir / doc_id
         crop_paths: List[Path] = []
+        print(f"tiling_decisions.get(doc_id): {tiling_decisions.get(doc_id)}")
+        print(f"should_tile: {should_tile}")
         if should_tile:
+            print(f"should_tile = True")
             tile_stem = f"{doc_id}___tiling_"
+            image_path = image_path_dir / f"{doc_id}.jpeg"
             crop_paths = _write_tile_crops(
                 src_img=image_path,
                 target_parent=crop_parent,
@@ -171,7 +177,7 @@ def _prepare_image_crops_before_build(
                 max_tiles=tiling_max_tiles,
             )
             if not crop_paths:
-                print(f"[adapter/mineru] tiling produced no crops for {image_path}, fallback to full crop")
+                print(f"[adapter/mineru] tiling produced no crops for {image_path_dir}, fallback to full crop")
         prepared[doc_id] = crop_paths
         # if not crop_paths:
         #     crop_fname = f"{doc_id}___b_{block_index}{src_img.suffix or '.jpg'}"
@@ -184,6 +190,7 @@ def _prepare_image_crops_before_build(
         # per_block[block_index] = crop_paths
 
     return prepared
+
 
 
 def build_parsed_documents(

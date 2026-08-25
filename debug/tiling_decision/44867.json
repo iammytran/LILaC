@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The page has a high estimated subcomponents count and a tall height-to-width ratio.",
+  "raw_response": "```json\n{\n  \"tile\": true,\n  \"reason\": \"The page has a high estimated subcomponents count and a tall height-to-width ratio.\"\n}\n```",
+  "estimated_subcomponents": 570,
+  "height_to_width_ratio": 4.696808510638298
+}

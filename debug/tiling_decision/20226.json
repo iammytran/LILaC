@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The image is tall and dense with information.",
+  "raw_response": "```json\n{\n  \"tile\": true,\n  \"reason\": \"The image is tall and dense with information.\"\n}\n```",
+  "estimated_subcomponents": 404,
+  "height_to_width_ratio": 4.0
+}

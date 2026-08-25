@@ -30,6 +30,7 @@ import sys
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List
+import shutil
 
 from src.utils.utils import (
     read_json_or_jsonl, read_yaml, REPO_ROOT,
@@ -408,69 +409,82 @@ def _qwen_inject_into_parsed_documents(
 def run_layout_analyzer_path(args, analyzer: str):
     """Run DocLayoutYOLO or MinerU on page images → adapter → parsed_documents."""
     target = args.target_data
-    images_dir = f"{REPO_ROOT}/datasets/{target}/image_components/dev"
-    layout_out = f"{REPO_ROOT}/artifacts/{target}/layout_{analyzer}/dev"
-    pd_out = f"{REPO_ROOT}/datasets/{target}/parsed_documents/dev"
-    crops_out = f"{REPO_ROOT}/datasets/{target}/image_components_sub"
+    images_dir = f"{REPO_ROOT}/datasets/{target}/image_components/test"
+    layout_out = f"{REPO_ROOT}/artifacts/{target}/layout_{analyzer}/after_tiling"
+    pd_out = f"{REPO_ROOT}/artifacts/{target}/parsed_documents/after_tiling"
+    tiling_crops_out = Path(f"{REPO_ROOT}/artifacts/{target}/tiling_crops_out")
+    crops_out = Path(f"{REPO_ROOT}/artifacts/{target}/crops_out")
 
     if not os.path.isdir(images_dir):
         raise FileNotFoundError(f"Page images not found: {images_dir}")
 
     Path(layout_out).mkdir(parents=True, exist_ok=True)
     Path(pd_out).mkdir(parents=True, exist_ok=True)
-    Path(crops_out).mkdir(parents=True, exist_ok=True)
+    Path(tiling_crops_out).mkdir(parents=True, exist_ok=True)
 
     env_name = ANALYZER_ENV[analyzer]
     analyzer_module = ANALYZER_MODULE[analyzer]
     adapter_module = ADAPTER_MODULE[analyzer]
     tiling_decisions_path = None
 
-    if args.adaptive_tiling:
-        tiling_decisions = _build_adaptive_tiling_decisions(
-            images_dir=images_dir,
-            layout_out=layout_out,
-            min_subcomponents=args.tiling_min_subcomponents,
-            min_aspect_ratio=args.tiling_min_aspect_ratio,
-        )
+    # if args.adaptive_tiling:
+    #     tiling_decisions = _build_adaptive_tiling_decisions(
+    #         images_dir=images_dir,
+    #         layout_out=layout_out,
+    #         min_subcomponents=args.tiling_min_subcomponents,
+    #         min_aspect_ratio=args.tiling_min_aspect_ratio,
+    #     )
+    # lấy tiling_decisions từ các file json
+    # tiling_decisions = {}
+    # tiling_decisions_path = "debug/tiling_decision"
+    # for path in Path(tiling_decisions_path).rglob("*.json"):
+    #     image_name = path.stem
+    #     json_content = {}
+    #     with open(path, 'r') as file:
+    #         json_content = json.load(file)
+    #     tiling_decisions[image_name] = json_content
+        
 
-    tiling_crops_out = "artifacts/InfoVQA/after_tiling_crops_out"
-    prepared_image_crops = _prepare_image_crops_before_build(
-            layout_dir=layout_out,
-            crops_out_dir=tiling_crops_out,
-            adaptive_tiling=args.adaptive_tiling,
-            tiling_decisions=tiling_decisions,
-            tiling_overlap=args.tiling_overlap,
-            tiling_max_tiles=args.tiling_max_tiles,
-        )
-    print(f"[adapter/mineru] prepared image blocks before build: {len(prepared_image_crops)} docs")
-    # with open(tiling_decisions_path, 'r', ''):
-    #     tiling_decisions.
-    # if tiling_decisions_path.title == "true":
-        # tile images
-        # save tiled_images to same folder 
+    # # # tiling_crops_out = "artifacts/InfoVQA/after_tiling_crops_out"
+    # prepared_image_crops = _prepare_image_crops_before_build(
+    #         layout_dir=layout_out,
+    #         crops_out_dir=tiling_crops_out,
+    #         adaptive_tiling=args.adaptive_tiling,
+    #         tiling_decisions=tiling_decisions,
+    #         tiling_overlap=args.tiling_overlap,
+    #         tiling_max_tiles=args.tiling_max_tiles,
+    #     )
+    # print(f"[adapter/mineru] prepared image blocks before build: {len(prepared_image_crops)} docs")
+    # print(f"prepared_image_crops: {prepared_image_crops}")
+    # # with open(tiling_decisions_path, 'r', ''):
+    # #     tiling_decisions.
+    # # if tiling_decisions_path.title == "true":
+    #     # tile images
+    #     # save tiled_images to same folder 
 
+    # # move all tiled_images to a folder
+    # tiling_image_components_sub = Path(f"{REPO_ROOT}/artifacts/{target}/tiling_image_components_sub")
+    # tiling_image_components_sub.mkdir(parents=True, exist_ok=True)
+
+    # for img in tiling_crops_out.rglob("*.jpeg"):
+    #     dest_dir = tiling_image_components_sub / img.name
+    #     shutil.copy2(img, dest_dir)
 
     # # ── Stage A: run analyzer in its own conda env ──────────────────────────
     # print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
     # analyzer_cmd = [
-    #     _conda_python(env_name),
+    #     'python',
     #     "-m", analyzer_module,
-    #     "--input_dir", images_dir,
+    #     "--input_dir", str(tiling_image_components_sub),
     #     "--output_dir", layout_out,
     # ]
-    # # if tiling_decisions_path:
-    # #     analyzer_cmd.extend(
-    # #         [
-    # #             "--adaptive_tiling",
-    # #             "--tiling_decisions_json", tiling_decisions_path,
-    # #             "--tile_overlap", str(args.tiling_overlap),
-    # #             "--tile_max_tiles", str(args.tiling_max_tiles),
-    # #         ]
-    # #     )
     # subprocess.run(analyzer_cmd, check=True, cwd=REPO_ROOT)
 
-    # # gom tất cả tiled_images vào 1 chỗ
-    # # gom tất cả components của tiled_images vào 1 file content_list.json để pass tạo parsed_document
+    # # # gom tất cả tiled_images vào 1 chỗ
+    # # # gom tất cả components của tiled_images vào 1 file content_list.json để pass tạo parsed_document
+    after_process_tiling_path = Path("artifacts/InfoVQA/after_process_tiling")
+    dummy = merge_tiling_images(after_process_tiling_path)
+    print(f"dummy: {dummy}")
 
     # # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
     # print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")
@@ -481,13 +495,144 @@ def run_layout_analyzer_path(args, analyzer: str):
     #         "--layout",    layout_out,
     #         "--images",    images_dir,
     #         "--output",    pd_out,
-    #         "--crops_out", crops_out,
+    #         "--tiling_crops_out", tiling_crops_out,
     #         "--num_gpus",  str(args.num_gpus),
     #     ],
     #     check=True,
     #     cwd=REPO_ROOT,
     # )
 
+def get_image_id(tile_image_path: Path) -> str:
+    import re
+    for parent in tile_image_path.parents:
+        match = re.match(r"^(\d+)___tiling__tile_\d+$", parent.name)
+        if match:
+            return match.group(1)
+
+    raise ValueError(
+        f"Cannot find tiling directory in path: {tile_image_path}"
+    )
+
+def merge_tiling_images(after_process_tiling_path):
+    after_tiling_path = Path("artifacts/InfoVQA/layout_mineru/after_tiling")
+    after_process_tiling_path = Path("artifacts/InfoVQA/layout_mineru/after_process_tiling")
+    tiling_folders_grouped = {}
+    # gom các folder tile của cùng hình
+    all_tile_images = list(after_tiling_path.rglob("*.jpg"))
+    print(f"all_tile_images: {len(list(all_tile_images))}")
+    all_content_list_files = list(after_tiling_path.rglob("*_content_list.json"))
+    print(f"all_content_list_files: {len(list(all_content_list_files))}")
+    for tile_image_path in all_tile_images:
+        # print(f"hello")
+        image_name = get_image_id(tile_image_path)
+        after_processed_tiling_dir = after_process_tiling_path / image_name / "images"
+        # print(f"after_processed_tiling_dir: {after_processed_tiling_dir}")
+        after_processed_tiling_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(
+            tile_image_path,
+            after_processed_tiling_dir
+        )
+
+    for content_list_file in all_content_list_files:
+        image_name = get_image_id(content_list_file)
+        after_processed_tiling_dir = after_process_tiling_path / image_name
+        after_processed_tiling_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(
+            content_list_file,
+            after_processed_tiling_dir
+        )
+
+    return tiling_folders_grouped
+
+def merge_tiling_content_list():
+    output_file = (
+        "artifacts/InfoVQA/layout_mineru/unified/11019/content_list.json"
+    )
+    unify_tile_contents(tiles, output_file)
+    return
+
+import copy
+import json
+from pathlib import Path
+
+
+def calculate_iou(box_a, box_b):
+    xA = max(box_a[0], box_b[0])
+    yA = max(box_a[1], box_b[1])
+    xB = min(box_a[2], box_b[2])
+    yB = min(box_a[3], box_b[3])
+
+    interArea = max(0, xB - xA) * max(0, yB - yA)
+    boxAArea = (box_a[2] - box_a[0]) * (box_a[3] - box_a[1])
+    boxBArea = (box_b[2] - box_b[0]) * (box_b[3] - box_b[1])
+
+    return interArea / float(boxAArea + boxBArea - interArea + 1e-6)
+
+
+def unify_tile_contents(tile_configs, output_json_path, iou_threshold=0.4):
+    all_items = []
+
+    # 1. Đọc từng tile và dịch chuyển toạ độ bbox về ảnh gốc
+    for tile in tile_configs:
+        json_path = Path(tile["json_path"])
+        if not json_path.exists():
+        continue
+
+        with open(json_path, "r", encoding="utf-8") as f:
+        items = json.load(f)
+
+        ox = tile.get("offset_x", 0)
+        oy = tile.get("offset_y", 0)
+
+        for item in items:
+        item_copy = copy.deepcopy(item)
+        if "bbox" in item_copy:
+            x1, y1, x2, y2 = item_copy["bbox"]
+            item_copy["bbox"] = [
+                round(x1 + ox),
+                round(y1 + oy),
+                round(x2 + ox),
+                round(y2 + oy),
+            ]
+        all_items.append(item_copy)
+
+    # 2. Khử trùng lặp (Deduplication)
+    unified_list = []
+    for item in all_items:
+        is_duplicate = False
+        for existing in unified_list:
+        if item["type"] == existing["type"]:
+            text_match = (
+                item.get("text")
+                and existing.get("text")
+                and item["text"].strip() == existing["text"].strip()
+            )
+            iou = calculate_iou(item["bbox"], existing["bbox"])
+
+            if text_match or iou > iou_threshold:
+            is_duplicate = True
+            break
+
+        if not is_duplicate:
+        unified_list.append(item)
+
+    # 3. Sắp xếp thứ tự đọc tự nhiên: từ trên xuống dưới, từ trái sang phải
+    unified_list.sort(
+        key=lambda elem: (elem.get("bbox", [0, 0])[1], elem.get("bbox", [0, 0])[0])
+    )
+
+    # 4. Gán dla_index tăng dần từ 0 cho từng component
+    for idx, item in enumerate(unified_list):
+        item["dla_index"] = idx
+
+    # 5. Ghi ra file JSON
+    out_path = Path(output_json_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(unified_list, f, ensure_ascii=False, indent=4)
+
+    return unified_list
 
 def _build_adaptive_tiling_decisions(
     images_dir: str,

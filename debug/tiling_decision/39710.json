@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The image has a tall and narrow layout with detailed statistics.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The image has a tall and narrow layout with detailed statistics.\"}",
+  "estimated_subcomponents": 245,
+  "height_to_width_ratio": 3.056923076923077
+}

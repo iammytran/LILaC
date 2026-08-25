@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Sequence, Tuple
+import os
 
 import cv2
 import numpy as np
@@ -158,13 +159,15 @@ def decide_tiling_with_mllm(
     """Use a multimodal LLM to decide if tiled detection is needed."""
     prompt = (
         "You are deciding if document-page object detection should run with tiling.\n"
-        f"Estimated subcomponents: {estimated_subcomponents}\n"
-        f"Page height_to_width_ratio: {aspect_ratio:.4f}\n"
-        f"Reference crowded threshold: subcomponents >= {min_subcomponents_hint}, "
-        f"ratio >= {min_aspect_ratio_hint:.2f}\n"
+        f"Input metrics:\n"
+        f"Estimated subcomponents: {estimated_subcomponents} (Threshold: >= {min_subcomponents_hint})\n"
+        f"Height-to-width ratio: {aspect_ratio:.4f} (Threshold: >= {min_aspect_ratio_hint:.2f})\n"
+        f"Rule: Set \"tile\": true if EITHER metric meets or exceeds its threshold, or if the page layout is dense/tall.\n"
         "Return ONLY strict JSON:\n"
         '{"tile": true|false, "reason": "<15 words>"}'
     )
+
+    # print(f"prompt: {prompt}")
     outputs = qwen_model.infer(
         [{"text": prompt, "images": [image_path]}],
         batch_size=1,
@@ -181,7 +184,7 @@ def decide_tiling_with_mllm(
 
     tile = bool(data.get("tile", False))
     reason = str(data.get("reason", "")).strip()
-    return {
+    result = {
         "tile": tile,
         "reason": reason,
         "raw_response": raw,
@@ -189,6 +192,14 @@ def decide_tiling_with_mllm(
         "height_to_width_ratio": aspect_ratio,
     }
 
+    image_name = Path(image_path).stem
+    save_path = f"debug/tiling_decision/{image_name}.json"
+
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        with open(save_path, "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+    return result
 
 def _extract_first_json_object(text: str) -> Dict:
     stack: List[str] = []

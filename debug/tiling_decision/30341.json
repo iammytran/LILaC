@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The page is dense and tall.",
+  "raw_response": "```json\n{\n  \"tile\": true,\n  \"reason\": \"The page is dense and tall.\"\n}\n```",
+  "estimated_subcomponents": 511,
+  "height_to_width_ratio": 2.442
+}

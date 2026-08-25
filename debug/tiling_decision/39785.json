@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "High height-to-width ratio and dense content.",
+  "raw_response": "{\"tile\": true, \"reason\": \"High height-to-width ratio and dense content.\"}",
+  "estimated_subcomponents": 113,
+  "height_to_width_ratio": 5.457746478873239
+}
