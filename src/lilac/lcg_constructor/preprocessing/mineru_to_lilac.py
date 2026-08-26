@@ -82,9 +82,13 @@ def _block_text(block: Dict) -> Optional[str]:
     if btype in TABLE_TYPES:
         body = block.get("table_body") or block.get("table") or block.get("md") or ""
         caption = block.get("table_caption") or ""
+        footnote = block.get("table_footnote") or ""
         if isinstance(caption, list):
             caption = " ".join(caption)
-        text = (caption + "\n" + body) if body else caption
+        if isinstance(footnote, list):
+            footnote = " ".join(str(f) for f in footnote)
+        parts = [p.strip() for p in [caption, body, footnote] if p and str(p).strip()]
+        text = "\n".join(parts)
         return text.strip() or None
     return None
 
@@ -198,7 +202,6 @@ def build_parsed_documents(
     images_dir: Path,
     parsed_documents_out_dir: Path,
     crops_out_dir: Path,
-    prepared_image_crops: Dict[str, Dict[int, List[Path]]],
 ) -> List[Path]:
     """Build skeleton parsed_documents + image crops. Returns crops needing Qwen-VL summary."""
     parsed_documents_out_dir.mkdir(parents=True, exist_ok=True)
@@ -227,6 +230,7 @@ def build_parsed_documents(
         if page_img is None:
             print(f"[adapter/mineru] page image not found for {doc_id}")
             continue
+
         i_counter = 0
         p_counter = 0
         t_counter = 0
@@ -236,7 +240,7 @@ def build_parsed_documents(
         table_entries: Dict[str, Dict] = {}
         id_sequence: List[str] = ["i_1"]
 
-        for block_index, block in enumerate(blocks):
+        for block in blocks:
             btype = block.get("type", "")
             type_counts[btype] = type_counts.get(btype, 0) + 1
             common_meta = {
@@ -246,19 +250,23 @@ def build_parsed_documents(
             }
 
             if btype in IMAGE_TYPES:
-                block_crops = (prepared_image_crops.get(doc_id) or {}).get(block_index, [])
-                if not block_crops:
+                src_img = _block_image_path(block, cl_path.parent)
+                if src_img is None:
                     continue
-                for block_crop in block_crops:
-                    i_counter += 1
-                    cid = f"i_1_i{i_counter}"
-                    subimage_entries[cid] = {
-                        **common_meta,
-                        "filename": block_crop.name,
-                        "caption": {"text": "", "edges": []},
-                    }
-                    crops_to_summarize.append(block_crop)
-                    id_sequence.append(cid)
+                i_counter += 1
+                cid = f"i_1_i{i_counter}"
+                crop_fname = f"{doc_id}___i_{i_counter}{src_img.suffix or '.jpg'}"
+                target_crop = crops_out_dir / doc_id / crop_fname
+                target_crop.parent.mkdir(parents=True, exist_ok=True)
+                if not target_crop.exists():
+                    shutil.copyfile(src_img, target_crop)
+                subimage_entries[cid] = {
+                    **common_meta,
+                    "filename": crop_fname,
+                    "caption": {"text": "", "edges": []},
+                }
+                crops_to_summarize.append(target_crop)
+                id_sequence.append(cid)
                 continue
 
             native_text = _block_text(block)
@@ -616,61 +624,61 @@ def main():
     ap.add_argument("--num_gpus", type=int, default=0)
     ap.add_argument("--skip_caption", action="store_true",
                     help="Skip Qwen-VL caption pass on image crops")
-    ap.add_argument("--adaptive_tiling", action="store_true",
-                    help="Enable adaptive tiling for MinerU image blocks.")
-    ap.add_argument("--tiling_decisions_json", default=None,
-                    help="Optional path to precomputed tiling decisions JSON.")
-    ap.add_argument("--tiling_min_subcomponents", type=int, default=18)
-    ap.add_argument("--tiling_min_aspect_ratio", type=float, default=1.6)
-    ap.add_argument("--tiling_overlap", type=float, default=0.12)
-    ap.add_argument("--tiling_max_tiles", type=int, default=6)
+    # ap.add_argument("--adaptive_tiling", action="store_true",
+    #                 help="Enable adaptive tiling for MinerU image blocks.")
+    # ap.add_argument("--tiling_decisions_json", default=None,
+    #                 help="Optional path to precomputed tiling decisions JSON.")
+    # ap.add_argument("--tiling_min_subcomponents", type=int, default=18)
+    # ap.add_argument("--tiling_min_aspect_ratio", type=float, default=1.6)
+    # ap.add_argument("--tiling_overlap", type=float, default=0.12)
+    # ap.add_argument("--tiling_max_tiles", type=int, default=6)
     args = ap.parse_args()
 
     layout_dir = Path(args.layout)
     images_dir = Path(args.images)
     pd_out = Path(args.output)
     crops_out = Path(args.crops_out)
-    subimage_dir = Path("artifacts/InfoVQA/image_components_sub/test")
+    subimage_dir = Path("artifacts/InfoVQA/image_components_sub/after_process_tiling")
     tiling_decisions: Dict[str, Dict] = {}
 
-    _add_dla_idx()
-    if args.adaptive_tiling:
-        tiling_decisions = _build_adaptive_tiling_decisions_for_mineru(
-            images_dir=images_dir,
-            decisions_json=args.tiling_decisions_json,
-            min_subcomponents=args.tiling_min_subcomponents,
-            min_aspect_ratio=args.tiling_min_aspect_ratio,
-        )
-        print(f"[adapter/mineru] adaptive tiling enabled for {len(tiling_decisions)} pages")
+    # _add_dla_idx()
+    # if args.adaptive_tiling:
+    #     tiling_decisions = _build_adaptive_tiling_decisions_for_mineru(
+    #         images_dir=images_dir,
+    #         decisions_json=args.tiling_decisions_json,
+    #         min_subcomponents=args.tiling_min_subcomponents,
+    #         min_aspect_ratio=args.tiling_min_aspect_ratio,
+    #     )
+    #     print(f"[adapter/mineru] adaptive tiling enabled for {len(tiling_decisions)} pages")
 
-    prepared_image_crops = _prepare_image_crops_before_build(
-        layout_dir=layout_dir,
-        crops_out_dir=crops_out,
-        adaptive_tiling=args.adaptive_tiling,
-        tiling_decisions=tiling_decisions,
-        tiling_overlap=args.tiling_overlap,
-        tiling_max_tiles=args.tiling_max_tiles,
-    )
-    print(f"[adapter/mineru] prepared image blocks before build: {len(prepared_image_crops)} docs")
+    # prepared_image_crops = _prepare_image_crops_before_build(
+    #     layout_dir=layout_dir,
+    #     crops_out_dir=crops_out,
+    #     adaptive_tiling=args.adaptive_tiling,
+    #     tiling_decisions=tiling_decisions,
+    #     tiling_overlap=args.tiling_overlap,
+    #     tiling_max_tiles=args.tiling_max_tiles,
+    # )
+    # print(f"[adapter/mineru] prepared image blocks before build: {len(prepared_image_crops)} docs")
 
     crops = build_parsed_documents(
         layout_dir,
         images_dir,
         pd_out,
         crops_out,
-        prepared_image_crops=prepared_image_crops,
+        # prepared_image_crops=prepared_image_crops,
     )
 
     if not args.skip_caption and crops:
-        # img_paths = [str(p) for p in crops]
-        # out_paths = [str(p.with_suffix(".txt")) for p in crops]
-        # caption_images(
-        #     image_paths=img_paths,
-        #     output_paths=out_paths,
-        #     prompt=SUMMARY_PROMPT,
-        #     max_tokens=args.max_tokens,
-        #     num_gpus=(args.num_gpus or None),
-        # )
+        img_paths = [str(p) for p in crops]
+        out_paths = [str(p.with_suffix(".txt")) for p in crops]
+        caption_images(
+            image_paths=img_paths,
+            output_paths=out_paths,
+            prompt=SUMMARY_PROMPT,
+            max_tokens=args.max_tokens,
+            num_gpus=(args.num_gpus or None),
+        )
         merge_subimage_captions(pd_out, crops_out)
     elif not crops:
         print("[adapter/mineru] no image blocks → no Qwen-VL pass needed")
@@ -679,6 +687,24 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # folder_dir = "artifacts/InfoVQA/layout_mineru/after_process_tiling"
+    # all_folders_after_tiling = []
+
+    # for folder in Path(folder_dir).iterdir():
+    #     all_folders_after_tiling.append(folder.stem)
+
+    # image_folder = "datasets/InfoVQA/image_components/test"
+    # images = []
+    # for image in Path(image_folder).iterdir():
+    #     images.append(image.stem)
+
+    # remain = set(all_folders_after_tiling) - set(images)
+
+    # print(remain)
+    
+
+
 
     # layout_dir = Path("/Users/mytnguyen/Documents/LILaC/artifacts/InfoVQA/mineru_outputs_pipeline/InfoVQA/mineru_outputs_pipeline/dev")
     # images_dir = Path("datasets/InfoVQA/image_components/dev")

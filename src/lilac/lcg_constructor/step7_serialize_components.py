@@ -85,7 +85,7 @@ class ComponentSerializer:
         self._images_dir       = input_subpath(config, dataset_name, "image_components_dirname", "test")
         self._summaries_dir    = artifact_subpath(config, dataset_name, "image_summaries_dirname", "test")
         self._subsummaries_dir = artifact_subpath(config, dataset_name, "image_subsummaries_dirname", "test")
-        self._subimages_dir    = artifact_subpath(config, dataset_name, "subimage_components_dirname", "test")
+        self._subimages_dir    = artifact_subpath(config, dataset_name, "subimage_components_dirname", "after_process_tiling")
 
         # Subimage summary convention:
         #   • multimodalqa-type (MMCoQA, MultimodalQA): no per-subimage summary;

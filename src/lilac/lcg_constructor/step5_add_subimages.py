@@ -485,6 +485,7 @@ def run_layout_analyzer_path(args, analyzer: str):
     after_process_tiling_path = Path("artifacts/InfoVQA/layout_mineru/after_process_tiling")
     dummy = merge_tiling_images(after_process_tiling_path)
     merge_tiling_content_list(after_process_tiling_path)
+    move_remaining_mineru_outputs_folders_to_after_tiling()
 
     # # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
     # print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")
@@ -572,12 +573,36 @@ def merge_tiling_images(after_process_tiling_path):
 
     return tiling_folders_grouped
 
+def move_remaining_mineru_outputs_folders_to_after_tiling():
+    dest_dir = "artifacts/InfoVQA/layout_mineru/after_process_tiling"
+    input_dir = "artifacts/InfoVQA/mineru_outputs_pipeline/test"
+    image_dir = "datasets/InfoVQA/image_components/test"
+
+    tiled_images = []
+    # check folders that exist in the dest_dir
+    for folder in Path(dest_dir).iterdir():
+        tiled_images.append(folder.name)
+
+    all_image_names = []
+    # get all images
+    for image in Path(image_dir).iterdir():
+        all_image_names.append(image.stem)
+    
+    not_tiled_images = list(set(all_image_names) - set(tiled_images))
+
+    for image_folder in not_tiled_images:
+        beginning_dir = Path(input_dir) / image_folder
+        dest_dir_folder = Path(dest_dir) / image_folder
+        shutil.copytree(beginning_dir, dest_dir_folder, dirs_exist_ok=True)
+    
+    return
+
 def merge_tiling_content_list(after_process_tiling_path):
     for folder in Path(after_process_tiling_path).iterdir():
         folder_name = folder.name
         each_folder_name_dir = Path(after_process_tiling_path) / folder_name
         all_content_list_files = Path(each_folder_name_dir).rglob("*_content_list.json")
-        output_file = Path(after_process_tiling_path) / folder_name / "unified_content_list.json"
+        output_file = Path(after_process_tiling_path) / folder_name / f"{folder_name}_content_list.json"
         unify_tile_contents(all_content_list_files, output_file)
 
 def unify_tile_contents(json_paths_list, output_json_path):
