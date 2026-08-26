@@ -482,9 +482,9 @@ def run_layout_analyzer_path(args, analyzer: str):
 
     # # # gom tất cả tiled_images vào 1 chỗ
     # # # gom tất cả components của tiled_images vào 1 file content_list.json để pass tạo parsed_document
-    after_process_tiling_path = Path("artifacts/InfoVQA/after_process_tiling")
+    after_process_tiling_path = Path("artifacts/InfoVQA/layout_mineru/after_process_tiling")
     dummy = merge_tiling_images(after_process_tiling_path)
-    print(f"dummy: {dummy}")
+    merge_tiling_content_list(after_process_tiling_path)
 
     # # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
     # print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")
@@ -515,13 +515,14 @@ def get_image_id(tile_image_path: Path) -> str:
 
 def merge_tiling_images(after_process_tiling_path):
     after_tiling_path = Path("artifacts/InfoVQA/layout_mineru/after_tiling")
-    after_process_tiling_path = Path("artifacts/InfoVQA/layout_mineru/after_process_tiling")
+    # after_process_tiling_path = Path("artifacts/InfoVQA/layout_mineru/after_process_tiling")
     tiling_folders_grouped = {}
     # gom các folder tile của cùng hình
     all_tile_images = list(after_tiling_path.rglob("*.jpg"))
-    print(f"all_tile_images: {len(list(all_tile_images))}")
     all_content_list_files = list(after_tiling_path.rglob("*_content_list.json"))
-    print(f"all_content_list_files: {len(list(all_content_list_files))}")
+    all_original_images = list(after_tiling_path.rglob("*_origin.pdf"))
+    all_tile_layout = list(after_tiling_path.rglob("*_layout.pdf"))
+    all_middle_files = list(after_tiling_path.rglob("*_middle.json"))
     for tile_image_path in all_tile_images:
         # print(f"hello")
         image_name = get_image_id(tile_image_path)
@@ -542,94 +543,89 @@ def merge_tiling_images(after_process_tiling_path):
             after_processed_tiling_dir
         )
 
+    for original_image in all_original_images:
+        image_name = get_image_id(original_image)
+        after_processed_tiling_dir = after_process_tiling_path / image_name
+        after_processed_tiling_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(
+            original_image,
+            after_processed_tiling_dir
+        )
+
+    for tile_layout in all_tile_layout:
+        image_name = get_image_id(tile_layout)
+        after_processed_tiling_dir = after_process_tiling_path / image_name
+        after_processed_tiling_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(
+            tile_layout,
+            after_processed_tiling_dir
+        )
+
+    for middle_file in all_middle_files:
+        image_name = get_image_id(middle_file)
+        after_processed_tiling_dir = after_process_tiling_path / image_name
+        after_processed_tiling_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(
+            middle_file,
+            after_processed_tiling_dir
+        )
+
     return tiling_folders_grouped
 
-def merge_tiling_content_list():
-    output_file = (
-        "artifacts/InfoVQA/layout_mineru/unified/11019/content_list.json"
-    )
-    unify_tile_contents(tiles, output_file)
-    return
+def merge_tiling_content_list(after_process_tiling_path):
+    for folder in Path(after_process_tiling_path).iterdir():
+        folder_name = folder.name
+        each_folder_name_dir = Path(after_process_tiling_path) / folder_name
+        all_content_list_files = Path(each_folder_name_dir).rglob("*_content_list.json")
+        output_file = Path(after_process_tiling_path) / folder_name / "unified_content_list.json"
+        unify_tile_contents(all_content_list_files, output_file)
 
-import copy
-import json
-from pathlib import Path
-
-
-def calculate_iou(box_a, box_b):
-    xA = max(box_a[0], box_b[0])
-    yA = max(box_a[1], box_b[1])
-    xB = min(box_a[2], box_b[2])
-    yB = min(box_a[3], box_b[3])
-
-    interArea = max(0, xB - xA) * max(0, yB - yA)
-    boxAArea = (box_a[2] - box_a[0]) * (box_a[3] - box_a[1])
-    boxBArea = (box_b[2] - box_b[0]) * (box_b[3] - box_b[1])
-
-    return interArea / float(boxAArea + boxBArea - interArea + 1e-6)
-
-
-def unify_tile_contents(tile_configs, output_json_path, iou_threshold=0.4):
+def unify_tile_contents(json_paths_list, output_json_path):
+    import copy
+    """json_paths_list: list các đường dẫn file content_list.json của các tile thuộc 1 ảnh."""
     all_items = []
 
-    # 1. Đọc từng tile và dịch chuyển toạ độ bbox về ảnh gốc
-    for tile in tile_configs:
-        json_path = Path(tile["json_path"])
-        if not json_path.exists():
-        continue
+    # 1. Đọc tất cả các file JSON của các tile
+    for json_path in json_paths_list:
+        p = Path(json_path)
+        if not p.exists():
+            continue
 
-        with open(json_path, "r", encoding="utf-8") as f:
-        items = json.load(f)
-
-        ox = tile.get("offset_x", 0)
-        oy = tile.get("offset_y", 0)
+        with open(p, "r", encoding="utf-8") as f:
+            items = json.load(f)
 
         for item in items:
-        item_copy = copy.deepcopy(item)
-        if "bbox" in item_copy:
-            x1, y1, x2, y2 = item_copy["bbox"]
-            item_copy["bbox"] = [
-                round(x1 + ox),
-                round(y1 + oy),
-                round(x2 + ox),
-                round(y2 + oy),
-            ]
-        all_items.append(item_copy)
+            item_copy = copy.deepcopy(item)
+            # Xóa trường bbox nếu có
+            item_copy.pop("bbox", None)
+            all_items.append(item_copy)
 
-    # 2. Khử trùng lặp (Deduplication)
+    # 2. Lọc trùng lặp (Deduplication)
     unified_list = []
+    seen_signatures = set()
+
     for item in all_items:
-        is_duplicate = False
-        for existing in unified_list:
-        if item["type"] == existing["type"]:
-            text_match = (
-                item.get("text")
-                and existing.get("text")
-                and item["text"].strip() == existing["text"].strip()
-            )
-            iou = calculate_iou(item["bbox"], existing["bbox"])
+        # Tạo key định danh để kiểm tra trùng
+        if item.get("type") == "text":
+            sig = ("text", item.get("text", "").strip())
+        elif item.get("type") == "image":
+            sig = ("image", item.get("img_path", ""))
+        else:
+            sig = (item.get("type"), str(item))
 
-            if text_match or iou > iou_threshold:
-            is_duplicate = True
-            break
-
-        if not is_duplicate:
+        # Nếu chưa xuất hiện thì giữ lại
+        if sig not in seen_signatures:
+            seen_signatures.add(sig)
         unified_list.append(item)
 
-    # 3. Sắp xếp thứ tự đọc tự nhiên: từ trên xuống dưới, từ trái sang phải
-    unified_list.sort(
-        key=lambda elem: (elem.get("bbox", [0, 0])[1], elem.get("bbox", [0, 0])[0])
-    )
+    # 3. Gán dla_index từ 0 tăng dần
+    # for idx, item in enumerate(unified_list):
+    #     item["dla_index"] = idx
 
-    # 4. Gán dla_index tăng dần từ 0 cho từng component
-    for idx, item in enumerate(unified_list):
-        item["dla_index"] = idx
-
-    # 5. Ghi ra file JSON
-    out_path = Path(output_json_path)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(out_path, "w", encoding="utf-8") as f:
+    # 4. Ghi ra file JSON kết quả
+    out_p = Path(output_json_path)
+    out_p.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_p, "w", encoding="utf-8") as f:
         json.dump(unified_list, f, ensure_ascii=False, indent=4)
 
     return unified_list

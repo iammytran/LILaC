@@ -1,5 +1,5 @@
 ================================================================================
-QID: 41142.jpeg-2
+QID: 41142.jpeg-2 (do mineru)
 Ground Truth Document ID: 41142
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 70572      | Score: 0.25730 | Node: [['70572.json', 'i_1']]
@@ -13,7 +13,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 20180      | Score: 0.19143 | Node: [['20180.json', 'i_1']]
 
 ================================================================================
-QID: 43600.jpeg-1
+QID: 43600.jpeg-1 ((do mineru))
 Ground Truth Document ID: 43600
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 20160      | Score: 0.37080 | Node: [['20160.json', 'i_1']]
@@ -69,7 +69,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 39310      | Score: 0.31770 | Node: [['39310.json', 'i_1']]
 
 ================================================================================
-QID: 42093.jpeg-1
+QID: 42093.jpeg-1 (do mineru)
 Ground Truth Document ID: 42093
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 42012      | Score: 0.74032 | Node: [['42012.json', 'i_1']]
@@ -97,7 +97,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 41724      | Score: 0.51562 | Node: [['41724.json', 'i_1']]
 
 ================================================================================
-QID: 41587.jpeg-3
+QID: 41587.jpeg-3 (câu hỏi về book + XEM THÊM)
 Ground Truth Document ID: 41587
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 41650      | Score: 0.39276 | Node: [['41650.json', 'i_1']]
@@ -139,7 +139,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 35294      | Score: 0.16201 | Node: [['35294.json', 'i_1']]
 
 ================================================================================
-QID: 35329.jpeg-2
+QID: 35329.jpeg-2 ((do mineru))
 Ground Truth Document ID: 35329
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37197      | Score: 0.44499 | Node: [['37197.json', 'i_1']]
@@ -153,7 +153,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37036      | Score: 0.38006 | Node: [['37036.json', 'i_1']]
 
 ================================================================================
-QID: 37107.jpeg-3
+QID: 37107.jpeg-3 (do mineru extract thiếu thông tin)
 Ground Truth Document ID: 37107
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37190      | Score: 0.91263 | Node: [['37190.json', 'i_1']]
@@ -167,7 +167,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 20153      | Score: 0.75213 | Node: [['20153.json', 'i_1']]
 
 ================================================================================
-QID: 37324.jpeg-1
+QID: 37324.jpeg-1 (XEM THÊM)
 Ground Truth Document ID: 37324
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37083      | Score: 0.55950 | Node: [['37083.json', 'i_1']]
@@ -181,7 +181,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37054      | Score: 0.43463 | Node: [['37054.json', 'i_1']]
 
 ================================================================================
-QID: 36955.jpeg-1
+QID: 36955.jpeg-1 (XEM THÊM + ko có khả năng reasoning)
 Ground Truth Document ID: 36955
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37274      | Score: 0.45158 | Node: [['37274.json', 'i_1']]
@@ -195,7 +195,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 44771      | Score: 0.32359 | Node: [['44771.json', 'i_1']]
 
 ================================================================================
-QID: 36955.jpeg-4
+QID: 36955.jpeg-4 (XEM THÊM + ko có khả năng reasoning)
 Ground Truth Document ID: 36955
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 36993      | Score: 0.76603 | Node: [['36993.json', 'i_1']]
@@ -209,7 +209,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37372      | Score: 0.64995 | Node: [['37372.json', 'i_1']]
 
 ================================================================================
-QID: 44957.jpeg-1
+QID: 44957.jpeg-1 (do mineru)
 Ground Truth Document ID: 44957
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 32937      | Score: 0.28322 | Node: [['32937.json', 'i_1']]
@@ -223,7 +223,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 20131      | Score: 0.13081 | Node: [['20131.json', 'i_1']]
 
 ================================================================================
-QID: 44957.jpeg-2
+QID: 44957.jpeg-2 (do mineru)
 Ground Truth Document ID: 44957
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 31539      | Score: 0.17371 | Node: [['31539.json', 'i_1']]
@@ -237,7 +237,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 10829      | Score: 0.11610 | Node: [['10829.json', 'i_1']]
 
 ================================================================================
-QID: 44957.jpeg-5
+QID: 44957.jpeg-5 ((do mineru))
 Ground Truth Document ID: 44957
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37170      | Score: 0.19418 | Node: [['37170.json', 'i_1']]
@@ -251,7 +251,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 40826      | Score: 0.12109 | Node: [['40826.json', 'i_1']]
 
 ================================================================================
-QID: 44957.jpeg-7
+QID: 44957.jpeg-7 ((do mineru))
 Ground Truth Document ID: 44957
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 20197      | Score: 0.17885 | Node: [['20197.json', 'i_1']]
@@ -265,7 +265,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 43982      | Score: 0.13428 | Node: [['43982.json', 'i_1']]
 
 ================================================================================
-QID: 37105.jpeg-1
+QID: 37105.jpeg-1 ((do mineru))
 Ground Truth Document ID: 37105
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 36966      | Score: 0.43913 | Node: [['36966.json', 'i_1']]
@@ -279,7 +279,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 20098      | Score: 0.31080 | Node: [['20098.json', 'i_1']]
 
 ================================================================================
-QID: 37105.jpeg-2
+QID: 37105.jpeg-2 ((do mineru))
 Ground Truth Document ID: 37105
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 36966      | Score: 0.76596 | Node: [['36966.json', 'i_1']]
@@ -293,7 +293,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37388      | Score: 0.54115 | Node: [['37388.json', 'i_1']]
 
 ================================================================================
-QID: 37105.jpeg-4
+QID: 37105.jpeg-4  ((do mineru))
 Ground Truth Document ID: 37105
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37083      | Score: 0.44642 | Node: [['37083.json', 'i_1']]
@@ -307,7 +307,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 36993      | Score: 0.30311 | Node: [['36993.json', 'i_1']]
 
 ================================================================================
-QID: 37710.jpeg-1
+QID: 37710.jpeg-1  ((do mineru))
 Ground Truth Document ID: 37710
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 44465      | Score: 0.27017 | Node: [['44465.json', 'i_1']]
@@ -377,7 +377,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 44683      | Score: 0.25562 | Node: [['44683.json', 'i_1']]
 
 ================================================================================
-QID: 40649.jpeg-10
+QID: 40649.jpeg-10 (ko có khả năng reasoning)
 Ground Truth Document ID: 40649
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37036      | Score: 0.59284 | Node: [['37036.json', 'i_1']]
@@ -391,7 +391,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37150      | Score: 0.45853 | Node: [['37150.json', 'i_1']]
 
 ================================================================================
-QID: 37394.jpeg-5
+QID: 37394.jpeg-5 (ko có khả năng reasoning + XEM THÊM)
 Ground Truth Document ID: 37394
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 36966      | Score: 0.37959 | Node: [['36966.json', 'i_1']]
@@ -475,7 +475,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37054      | Score: 0.79965 | Node: [['37054.json', 'i_1']]
 
 ================================================================================
-QID: 39814.jpeg-2
+QID: 39814.jpeg-2 (do mineru extract thiếu component)
 Ground Truth Document ID: 39814
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 39458      | Score: 0.38742 | Node: [['39458.json', 'i_1']]
@@ -503,7 +503,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 39468      | Score: 0.22994 | Node: [['39468.json', 'i_1']]
 
 ================================================================================
-QID: 39792.jpeg-1
+QID: 39792.jpeg-1 (do mineru extract thiếu component)
 Ground Truth Document ID: 39792
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 41650      | Score: 0.33961 | Node: [['41650.json', 'i_1']]
@@ -517,7 +517,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 36966      | Score: 0.23859 | Node: [['36966.json', 'i_1']]
 
 ================================================================================
-QID: 39634.jpeg-2
+QID: 39634.jpeg-2 (mineru extract okay, nhưng nó ko thể reason)
 Ground Truth Document ID: 39634
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 39303      | Score: 0.48821 | Node: [['39303.json', 'i_1']]
@@ -531,7 +531,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 39310      | Score: 0.34255 | Node: [['39310.json', 'i_1']]
 
 ================================================================================
-QID: 39352.jpeg-3
+QID: 39352.jpeg-3 (do mineru extract thiếu component)
 Ground Truth Document ID: 39352
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 39619      | Score: 0.38304 | Node: [['39619.json', 'i_1']]
@@ -545,7 +545,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 39268      | Score: 0.32020 | Node: [['39268.json', 'i_1']]
 
 ================================================================================
-QID: 30139.jpeg-4
+QID: 30139.jpeg-4 (do mineru extract 1 component bự hơn những components khác)
 Ground Truth Document ID: 30139
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37197      | Score: 0.31735 | Node: [['37197.json', 'i_1']]
@@ -573,7 +573,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37138      | Score: 0.24734 | Node: [['37138.json', 'i_1']]
 
 ================================================================================
-QID: 39807.jpeg-7
+QID: 39807.jpeg-7 (mineru extract thiếu chữ)
 Ground Truth Document ID: 39807
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 39766      | Score: 0.35385 | Node: [['39766.json', 'i_1']]
@@ -587,7 +587,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 44536      | Score: 0.22513 | Node: [['44536.json', 'i_1']]
 
 ================================================================================
-QID: 40023.jpeg-4
+QID: 40023.jpeg-4 (do mineru extract thiếu component)
 Ground Truth Document ID: 40023
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 39983      | Score: 0.18156 | Node: [['39983.json', 'i_1']]
@@ -657,7 +657,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 35294      | Score: 0.17216 | Node: [['35294.json', 'i_1']]
 
 ================================================================================
-QID: 10087.jpeg-3
+QID: 10087.jpeg-3 (do mineru extract thiếu chữ)
 Ground Truth Document ID: 10087
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 20313      | Score: 1.10286 | Node: [['20313.json', 'i_1']]
@@ -671,7 +671,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37001      | Score: 0.89787 | Node: [['37001.json', 'i_1']]
 
 ================================================================================
-QID: 31257.jpeg-7
+QID: 31257.jpeg-7 (do mineru extract thiếu component)
 Ground Truth Document ID: 31257
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 40434      | Score: 0.30669 | Node: [['40434.json', 'i_1']]
@@ -699,7 +699,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 39845      | Score: 0.40531 | Node: [['39845.json', 'i_1']]
 
 ================================================================================
-QID: 20354.jpeg-8
+QID: 20354.jpeg-8 (thiếu reasoning + maybe thêm image_footnote vào image desc)
 Ground Truth Document ID: 20354
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37302      | Score: 0.44706 | Node: [['37302.json', 'i_1']]
@@ -713,7 +713,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 44771      | Score: 0.36706 | Node: [['44771.json', 'i_1']]
 
 ================================================================================
-QID: 20153.jpeg-1
+QID: 20153.jpeg-1 (thiếu reasoning)
 Ground Truth Document ID: 20153
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37083      | Score: 0.49755 | Node: [['37083.json', 'i_1']]
@@ -727,7 +727,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37197      | Score: 0.42278 | Node: [['37197.json', 'i_1']]
 
 ================================================================================
-QID: 20249.jpeg-2
+QID: 20249.jpeg-2 (mineru extract thiếu components)
 Ground Truth Document ID: 20249
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 20241      | Score: 0.41061 | Node: [['20241.json', 'i_1']]
@@ -783,7 +783,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 20241      | Score: 0.26905 | Node: [['20241.json', 'i_1']]
 
 ================================================================================
-QID: 20132.jpeg-1
+QID: 20132.jpeg-1 (mineru extract thiếu components)
 Ground Truth Document ID: 20132
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 39268      | Score: 0.29111 | Node: [['39268.json', 'i_1']]
@@ -839,7 +839,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 10999      | Score: 0.32744 | Node: [['10999.json', 'i_1']]
 
 ================================================================================
-QID: 20323.jpeg-1
+QID: 20323.jpeg-1 (do mineru extract thiếu component - nhìn vào layout là hiểu, ko đếm header, footer)
 Ground Truth Document ID: 20323
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 32567      | Score: 1.00258 | Node: [['32567.json', 'i_1']]
@@ -853,7 +853,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 30341      | Score: 0.59253 | Node: [['30341.json', 'i_1']]
 
 ================================================================================
-QID: 20255.jpeg-2
+QID: 20255.jpeg-2 (do mineru extract thiếu component)
 Ground Truth Document ID: 20255
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 20294      | Score: 0.50719 | Node: [['20294.json', 'i_1']]
@@ -867,7 +867,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 44683      | Score: 0.31555 | Node: [['44683.json', 'i_1']]
 
 ================================================================================
-QID: 20093.jpeg-1
+QID: 20093.jpeg-1 (do mineru extract thiếu component)
 Ground Truth Document ID: 20093
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 20186      | Score: 0.54804 | Node: [['20186.json', 'i_1']]
@@ -895,7 +895,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37103      | Score: 0.28053 | Node: [['37103.json', 'i_1']]
 
 ================================================================================
-QID: 20018.jpeg-2
+QID: 20018.jpeg-2 (cannot reasoning?)
 Ground Truth Document ID: 20018
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 44667      | Score: 0.58678 | Node: [['44667.json', 'i_1']]
@@ -909,7 +909,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 44728      | Score: 0.52182 | Node: [['44728.json', 'i_1']]
 
 ================================================================================
-QID: 20018.jpeg-3
+QID: 20018.jpeg-3 
 Ground Truth Document ID: 20018
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 44465      | Score: 0.34022 | Node: [['44465.json', 'i_1']]
@@ -951,7 +951,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 10765      | Score: 0.24122 | Node: [['10765.json', 'i_1']]
 
 ================================================================================
-QID: 20051.jpeg-1
+QID: 20051.jpeg-1 (mineru extract thiếu components)
 Ground Truth Document ID: 20051
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 41109      | Score: 0.31059 | Node: [['41109.json', 'i_1']]
@@ -965,7 +965,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 20067      | Score: 0.20572 | Node: [['20067.json', 'i_1']]
 
 ================================================================================
-QID: 20369.jpeg-1
+QID: 20369.jpeg-1 (mineru extract thiếu components)
 Ground Truth Document ID: 20369
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 35294      | Score: 0.24471 | Node: [['35294.json', 'i_1']]
@@ -993,7 +993,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 35087      | Score: 0.41671 | Node: [['35087.json', 'i_1']]
 
 ================================================================================
-QID: 10935.jpeg-1
+QID: 10935.jpeg-1 (mineru extract components mà ko hợp lý, cắt ko đúng nên tìm ko đúng)
 Ground Truth Document ID: 10935
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 70151      | Score: 0.38272 | Node: [['70151.json', 'i_1']]
@@ -1035,7 +1035,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 10960      | Score: 0.28156 | Node: [['10960.json', 'i_1']]
 
 ================================================================================
-QID: 20038.jpeg-2
+QID: 20038.jpeg-2 (mineru extract thiếu components)
 Ground Truth Document ID: 20038
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 41575      | Score: 0.15653 | Node: [['41575.json', 'i_1']]
@@ -1049,7 +1049,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 44787      | Score: 0.10906 | Node: [['44787.json', 'i_1']]
 
 ================================================================================
-QID: 35294.jpeg-5
+QID: 35294.jpeg-5 (thiếu reasoning)
 Ground Truth Document ID: 35294
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 20232      | Score: 0.27027 | Node: [['20232.json', 'i_1']]
@@ -1063,7 +1063,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37320      | Score: 0.20063 | Node: [['37320.json', 'i_1']]
 
 ================================================================================
-QID: 70405.jpeg-1
+QID: 70405.jpeg-1 (mineru extract ra thiếu số quan trọng, còn in ra tiếng trung nữa)
 Ground Truth Document ID: 70405
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 10796      | Score: 0.62982 | Node: [['10796.json', 'i_1']]
@@ -1119,7 +1119,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 10935      | Score: 0.32722 | Node: [['10935.json', 'i_1']]
 
 ================================================================================
-QID: 35230.jpeg-3
+QID: 35230.jpeg-3 (mineru extract thiếu component)
 Ground Truth Document ID: 35230
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 40828      | Score: 0.25067 | Node: [['40828.json', 'i_1']]
@@ -1133,7 +1133,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 20226      | Score: 0.15347 | Node: [['20226.json', 'i_1']]
 
 ================================================================================
-QID: 11410.jpeg-1
+QID: 11410.jpeg-1 (qwen-vl extract thiếu cho sub-image)
 Ground Truth Document ID: 11410
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 10765      | Score: 0.76529 | Node: [['10765.json', 'i_1']]
@@ -1147,7 +1147,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 39754      | Score: 0.48651 | Node: [['39754.json', 'i_1']]
 
 ================================================================================
-QID: 40958.jpeg-2
+QID: 40958.jpeg-2 (mineru extract thiếu component)
 Ground Truth Document ID: 40958
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 35010      | Score: 0.59950 | Node: [['35010.json', 'i_1']]
@@ -1175,7 +1175,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 36961      | Score: 0.18177 | Node: [['36961.json', 'i_1']]
 
 ================================================================================
-QID: 44472.jpeg-5
+QID: 44472.jpeg-5 (mineru extract thiếu component)
 Ground Truth Document ID: 44472
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 44667      | Score: 0.30297 | Node: [['44667.json', 'i_1']]
@@ -1189,7 +1189,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 35294      | Score: 0.22081 | Node: [['35294.json', 'i_1']]
 
 ================================================================================
-QID: 70024.jpeg-1
+QID: 70024.jpeg-1 (cần thêm footnote vào sub-image, vì nó có thông tin)
 Ground Truth Document ID: 70024
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 11089      | Score: 0.40283 | Node: [['11089.json', 'i_1']]
@@ -1203,7 +1203,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 10541      | Score: 0.35006 | Node: [['10541.json', 'i_1']]
 
 ================================================================================
-QID: 70010.jpeg-1
+QID: 70010.jpeg-1 (ko thể reasoning)
 Ground Truth Document ID: 70010
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 70035      | Score: 0.45228 | Node: [['70035.json', 'i_1']]
@@ -1217,7 +1217,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 70151      | Score: 0.32958 | Node: [['70151.json', 'i_1']]
 
 ================================================================================
-QID: 44551.jpeg-1
+QID: 44551.jpeg-1 (do mineru extract thiếu component)
 Ground Truth Document ID: 44551
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 44734      | Score: 0.43821 | Node: [['44734.json', 'i_1']]
@@ -1287,7 +1287,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 32369      | Score: 0.27633 | Node: [['32369.json', 'i_1']]
 
 ================================================================================
-QID: 44672.jpeg-3
+QID: 44672.jpeg-3 (ko thể lấy đúng thứ và reasoning là 4 năm tổ chức olympics 1 lần)
 Ground Truth Document ID: 44672
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 35380      | Score: 0.41039 | Node: [['35380.json', 'i_1']]
@@ -1301,7 +1301,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 39680      | Score: 0.29082 | Node: [['39680.json', 'i_1']]
 
 ================================================================================
-QID: 44371.jpeg-8
+QID: 44371.jpeg-8 (thêm footnote cho sub-image)
 Ground Truth Document ID: 44371
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 44840      | Score: 0.28631 | Node: [['44840.json', 'i_1']]
@@ -1315,7 +1315,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 10765      | Score: 0.23526 | Node: [['10765.json', 'i_1']]
 
 ================================================================================
-QID: 44604.jpeg-1
+QID: 44604.jpeg-1 (do mineru extract component thiếu)
 Ground Truth Document ID: 44604
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 44727      | Score: 0.29055 | Node: [['44727.json', 'i_1']]
@@ -1371,7 +1371,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 44465      | Score: 0.27173 | Node: [['44465.json', 'i_1']]
 
 ================================================================================
-QID: 37100.jpeg-2
+QID: 37100.jpeg-2 (mineru extract thiếu chữ)
 Ground Truth Document ID: 37100
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37036      | Score: 0.62901 | Node: [['37036.json', 'i_1']]
@@ -1385,7 +1385,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37083      | Score: 0.46851 | Node: [['37083.json', 'i_1']]
 
 ================================================================================
-QID: 36989.jpeg-4
+QID: 36989.jpeg-4 (mineru extract thiếu components)
 Ground Truth Document ID: 36989
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37257      | Score: 0.42701 | Node: [['37257.json', 'i_1']]
@@ -1399,7 +1399,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37241      | Score: 0.36466 | Node: [['37241.json', 'i_1']]
 
 ================================================================================
-QID: 37308.jpeg-3
+QID: 37308.jpeg-3 (qwen-vl chỉ extract số trên hình, mà ko diễn tả số đó ý nghĩa gì, nên ko hiểu)
 Ground Truth Document ID: 37308
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37029      | Score: 0.40730 | Node: [['37029.json', 'i_1']]
@@ -1427,7 +1427,7 @@ Top-9 Retrieved Units:
   Rank  9 | Doc ID: 37321      | Score: 1.13912 | Node: [['37321.json', 'i_1']]
 
 ================================================================================
-QID: 37033.jpeg-5
+QID: 37033.jpeg-5 (mineru extract miss chữ)
 Ground Truth Document ID: 37033
 Top-9 Retrieved Units:
   Rank  1 | Doc ID: 37083      | Score: 0.81784 | Node: [['37083.json', 'i_1']]
