@@ -91,6 +91,13 @@ def parse_arguments():
     parser.add_argument("--end_idx", type=int, default=0)
     parser.add_argument("--num_gpus", type=int, default=0,
                         help="Cap on parallel GPU workers in caption pass (0 = all visible)")
+    parser.add_argument("--images_dir", default="",
+                        help="Override page-image directory (for example the InfoVQA test split).")
+    parser.add_argument("--adaptive_tiling", action="store_true",
+                        help="Ask a multimodal LLM which pages need overlapping tiles.")
+    parser.add_argument("--tiling_min_subcomponents", type=int, default=18)
+    parser.add_argument("--tiling_min_aspect_ratio", type=float, default=1.6)
+    parser.add_argument("--tiling_max_tiles", type=int, default=4)
     return parser.parse_args(), lcg_config
 
 
@@ -390,8 +397,8 @@ def _qwen_inject_into_parsed_documents(
 def run_layout_analyzer_path(args, analyzer: str):
     """Run DocLayoutYOLO or MinerU on page images → adapter → parsed_documents."""
     target = args.target_data
-    images_dir = f"{REPO_ROOT}/datasets/{target}/image_components/dev"
-    layout_out = f"{REPO_ROOT}/artifacts/{target}/layout_{analyzer}/dev"
+    images_dir = args.images_dir or f"{REPO_ROOT}/datasets/{target}/image_components/test_tiling"
+    layout_out = f"{REPO_ROOT}/artifacts/{target}/layout_{analyzer}/test"
     pd_out = f"{REPO_ROOT}/datasets/{target}/parsed_documents/dev"
     crops_out = f"{REPO_ROOT}/datasets/{target}/image_components_sub"
 
@@ -406,34 +413,54 @@ def run_layout_analyzer_path(args, analyzer: str):
     analyzer_module = ANALYZER_MODULE[analyzer]
     adapter_module = ADAPTER_MODULE[analyzer]
 
-    # ── Stage A: run analyzer in its own conda env ──────────────────────────
-    print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
-    subprocess.run(
-        [
-            _conda_python(env_name),
-            "-m", analyzer_module,
-            "--input_dir",  images_dir,
-            "--output_dir", layout_out,
-        ],
-        check=True,
-        cwd=REPO_ROOT,
-    )
+    analyzer_images_dir = images_dir
+    tiling_manifest = None
+    if args.adaptive_tiling:
+        if analyzer != "doclayout_yolo":
+            raise ValueError("--adaptive_tiling is supported only with doclayout_yolo")
+        from src.lilac.lcg_constructor.preprocessing.adaptive_tiling import (
+            prepare_tiled_inputs, merge_tile_boxes,
+        )
+        tiled_input = Path(layout_out) / "_tiled_inputs"
+        tiling_manifest = Path(layout_out) / "tiling_manifest.json"
+        prepare_tiled_inputs(
+            Path(images_dir), tiled_input, tiling_manifest,
+            args.tiling_min_subcomponents, args.tiling_min_aspect_ratio,
+            args.tiling_max_tiles,
+        )
+    #     analyzer_images_dir = str(tiled_input)
 
-    # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
-    print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")
-    subprocess.run(
-        [
-            sys.executable,
-            "-m", adapter_module,
-            "--layout",    layout_out,
-            "--images",    images_dir,
-            "--output",    pd_out,
-            "--crops_out", crops_out,
-            "--num_gpus",  str(args.num_gpus),
-        ],
-        check=True,
-        cwd=REPO_ROOT,
-    )
+    # # ── Stage A: run analyzer in its own conda env ──────────────────────────
+    # print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
+    # subprocess.run(
+    #     [
+    #         _conda_python(env_name),
+    #         "-m", analyzer_module,
+    #         "--input_dir",  analyzer_images_dir,
+    #         "--output_dir", layout_out,
+    #     ],
+    #     check=True,
+    #     cwd=REPO_ROOT,
+    # )
+    # if tiling_manifest is not None:
+    #     from src.lilac.lcg_constructor.preprocessing.adaptive_tiling import merge_tile_boxes
+    #     merge_tile_boxes(Path(layout_out), tiling_manifest)
+
+    # # ── Stage B: run adapter in current env (has Qwen-VL for caption pass) ─
+    # print(f"[step5/{analyzer}] running adapter → parsed_documents + caption pass")
+    # subprocess.run(
+    #     [
+    #         sys.executable,
+    #         "-m", adapter_module,
+    #         "--layout",    layout_out,
+    #         "--images",    images_dir,
+    #         "--output",    pd_out,
+    #         "--crops_out", crops_out,
+    #         "--num_gpus",  str(args.num_gpus),
+    #     ],
+    #     check=True,
+    #     cwd=REPO_ROOT,
+    # )
 
 
 if __name__ == "__main__":

@@ -38,6 +38,11 @@ while [[ $# -gt 0 ]]; do
         --start_idx)     EXTRA+=(--start_idx "$2"); shift 2;;
         --end_idx)       EXTRA+=(--end_idx "$2"); shift 2;;
         --num_gpus)      EXTRA+=(--num_gpus "$2"); shift 2;;
+        --images_dir)    EXTRA+=(--images_dir "$2"); shift 2;;
+        --adaptive_tiling) EXTRA+=(--adaptive_tiling); shift;;
+        --tiling_min_subcomponents) EXTRA+=(--tiling_min_subcomponents "$2"); shift 2;;
+        --tiling_min_aspect_ratio) EXTRA+=(--tiling_min_aspect_ratio "$2"); shift 2;;
+        --tiling_max_tiles) EXTRA+=(--tiling_max_tiles "$2"); shift 2;;
         -h|--help) sed -n '2,18p' "$0" | sed 's/^# \?//'; exit 0;;
         *) echo "unknown arg: $1" >&2; exit 1;;
     esac
@@ -54,5 +59,5 @@ nvidia-smi --query-gpu=index,memory.free,memory.used --format=csv,noheader,nouni
 for DS in "${BENCHMARKS[@]}"; do
     echo "==> step5 $DS [$MODE]"
     python3 -m src.lilac.lcg_constructor.step5_add_subimages \
-        --target_data "$DS" --mode "$MODE"
+        --target_data "$DS" --mode "$MODE" "${EXTRA[@]}" "${ANALYZER_ARGS[@]}"
 done
