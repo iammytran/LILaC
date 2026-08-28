@@ -432,17 +432,17 @@ def run_layout_analyzer_path(args, analyzer: str):
         analyzer_images_dir = str(tiled_input)
 
     # ── Stage A: run analyzer in its own conda env ──────────────────────────
-    print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
-    subprocess.run(
-        [
-            _conda_python(env_name),
-            "-m", analyzer_module,
-            "--input_dir",  analyzer_images_dir,
-            "--output_dir", layout_out,
-        ],
-        check=True,
-        cwd=REPO_ROOT,
-    )
+    # print(f"[step5/{analyzer}] running layout analyzer (env={env_name})")
+    # subprocess.run(
+    #     [
+    #         "python",
+    #         "-m", analyzer_module,
+    #         "--input_dir",  analyzer_images_dir,
+    #         "--output_dir", layout_out,
+    #     ],
+    #     check=True,
+    #     cwd=REPO_ROOT,
+    # )
     if tiling_manifest is not None:
         from src.lilac.lcg_constructor.preprocessing.adaptive_tiling import merge_tile_boxes
         merge_tile_boxes(Path(layout_out), tiling_manifest)

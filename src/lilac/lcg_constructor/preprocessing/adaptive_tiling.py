@@ -166,10 +166,14 @@ def merge_tile_boxes(layout_dir: Path, manifest_path: Path) -> None:
     """Union tile detections into one global boxes.json per source page."""
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     merged: Dict[str, List[Dict]] = {}
-    for page_stem, page in manifest.items():
+    filtered_manifest = {k: v for k, v in manifest.items() if "tiles" in v}
+    # print(filtered_manifest['10027'])
+    for page_stem, page in filtered_manifest.items():
         if "source" not in page:
             continue
         boxes: List[Dict] = []
+        # filtered_page = {k: v for k, v in manifest.items() if "tiles" in v}
+        # print(f"page: {filtered_page}")
         for tile_name in page["tiles"]:
             tile_dir = layout_dir / Path(tile_name).stem
             boxes_path = tile_dir / "boxes.json"
