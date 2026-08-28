@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The image contains multiple sections with dense text and graphics.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The image contains multiple sections with dense text and graphics.\"}",
+  "estimated_subcomponents": 294,
+  "height_to_width_ratio": 4.0
+}

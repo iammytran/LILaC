@@ -46,29 +46,62 @@ def decide_tiling(image_path: Path, model) -> Tuple[bool, int]:
     return _parse_decision(raw[0] if raw else "")
 
 
-def _tile_grid(height: int, width: int, estimated: int, min_subcomponents: int,
-               min_aspect_ratio: float, max_tiles: int) -> Tuple[int, int]:
+# def _tile_grid(height: int, width: int, estimated: int, min_subcomponents: int,
+#                min_aspect_ratio: float, max_tiles: int) -> Tuple[int, int]:
+#     print(f"min_subcomponents: {min_subcomponents}")
+#     print(f"min_aspect_ratio: {min_aspect_ratio}")
+#     print(f"max_tiles: {max_tiles}")
+#     aspect = height / max(width, 1)
+#     requested = max(2, math.ceil(estimated / max(min_subcomponents, 1)))
+#     # Nhánh 1: Nếu ảnh quá dài (cao >> rộng) -> trả về (N, 1)
+#     if aspect >= min_aspect_ratio:
+#         return min(max_tiles, requested), 1
+
+#     # Nhánh 2: Nếu ảnh quá rộng (rộng >> cao) -> trả về (1, N)
+#     if aspect <= 1 / min_aspect_ratio:
+#         return 1, min(max_tiles, requested)
+
+#     # Nhánh 3: Chỉ khi không rơi vào 2 nhánh trên mới chạy tới đây
+#     side = min(max_tiles, max(2, math.ceil(math.sqrt(requested))))
+#     return side, side
+
+def _tile_grid(
+    height: int,
+    width: int,
+    estimated: int,
+    min_subcomponents: int,
+    min_aspect_ratio: float,
+    max_tiles: int,
+) -> Tuple[int, int]:
     aspect = height / max(width, 1)
+
+    # 1. Tính toán trần động: Nếu ảnh siêu dài (aspect >= 4.0), nới trần lên tối đa 6 hoặc 8 tiles
+    effective_max = max_tiles * 2 if (aspect >= 4.0 or aspect <= 1 / 4.0) else max_tiles
+    
+    # 2. Số lượng tile ước tính dựa trên mật độ thành phần
     requested = max(2, math.ceil(estimated / max(min_subcomponents, 1)))
-    # Nhánh 1: Nếu ảnh quá dài (cao >> rộng) -> trả về (N, 1)
+
+    # Nhánh 1: Ảnh dài dọc (N hàng, 1 cột)
     if aspect >= min_aspect_ratio:
-        return min(max_tiles, requested), 1
+        return min(effective_max, requested), 1
 
-    # Nhánh 2: Nếu ảnh quá rộng (rộng >> cao) -> trả về (1, N)
+    # Nhánh 2: Ảnh rộng ngang (1 hàng, N cột)
     if aspect <= 1 / min_aspect_ratio:
-        return 1, min(max_tiles, requested)
+        return 1, min(effective_max, requested)
 
-    # Nhánh 3: Chỉ khi không rơi vào 2 nhánh trên mới chạy tới đây
-    side = min(max_tiles, max(2, math.ceil(math.sqrt(requested))))
-    return side, side
+    # Nhánh 3: Ảnh vuông / cân đối (khống chế tổng số tiles <= max_tiles)
+    if requested <= 3:
+        return requested, 1
+    return 2, 2
 
 def prepare_tiled_inputs(
     images_dir: Path,
     staging_dir: Path,
     manifest_path: Path,
-    min_subcomponents: int = 18,
-    min_aspect_ratio: float = 1.6,
+    min_subcomponents: int = 16,
+    min_aspect_ratio: float = 1.3,
     max_tiles: int = 4,
+    overlap_ratio: float = 0.12
 ) -> Dict[str, Dict]:
     """Stage original pages or overlapping tiles for the layout analyzer."""
     # from src.models.mllm.qwen2_5_vl_7b import Qwen2_5_VL
@@ -99,8 +132,13 @@ def prepare_tiled_inputs(
         rows, cols = _tile_grid(
             height, width, estimated, min_subcomponents, min_aspect_ratio, max_tiles
         )
-        overlap_x = max(1, int(width * 0.08))
-        overlap_y = max(1, int(height * 0.08))
+
+        step_w = width / cols
+        step_h = height / rows
+
+        overlap_x = max(1, int(step_w * overlap_ratio))
+        overlap_y = max(1, int(step_h * overlap_ratio))
+
         tile_names = []
         for row in range(rows):
             for col in range(cols):

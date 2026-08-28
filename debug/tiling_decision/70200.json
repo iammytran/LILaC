@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The height-to-width ratio is 2.6365, which exceeds the threshold of 1.60.",
+  "raw_response": "```json\n{\n  \"tile\": true,\n  \"reason\": \"The height-to-width ratio is 2.6365, which exceeds the threshold of 1.60.\"\n}\n```",
+  "estimated_subcomponents": 497,
+  "height_to_width_ratio": 2.636458333333333
+}

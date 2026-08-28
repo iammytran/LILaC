@@ -1,0 +1,7 @@
+{
+  "tile": false,
+  "reason": "Neither metric meets the threshold; layout is not dense/tall.",
+  "raw_response": "```json\n{\"tile\": false, \"reason\": \"Neither metric meets the threshold; layout is not dense/tall.\"}\n```",
+  "estimated_subcomponents": 263,
+  "height_to_width_ratio": 0.615625
+}

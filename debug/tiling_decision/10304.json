@@ -1,0 +1,7 @@
+{
+  "tile": false,
+  "reason": "The height-to-width ratio does not meet the threshold and there are no dense/tall page layouts.",
+  "raw_response": "{\n  \"tile\": false,\n  \"reason\": \"The height-to-width ratio does not meet the threshold and there are no dense/tall page layouts.\"\n}",
+  "estimated_subcomponents": 475,
+  "height_to_width_ratio": 1.4760147601476015
+}

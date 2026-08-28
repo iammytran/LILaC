@@ -1,0 +1,7 @@
+{
+  "tile": false,
+  "reason": "Subcomponents and height-to-width ratio do not meet thresholds.",
+  "raw_response": "```json\n{\"tile\": false, \"reason\": \"Subcomponents and height-to-width ratio do not meet thresholds.\"}\n```",
+  "estimated_subcomponents": 465,
+  "height_to_width_ratio": 1.2066666666666668
+}

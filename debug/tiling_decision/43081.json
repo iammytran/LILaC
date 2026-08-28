@@ -1,0 +1,7 @@
+{
+  "tile": false,
+  "reason": "Height-to-width ratio does not meet threshold",
+  "raw_response": "```json\n{\"tile\": false, \"reason\": \"Height-to-width ratio does not meet threshold\"}\n```",
+  "estimated_subcomponents": 100,
+  "height_to_width_ratio": 0.7035294117647058
+}

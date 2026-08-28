@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The image contains a detailed infographic with multiple sections and high estimated subcomponents.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The image contains a detailed infographic with multiple sections and high estimated subcomponents.\"}",
+  "estimated_subcomponents": 463,
+  "height_to_width_ratio": 2.5092307692307694
+}

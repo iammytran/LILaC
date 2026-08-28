@@ -1,0 +1,7 @@
+{
+  "tile": false,
+  "reason": "Height-to-width ratio is below threshold and estimated subcomponents are above threshold.",
+  "raw_response": "{\"tile\": false, \"reason\": \"Height-to-width ratio is below threshold and estimated subcomponents are above threshold.\"}",
+  "estimated_subcomponents": 263,
+  "height_to_width_ratio": 1.0008333333333332
+}

@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "The document-page has a high estimated subcomponents count and a tall height-to-width ratio.",
+  "raw_response": "{\"tile\": true, \"reason\": \"The document-page has a high estimated subcomponents count and a tall height-to-width ratio.\"}",
+  "estimated_subcomponents": 195,
+  "height_to_width_ratio": 1.6666666666666667
+}

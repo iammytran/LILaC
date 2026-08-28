@@ -1,0 +1,7 @@
+{
+  "tile": false,
+  "reason": "Metrics do not meet thresholds for tiling.",
+  "raw_response": "```json\n{\"tile\": false, \"reason\": \"Metrics do not meet thresholds for tiling.\"}\n```",
+  "estimated_subcomponents": 97,
+  "height_to_width_ratio": 1.4134275618374559
+}

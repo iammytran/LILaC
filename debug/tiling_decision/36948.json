@@ -1,0 +1,7 @@
+{
+  "tile": true,
+  "reason": "High estimated subcomponents and tall ratio meet thresholds.",
+  "raw_response": "{\"tile\": true, \"reason\": \"High estimated subcomponents and tall ratio meet thresholds.\"}",
+  "estimated_subcomponents": 305,
+  "height_to_width_ratio": 2.764102564102564
+}
