@@ -189,10 +189,10 @@ class Retriever:
         emb_dir = artifact_subpath(self._metadata_config, self._target_dataset, "embeddings_dirname", self._target_embedder)
 
         top_level_pairs = [
-            (os.path.join(emb_dir, self._run_config["top_level_embeddings"]["text"]  + ".pt"),
-             os.path.join(emb_dir, self._run_config["top_level_embeddings"]["text"]  + ".json")),
-            (os.path.join(emb_dir, self._run_config["top_level_embeddings"]["table"] + ".pt"),
-             os.path.join(emb_dir, self._run_config["top_level_embeddings"]["table"] + ".json")),
+            # (os.path.join(emb_dir, self._run_config["top_level_embeddings"]["text"]  + ".pt"),
+            #  os.path.join(emb_dir, self._run_config["top_level_embeddings"]["text"]  + ".json")),
+            # (os.path.join(emb_dir, self._run_config["top_level_embeddings"]["table"] + ".pt"),
+            #  os.path.join(emb_dir, self._run_config["top_level_embeddings"]["table"] + ".json")),
             (os.path.join(emb_dir, self._run_config["top_level_embeddings"]["image"] + ".pt"),
              os.path.join(emb_dir, self._run_config["top_level_embeddings"]["image"] + ".json"))
         ]
@@ -211,10 +211,10 @@ class Retriever:
         self.level_to_indexer["top"].create_index(gpu_id = gpu_num)
         
         low_level_pairs = [
-            (os.path.join(emb_dir, self._run_config["low_level_embeddings"]["text"]  + ".pt"),
-             os.path.join(emb_dir, self._run_config["low_level_embeddings"]["text"]  + ".json")),
-            (os.path.join(emb_dir, self._run_config["low_level_embeddings"]["table"] + ".pt"),
-             os.path.join(emb_dir, self._run_config["low_level_embeddings"]["table"] + ".json")),
+            # (os.path.join(emb_dir, self._run_config["low_level_embeddings"]["text"]  + ".pt"),
+            #  os.path.join(emb_dir, self._run_config["low_level_embeddings"]["text"]  + ".json")),
+            # (os.path.join(emb_dir, self._run_config["low_level_embeddings"]["table"] + ".pt"),
+            #  os.path.join(emb_dir, self._run_config["low_level_embeddings"]["table"] + ".json")),
             (os.path.join(emb_dir, self._run_config["low_level_embeddings"]["image"] + ".pt"),
              os.path.join(emb_dir, self._run_config["low_level_embeddings"]["image"] + ".json")),
         ]
@@ -246,7 +246,7 @@ class Retriever:
         if self._run_function_mode != "single_knn":
             self._graph_path = artifact_subpath(self._metadata_config, self._target_dataset, "component_dirname", "graph.pickle")
             os.makedirs(artifact_subpath(self._metadata_config, self._target_dataset, "component_dirname"), exist_ok=True)
-            tile_manifest = os.path.join(REPO_ROOT, "datasets", "tiles", "manifest.json")
+            tile_manifest = os.path.join(self._benchmark_dir, "tiles", "manifest.json")
             use_tile_graph = self._target_dataset == "InfoVQA" and os.path.exists(tile_manifest)
             if check_file_exists(self._graph_path) and not use_tile_graph:
                 print("[Retriever] Loading existing graph …")
