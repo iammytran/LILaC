@@ -20,6 +20,7 @@ from src.utils.utils import REPO_ROOT
 DEFAULT_INPUT = Path(REPO_ROOT) / "datasets/InfoVQA/image_components/test"
 DEFAULT_ROOT = Path(REPO_ROOT) / "datasets/InfoVQA/tiles"
 DEFAULT_ESTIMATES = Path(REPO_ROOT) / "debug/estimated_components.json"
+DEFAULT_IMAGE_SUMMARIES = Path(REPO_ROOT) / "artifacts/InfoVQA/image_summaries/test"
 TILE_PROMPT = (
     "The first image is a tile from an infographic and the second image is "
     "the complete original infographic. Describe only the tile, but use the "
@@ -183,8 +184,8 @@ def caption_tiles(manifest: dict[str, Any], output_dir: Path, num_gpus: int | No
         return
 
     caption_images(
-        image_pairs=[[tile["path"], orig] for tile, orig, _ in jobs],
-        output_filepaths=[str(out) for _, _, out in jobs],
+        image_paths=[[tile["path"], orig] for tile, orig, _ in jobs],
+        output_paths=[str(out) for _, _, out in jobs],
         prompt=TILE_PROMPT,
         max_tokens=1024,
         num_gpus=num_gpus,
@@ -197,7 +198,11 @@ def caption_tiles(manifest: dict[str, Any], output_dir: Path, num_gpus: int | No
     (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 
-def serialize_tiles(manifest: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
+def serialize_tiles(
+    manifest: dict[str, Any],
+    output_dir: Path,
+    summaries_dir: Path = DEFAULT_IMAGE_SUMMARIES,
+) -> tuple[Path, Path]:
     """Format top-level infographics and tile representations for retriever embedding."""
     serialization_dir = output_dir / "serializations"
     serialization_dir.mkdir(parents=True, exist_ok=True)
@@ -206,10 +211,14 @@ def serialize_tiles(manifest: dict[str, Any], output_dir: Path) -> tuple[Path, P
     for info in manifest["infographics"]:
         orig_name = Path(info["original"]["filename"]).name
         orig_path = info["original"]["path"]
+        summary_path = summaries_dir / f"{Path(orig_name).stem}.txt"
+        if not summary_path.is_file():
+            raise FileNotFoundError(f"Missing image summary: {summary_path}")
+        summary = summary_path.read_text(encoding="utf-8").strip()
         top.append({
             "id": [orig_name, "i_1"],
             "target": {
-                "text": f"{Path(orig_name).stem} [SEP] original infographic",
+                "text": f"{Path(orig_name).stem} [SEP] {summary}",
                 "images": [orig_path],
             },
         })
