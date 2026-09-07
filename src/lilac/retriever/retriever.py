@@ -246,7 +246,9 @@ class Retriever:
         if self._run_function_mode != "single_knn":
             self._graph_path = artifact_subpath(self._metadata_config, self._target_dataset, "component_dirname", "graph.pickle")
             os.makedirs(artifact_subpath(self._metadata_config, self._target_dataset, "component_dirname"), exist_ok=True)
-            if check_file_exists(self._graph_path):
+            tile_manifest = os.path.join(REPO_ROOT, "datasets", "tiles", "manifest.json")
+            use_tile_graph = self._target_dataset == "InfoVQA" and os.path.exists(tile_manifest)
+            if check_file_exists(self._graph_path) and not use_tile_graph:
                 print("[Retriever] Loading existing graph …")
                 with open(self._graph_path, "rb") as f:
                     self.graph = pickle.load(f)
@@ -254,11 +256,14 @@ class Retriever:
             else:
                 self.graph = Graph(
                     multimodal_documents_directory = self._parsed_documents_dir,
-                    images_directory    = self._images_dir,
+                    images_directory    = REPO_ROOT if use_tile_graph else self._images_dir,
                     subimages_directory = self._subimages_dir,
                     summaries_directory = self._summaries_dir
                 )
-                self.graph.parse_documents()
+                if use_tile_graph:
+                    self.graph.load_tile_manifest(tile_manifest)
+                else:
+                    self.graph.parse_documents()
                 with open(self._graph_path, "wb") as f:
                     pickle.dump(self.graph, f)
                 print(f"[Retriever] Graph saved to {self._graph_path}")
