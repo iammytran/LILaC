@@ -3,6 +3,8 @@ import pandas as pd
 import json
 import logging
 import os
+from pathlib import Path
+import shutil
 # import logger
 
 val_dir = "infographicsVQA_val_v1.0_withQT copy.json"
@@ -74,10 +76,29 @@ def map_query_with_qa_val(queries_from_hf):
             json.dump(output_data, f, indent=4, ensure_ascii=False)
     return
 
+def get_test_dataset():
+    folder = "artifacts/InfoVQA/mineru_outputs_pipeline/test"
+    image_folder = "/Users/mytnguyen/Documents/LILaC/datasets/InfoVQA/image_components/dev"
+    dest_folder = "/Users/mytnguyen/Documents/LILaC/datasets/InfoVQA/image_components/test"
+    target = []
+    for item in Path(folder).iterdir():
+        target.append(item.stem)
+    # print(target)
+
+    dest = []
+    for item in Path(dest_folder).iterdir():
+        dest.append(item.stem)
+    # print(len(dest))
+
+    diff = set(dest) - set(target)
+    print(diff)
+    return
+
 def main():
     return
 
 if __name__ == "__main__":
     # download_visrag_ret_test()
-    query_records = get_query_from_queries()
-    map_query_with_qa_val(query_records)
+    # query_records = get_query_from_queries()
+    # map_query_with_qa_val(query_records)
+    get_test_dataset()

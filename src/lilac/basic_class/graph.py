@@ -1,5 +1,6 @@
 import os
 import json
+from pathlib import Path
 from tqdm import tqdm
 import time
 import logging
@@ -76,6 +77,63 @@ class Graph:
         self._generate_intra_document_edges()
         self._generate_inter_document_edges()
         
+        return
+
+    def load_tile_manifest(self, manifest_path):
+        """Load a two-level image/tile graph without creating parsed documents.
+
+        The manifest is the source of truth for the synthetic document
+        hierarchy: ``i_1`` is the original infographic and ``i_1_tNNNN`` are
+        its tiles.
+        """
+        with open(manifest_path, "r", encoding="utf-8") as fh:
+            manifest = json.load(fh)
+
+        self.filename_to_document.clear()
+        self.title_to_documents.clear()
+        self.intra_document_edges.clear()
+        self.inter_document_edges.clear()
+
+        for infographic in manifest["infographics"]:
+            original = infographic["original"]
+            filename = os.path.basename(original["filename"])
+            components = {
+                "i_1": {
+                    "filename": original["filename"],
+                    "caption": {"text": original.get("caption", "")},
+                }
+            }
+            hierarchy = {"infographic": {"components": ["i_1"]}}
+            for tile in infographic["tiles"]:
+                tile_id = tile["component_id"]
+                components[tile_id] = {
+                    "filename": tile["filename"],
+                    "caption": {"text": tile.get("caption", "")},
+                }
+                hierarchy["infographic"]["components"].append(tile_id)
+
+            raw_document = {
+                "title": Path(filename).stem,
+                "hierarchy": hierarchy,
+                "image": components,
+                "text": {},
+                "sentence": {},
+                "proposition": {},
+                "table": {},
+                "table_segment": {},
+                "subimage": {},
+            }
+            document = MultimodalDocument(
+                file_path=filename,
+                images_dir=self.images_dir,
+                subimages_dir=self.subimages_dir,
+                image_summaries_dir=self.summaries_dir,
+            )
+            document.parse_raw(raw_document)
+            self.filename_to_document[filename] = document
+            self.title_to_documents[document.get_title()] = document
+
+        self._generate_intra_document_edges()
         return
 
 

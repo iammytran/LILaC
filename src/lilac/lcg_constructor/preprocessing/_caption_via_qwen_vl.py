@@ -42,7 +42,7 @@ def _visible_gpu_ids() -> List[int]:
 
 def _worker(
     gpu_id: int,
-    slice_: List[Tuple[str, str]],
+    slice_: List[Tuple[str | List[str], str]],
     prompt: str,
     max_tokens: int,
     show_progress: bool,
@@ -65,7 +65,8 @@ def _worker(
             if out_p.exists():
                 continue
             try:
-                obj = {"text": prompt, "images": [str(img_path)]}
+                images = img_path if isinstance(img_path, list) else [img_path]
+                obj = {"text": prompt, "images": [str(path) for path in images]}
                 result = model.infer([obj], batch_size=1, max_tokens=max_tokens)
                 text = (result[0] if result else "").strip()
                 out_p.parent.mkdir(parents=True, exist_ok=True)
@@ -85,7 +86,7 @@ def _worker(
                     gc.collect()
 
 def caption_images(
-    image_paths: List[str],
+    image_paths: List[str | List[str]],
     output_paths: List[str],
     *,
     prompt: str = "Generate a summary of the given image. Include all the texts within the image.",
@@ -97,7 +98,7 @@ def caption_images(
 
     Args
     ----
-    image_paths   : input .png/.jpg paths, parallel to output_paths
+    image_paths   : paths, or ordered image-path lists, parallel to output_paths
     output_paths  : where to write each image's .txt result
     prompt        : Qwen-VL text prompt; default is the page-summary prompt
     max_tokens    : per-output token cap
