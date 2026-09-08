@@ -1,0 +1,468 @@
+================================================================================
+1. QID: 37159.jpeg-2
+Ground Truth Document ID: 37159.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37029.jpeg | Score: 0.29618 | Node: [['37029.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37107.jpeg | Score: 0.28642 | Node: [['37107.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 30374.jpeg | Score: 0.27924 | Node: [['30374.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 36993.jpeg | Score: 0.27056 | Node: [['36993.jpeg', 'i_1']]
+
+================================================================================
+2. QID: 43600.jpeg-6
+Ground Truth Document ID: 43600.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37190.jpeg | Score: 0.27833 | Node: [['37190.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37308.jpeg | Score: 0.22942 | Node: [['37308.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 11410.jpeg | Score: 0.22532 | Node: [['11410.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 39352.jpeg | Score: 0.22213 | Node: [['39352.jpeg', 'i_1']]
+
+================================================================================
+3. QID: 41587.jpeg-10
+Ground Truth Document ID: 41587.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 20255.jpeg | Score: 0.10358 | Node: [['20255.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 10030.jpeg | Score: 0.09267 | Node: [['10030.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 33527.jpeg | Score: 0.08277 | Node: [['33527.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 41578.jpeg | Score: 0.06963 | Node: [['41578.jpeg', 'i_1']]
+
+================================================================================
+4. QID: 40467.jpeg-7
+Ground Truth Document ID: 40467.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 70021.jpeg | Score: 0.18410 | Node: [['70021.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 20051.jpeg | Score: 0.18333 | Node: [['20051.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 40927.jpeg | Score: 0.16459 | Node: [['40927.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 44541.jpeg | Score: 0.16259 | Node: [['44541.jpeg', 'i_1']]
+
+================================================================================
+5. QID: 35974.jpeg-14
+Ground Truth Document ID: 35974.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 39458.jpeg | Score: 0.24936 | Node: [['39458.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 39693.jpeg | Score: 0.23395 | Node: [['39693.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 39778.jpeg | Score: 0.22859 | Node: [['39778.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 39983.jpeg | Score: 0.22008 | Node: [['39983.jpeg', 'i_1']]
+
+================================================================================
+6. QID: 37324.jpeg-1
+Ground Truth Document ID: 37324.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37054.jpeg | Score: 0.37583 | Node: [['37054.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37033.jpeg | Score: 0.36775 | Node: [['37033.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37165.jpeg | Score: 0.35747 | Node: [['37165.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37395.jpeg | Score: 0.35196 | Node: [['37395.jpeg', 'i_1']]
+
+================================================================================
+7. QID: 37083.jpeg-1
+Ground Truth Document ID: 37083.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37105.jpeg | Score: 0.33938 | Node: [['37105.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37165.jpeg | Score: 0.33294 | Node: [['37165.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37394.jpeg | Score: 0.32110 | Node: [['37394.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37308.jpeg | Score: 0.30243 | Node: [['37308.jpeg', 'i_1']]
+
+================================================================================
+8. QID: 37083.jpeg-2
+Ground Truth Document ID: 37083.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37105.jpeg | Score: 0.32925 | Node: [['37105.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37165.jpeg | Score: 0.32470 | Node: [['37165.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37394.jpeg | Score: 0.32360 | Node: [['37394.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37100.jpeg | Score: 0.30837 | Node: [['37100.jpeg', 'i_1']]
+
+================================================================================
+9. QID: 37083.jpeg-3
+Ground Truth Document ID: 37083.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37165.jpeg | Score: 0.26288 | Node: [['37165.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 20354.jpeg | Score: 0.26075 | Node: [['20354.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37170.jpeg | Score: 0.26023 | Node: [['37170.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37394.jpeg | Score: 0.25863 | Node: [['37394.jpeg', 'i_1']]
+
+================================================================================
+10. QID: 37262.jpeg-3
+Ground Truth Document ID: 37262.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37302.jpeg | Score: 0.36768 | Node: [['37302.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37308.jpeg | Score: 0.35749 | Node: [['37308.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37400.jpeg | Score: 0.33020 | Node: [['37400.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37366.jpeg | Score: 0.32222 | Node: [['37366.jpeg', 'i_1']]
+
+================================================================================
+11. QID: 37262.jpeg-4
+Ground Truth Document ID: 37262.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37302.jpeg | Score: 0.35470 | Node: [['37302.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37308.jpeg | Score: 0.35041 | Node: [['37308.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37400.jpeg | Score: 0.33659 | Node: [['37400.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37394.jpeg | Score: 0.32898 | Node: [['37394.jpeg', 'i_1']]
+
+================================================================================
+12. QID: 37138.jpeg-1
+Ground Truth Document ID: 37138.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 31595.jpeg | Score: 0.39865 | Node: [['31595.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37321.jpeg | Score: 0.37684 | Node: [['37321.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37100.jpeg | Score: 0.36179 | Node: [['37100.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 40649.jpeg | Score: 0.35439 | Node: [['40649.jpeg', 'i_1']]
+
+================================================================================
+13. QID: 36899.jpeg-1
+Ground Truth Document ID: 36899.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37312.jpeg | Score: 0.38502 | Node: [['37312.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37388.jpeg | Score: 0.37879 | Node: [['37388.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 36989.jpeg | Score: 0.37124 | Node: [['36989.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37042.jpeg | Score: 0.36480 | Node: [['37042.jpeg', 'i_1']]
+
+================================================================================
+14. QID: 40649.jpeg-10
+Ground Truth Document ID: 40649.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37036.jpeg | Score: 0.46446 | Node: [['37036.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37100.jpeg | Score: 0.45219 | Node: [['37100.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37197.jpeg | Score: 0.38567 | Node: [['37197.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 20313.jpeg | Score: 0.35942 | Node: [['20313.jpeg', 'i_1']]
+
+================================================================================
+15. QID: 37394.jpeg-6
+Ground Truth Document ID: 37394.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37107.jpeg | Score: 0.23774 | Node: [['37107.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 36966.jpeg | Score: 0.23589 | Node: [['36966.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37241.jpeg | Score: 0.23437 | Node: [['37241.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 36995.jpeg | Score: 0.23387 | Node: [['36995.jpeg', 'i_1']]
+
+================================================================================
+16. QID: 39807.jpeg-2
+Ground Truth Document ID: 39807.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 39801.jpeg | Score: 0.31227 | Node: [['39801.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 39778.jpeg | Score: 0.20344 | Node: [['39778.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 44667.jpeg | Score: 0.19923 | Node: [['44667.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 39303.jpeg | Score: 0.19717 | Node: [['39303.jpeg', 'i_1']]
+
+================================================================================
+17. QID: 39807.jpeg-3
+Ground Truth Document ID: 39807.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 39801.jpeg | Score: 0.24240 | Node: [['39801.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 39792.jpeg | Score: 0.14880 | Node: [['39792.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 39778.jpeg | Score: 0.13954 | Node: [['39778.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 44667.jpeg | Score: 0.13328 | Node: [['44667.jpeg', 'i_1']]
+
+================================================================================
+18. QID: 39807.jpeg-4
+Ground Truth Document ID: 39807.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 39801.jpeg | Score: 0.32263 | Node: [['39801.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 39778.jpeg | Score: 0.29900 | Node: [['39778.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 39792.jpeg | Score: 0.24017 | Node: [['39792.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 39266.jpeg | Score: 0.23144 | Node: [['39266.jpeg', 'i_1']]
+
+================================================================================
+19. QID: 39807.jpeg-5
+Ground Truth Document ID: 39807.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 39801.jpeg | Score: 0.54351 | Node: [['39801.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 44867.jpeg | Score: 0.35628 | Node: [['44867.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 42077.jpeg | Score: 0.32822 | Node: [['42077.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 44667.jpeg | Score: 0.32420 | Node: [['44667.jpeg', 'i_1']]
+
+================================================================================
+20. QID: 39807.jpeg-7
+Ground Truth Document ID: 39807.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 39778.jpeg | Score: 0.20504 | Node: [['39778.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 10304.jpeg | Score: 0.20456 | Node: [['10304.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 35147.jpeg | Score: 0.19770 | Node: [['35147.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 40828.jpeg | Score: 0.18604 | Node: [['40828.jpeg', 'i_1']]
+
+================================================================================
+21. QID: 10304.jpeg-5
+Ground Truth Document ID: 10304.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 70362.jpeg | Score: 0.39647 | Node: [['70362.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 70529.jpeg | Score: 0.36712 | Node: [['70529.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 70087.jpeg | Score: 0.34379 | Node: [['70087.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 70509.jpeg | Score: 0.33570 | Node: [['70509.jpeg', 'i_1']]
+
+================================================================================
+22. QID: 10087.jpeg-3
+Ground Truth Document ID: 10087.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 36041.jpeg | Score: 0.54066 | Node: [['36041.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 20354.jpeg | Score: 0.51109 | Node: [['20354.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 10796.jpeg | Score: 0.50516 | Node: [['10796.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 39593.jpeg | Score: 0.50369 | Node: [['39593.jpeg', 'i_1']]
+
+================================================================================
+23. QID: 20153.jpeg-1
+Ground Truth Document ID: 20153.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37033.jpeg | Score: 0.38539 | Node: [['37033.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37165.jpeg | Score: 0.37422 | Node: [['37165.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37054.jpeg | Score: 0.36320 | Node: [['37054.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37395.jpeg | Score: 0.35443 | Node: [['37395.jpeg', 'i_1']]
+
+================================================================================
+24. QID: 20153.jpeg-3
+Ground Truth Document ID: 20153.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37138.jpeg | Score: 0.42214 | Node: [['37138.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37302.jpeg | Score: 0.35819 | Node: [['37302.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37366.jpeg | Score: 0.35773 | Node: [['37366.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37241.jpeg | Score: 0.35031 | Node: [['37241.jpeg', 'i_1']]
+
+================================================================================
+25. QID: 20132.jpeg-5
+Ground Truth Document ID: 20132.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 39766.jpeg | Score: 0.45272 | Node: [['39766.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 39778.jpeg | Score: 0.30100 | Node: [['39778.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 39983.jpeg | Score: 0.28695 | Node: [['39983.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 10978.jpeg | Score: 0.27785 | Node: [['10978.jpeg', 'i_1']]
+
+================================================================================
+26. QID: 20018.jpeg-6
+Ground Truth Document ID: 20018.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37138.jpeg | Score: 0.12670 | Node: [['37138.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 44605.jpeg | Score: 0.10332 | Node: [['44605.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 31642.jpeg | Score: 0.08018 | Node: [['31642.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 39546.jpeg | Score: 0.07220 | Node: [['39546.jpeg', 'i_1']]
+
+================================================================================
+27. QID: 70386.jpeg-1
+Ground Truth Document ID: 70386.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 42555.jpeg | Score: 0.16474 | Node: [['42555.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 40919.jpeg | Score: 0.16281 | Node: [['40919.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 45009.jpeg | Score: 0.13355 | Node: [['45009.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 20156.jpeg | Score: 0.09784 | Node: [['20156.jpeg', 'i_1']]
+
+================================================================================
+28. QID: 70574.jpeg-2
+Ground Truth Document ID: 70574.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 70010.jpeg | Score: 0.42454 | Node: [['70010.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 10960.jpeg | Score: 0.42143 | Node: [['10960.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 70022.jpeg | Score: 0.39484 | Node: [['70022.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 70206.jpeg | Score: 0.39401 | Node: [['70206.jpeg', 'i_1']]
+
+================================================================================
+29. QID: 10829.jpeg-5
+Ground Truth Document ID: 10829.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 10796.jpeg | Score: 0.22987 | Node: [['10796.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 70454.jpeg | Score: 0.20861 | Node: [['70454.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 40352.jpeg | Score: 0.18949 | Node: [['40352.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37104.jpeg | Score: 0.18575 | Node: [['37104.jpeg', 'i_1']]
+
+================================================================================
+30. QID: 10840.jpeg-1
+Ground Truth Document ID: 10840.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 10960.jpeg | Score: 0.35715 | Node: [['10960.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 70010.jpeg | Score: 0.34044 | Node: [['70010.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 70022.jpeg | Score: 0.32631 | Node: [['70022.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 70035.jpeg | Score: 0.32564 | Node: [['70035.jpeg', 'i_1']]
+
+================================================================================
+31. QID: 35294.jpeg-5
+Ground Truth Document ID: 35294.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37190.jpeg | Score: 0.16399 | Node: [['37190.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37001.jpeg | Score: 0.14234 | Node: [['37001.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 35380.jpeg | Score: 0.13686 | Node: [['35380.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 35329.jpeg | Score: 0.13070 | Node: [['35329.jpeg', 'i_1']]
+
+================================================================================
+32. QID: 70572.jpeg-10
+Ground Truth Document ID: 70572.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 10978.jpeg | Score: 0.48061 | Node: [['10978.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 70087.jpeg | Score: 0.46920 | Node: [['70087.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 70529.jpeg | Score: 0.45372 | Node: [['70529.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 39778.jpeg | Score: 0.43967 | Node: [['39778.jpeg', 'i_1']]
+
+================================================================================
+33. QID: 44472.jpeg-5
+Ground Truth Document ID: 44472.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 44667.jpeg | Score: 0.24661 | Node: [['44667.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 20018.jpeg | Score: 0.11157 | Node: [['20018.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 20052.jpeg | Score: 0.10350 | Node: [['20052.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 39978.jpeg | Score: 0.09691 | Node: [['39978.jpeg', 'i_1']]
+
+================================================================================
+34. QID: 70024.jpeg-1
+Ground Truth Document ID: 70024.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 10427.jpeg | Score: 0.26507 | Node: [['10427.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 70151.jpeg | Score: 0.22552 | Node: [['70151.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 11089.jpeg | Score: 0.20378 | Node: [['11089.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 10840.jpeg | Score: 0.20338 | Node: [['10840.jpeg', 'i_1']]
+
+================================================================================
+35. QID: 44727.jpeg-1
+Ground Truth Document ID: 44727.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 44604.jpeg | Score: 0.28520 | Node: [['44604.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 44683.jpeg | Score: 0.27513 | Node: [['44683.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37710.jpeg | Score: 0.27314 | Node: [['37710.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 44667.jpeg | Score: 0.25589 | Node: [['44667.jpeg', 'i_1']]
+
+================================================================================
+36. QID: 44727.jpeg-5
+Ground Truth Document ID: 44727.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 44683.jpeg | Score: 0.22567 | Node: [['44683.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 44604.jpeg | Score: 0.22012 | Node: [['44604.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 44721.jpeg | Score: 0.21995 | Node: [['44721.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37710.jpeg | Score: 0.19936 | Node: [['37710.jpeg', 'i_1']]
+
+================================================================================
+37. QID: 44672.jpeg-3
+Ground Truth Document ID: 44672.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 35380.jpeg | Score: 0.21893 | Node: [['35380.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 44667.jpeg | Score: 0.20200 | Node: [['44667.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 44728.jpeg | Score: 0.15870 | Node: [['44728.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 44465.jpeg | Score: 0.15602 | Node: [['44465.jpeg', 'i_1']]
+
+================================================================================
+38. QID: 37299.jpeg-1
+Ground Truth Document ID: 37299.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37138.jpeg | Score: 0.44282 | Node: [['37138.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37054.jpeg | Score: 0.43014 | Node: [['37054.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37366.jpeg | Score: 0.39221 | Node: [['37366.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37241.jpeg | Score: 0.38339 | Node: [['37241.jpeg', 'i_1']]
+
+================================================================================
+39. QID: 37299.jpeg-2
+Ground Truth Document ID: 37299.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37054.jpeg | Score: 0.45698 | Node: [['37054.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37138.jpeg | Score: 0.42562 | Node: [['37138.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37241.jpeg | Score: 0.33587 | Node: [['37241.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 20313.jpeg | Score: 0.31557 | Node: [['20313.jpeg', 'i_1']]
+
+================================================================================
+40. QID: 37299.jpeg-3
+Ground Truth Document ID: 37299.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37054.jpeg | Score: 0.46433 | Node: [['37054.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37138.jpeg | Score: 0.41223 | Node: [['37138.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37241.jpeg | Score: 0.34165 | Node: [['37241.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37400.jpeg | Score: 0.33260 | Node: [['37400.jpeg', 'i_1']]
+
+================================================================================
+41. QID: 37299.jpeg-4
+Ground Truth Document ID: 37299.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37054.jpeg | Score: 0.46818 | Node: [['37054.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37138.jpeg | Score: 0.41768 | Node: [['37138.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37029.jpeg | Score: 0.37389 | Node: [['37029.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 40649.jpeg | Score: 0.34310 | Node: [['40649.jpeg', 'i_1']]
+
+================================================================================
+42. QID: 36989.jpeg-4
+Ground Truth Document ID: 36989.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 36988.jpeg | Score: 0.34135 | Node: [['36988.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37400.jpeg | Score: 0.33960 | Node: [['37400.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37302.jpeg | Score: 0.33472 | Node: [['37302.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37241.jpeg | Score: 0.33019 | Node: [['37241.jpeg', 'i_1']]
+
+================================================================================
+43. QID: 36989.jpeg-5
+Ground Truth Document ID: 36989.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37159.jpeg | Score: 0.17117 | Node: [['37159.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37042.jpeg | Score: 0.16182 | Node: [['37042.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 20260.jpeg | Score: 0.16056 | Node: [['20260.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37165.jpeg | Score: 0.16035 | Node: [['37165.jpeg', 'i_1']]
+
+================================================================================
+44. QID: 37308.jpeg-2
+Ground Truth Document ID: 37308.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37197.jpeg | Score: 0.41242 | Node: [['37197.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37100.jpeg | Score: 0.36172 | Node: [['37100.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 40649.jpeg | Score: 0.34777 | Node: [['40649.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37395.jpeg | Score: 0.34590 | Node: [['37395.jpeg', 'i_1']]
+
+================================================================================
+45. QID: 37308.jpeg-3
+Ground Truth Document ID: 37308.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 40649.jpeg | Score: 0.43243 | Node: [['40649.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37100.jpeg | Score: 0.37812 | Node: [['37100.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37107.jpeg | Score: 0.37184 | Node: [['37107.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37197.jpeg | Score: 0.35711 | Node: [['37197.jpeg', 'i_1']]
+
+================================================================================
+46. QID: 37302.jpeg-4
+Ground Truth Document ID: 37302.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37029.jpeg | Score: 0.35261 | Node: [['37029.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 40649.jpeg | Score: 0.34513 | Node: [['40649.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37100.jpeg | Score: 0.33185 | Node: [['37100.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 20313.jpeg | Score: 0.32406 | Node: [['20313.jpeg', 'i_1']]
+
+================================================================================
+47. QID: 36988.jpeg-5
+Ground Truth Document ID: 36988.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37104.jpeg | Score: 0.36413 | Node: [['37104.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37388.jpeg | Score: 0.35745 | Node: [['37388.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 20388.jpeg | Score: 0.33383 | Node: [['20388.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37324.jpeg | Score: 0.33306 | Node: [['37324.jpeg', 'i_1']]
+
+================================================================================
+48. QID: 37054.jpeg-4
+Ground Truth Document ID: 37054.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37100.jpeg | Score: 1.24753 | Node: [['37100.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37313.jpeg | Score: 1.19825 | Node: [['37313.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37105.jpeg | Score: 1.19790 | Node: [['37105.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 40649.jpeg | Score: 1.18731 | Node: [['40649.jpeg', 'i_1']]
+
+================================================================================
+49. QID: 37315.jpeg-1
+Ground Truth Document ID: 37315.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37001.jpeg | Score: 0.23888 | Node: [['37001.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37394.jpeg | Score: 0.15564 | Node: [['37394.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 30374.jpeg | Score: 0.15369 | Node: [['30374.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37395.jpeg | Score: 0.15146 | Node: [['37395.jpeg', 'i_1']]
+
+================================================================================
+50. QID: 37033.jpeg-2
+Ground Truth Document ID: 37033.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37170.jpeg | Score: 0.32019 | Node: [['37170.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37394.jpeg | Score: 0.29515 | Node: [['37394.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37103.jpeg | Score: 0.29252 | Node: [['37103.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37029.jpeg | Score: 0.28769 | Node: [['37029.jpeg', 'i_1']]
+
+================================================================================
+51. QID: 37033.jpeg-8
+Ground Truth Document ID: 37033.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37036.jpeg | Score: 0.44350 | Node: [['37036.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37313.jpeg | Score: 0.43507 | Node: [['37313.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37117.jpeg | Score: 0.41656 | Node: [['37117.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37100.jpeg | Score: 0.40667 | Node: [['37100.jpeg', 'i_1']]
+
+================================================================================
+52. QID: 37033.jpeg-11
+Ground Truth Document ID: 37033.jpeg
+Top-4 Retrieved Units:
+  Rank  1 | Doc ID: 37395.jpeg | Score: 0.24828 | Node: [['37395.jpeg', 'i_1']]
+  Rank  2 | Doc ID: 37100.jpeg | Score: 0.24721 | Node: [['37100.jpeg', 'i_1']]
+  Rank  3 | Doc ID: 37313.jpeg | Score: 0.24615 | Node: [['37313.jpeg', 'i_1']]
+  Rank  4 | Doc ID: 37057.jpeg | Score: 0.24358 | Node: [['37057.jpeg', 'i_1']]
+

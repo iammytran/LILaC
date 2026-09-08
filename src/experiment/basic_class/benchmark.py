@@ -70,7 +70,7 @@ class LabeledQA:
         return [(it.get_document_name(), it.get_component_id()) for it in self.evidences]
     
     def get_vqa_format_evidences(self):
-        return [it.get_document_name() for it in self.evidences]
+        return [f"{it.get_document_name()}.jpeg" for it in self.evidences]
     
 
 

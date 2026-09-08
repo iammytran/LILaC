@@ -7,6 +7,7 @@ import json
 import math
 from pathlib import Path
 from typing import Any
+import shutil
 
 from PIL import Image
 
@@ -223,6 +224,7 @@ def serialize_tiles(
             },
         })
         for tile in info["tiles"]:
+            print(f"tile: {tile}")
             loc = f"row={tile['row']} column={tile['column']} x={tile['x']} y={tile['y']} width={tile['width']} height={tile['height']}"
             low.append({
                 "id": [orig_name, tile["component_id"]],
@@ -241,7 +243,7 @@ def serialize_tiles(
 
 def embed_serializations(top_path: Path, low_path: Path, output_dir: Path, num_gpus: int) -> None:
     """Encode serialized inputs using MM-Embed."""
-    embedding_dir = output_dir / "embeddings" / "MM-Embed"
+    embedding_dir = output_dir / "MM-Embed"
     embedding_dir.mkdir(parents=True, exist_ok=True)
     for path, name, bsize in ((top_path, "image", 1), (low_path, "subimage", 4)):
         encode_one_corpus(
@@ -254,6 +256,19 @@ def embed_serializations(top_path: Path, low_path: Path, output_dir: Path, num_g
             max_length=4096,
             batch_size=bsize,
         )
+
+from pathlib import Path
+import shutil
+
+def create_image_components_sub():
+    input_folder = Path("/workspace/LILaC/datasets/InfoVQA/tiles")
+    output_folder = Path("/workspace/LILaC/artifacts/InfoVQA/image_components_sub/test")
+
+    # Đảm bảo folder đích đã tồn tại
+    output_folder.mkdir(parents=True, exist_ok=True)
+
+    for file in input_folder.rglob("*.png"):
+        shutil.copy2(file, output_folder)
 
 
 def main() -> None:
@@ -283,14 +298,21 @@ def main() -> None:
 
     if not args.skip_qwen:
         caption_tiles(manifest, args.output_dir, args.num_gpus)
+    
+    # uncomment if have summaries on the side
+    # manifest = {}
+    # with open("/workspace/LILaC/datasets/InfoVQA/tiles/manifest.json", 'r', encoding="utf-8") as f:
+    #     manifest = json.load(f)
 
     artifacts_folder = Path("artifacts/InfoVQA")
-    top_path, low_path = serialize_tiles(manifest, artifacts_folder)
-
     embedding_folder = artifacts_folder / "embeddings"
+    top_path, low_path = serialize_tiles(manifest, embedding_folder)
+
     if not args.skip_embed:
         embed_serializations(top_path, low_path, embedding_folder, args.num_gpus)
 
+    # copy các tiles qua mục image_components_sub
+    create_image_components_sub()
 
 if __name__ == "__main__":
     main()

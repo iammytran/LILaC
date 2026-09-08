@@ -51,7 +51,7 @@ class VQABenchmarkRetrievalAccuracyEvaluator(RetrievalAccuracyEvaluator):
         retrieval_accuracy = eval_mrr(qrels, qid_to_retrieved_components, cutoff = 10)
         
         self._accuracy_dict = {
-            str(RetrievalMetric.PAGE_RECALL.value): eval_recall(qrels, qid_to_retrieved_components, cutoff = 9),
+            str(RetrievalMetric.PAGE_RECALL.value): eval_recall(qrels, qid_to_retrieved_components, cutoff = 12),
             str(RetrievalMetric.MRR.value): retrieval_accuracy
         }
         
@@ -295,11 +295,11 @@ def remove_duplicates_preserve_order(lst):
 
 if __name__ == "__main__":
     
-    algorithm_name  = AlgorithmName.VISRAG
+    algorithm_name  = AlgorithmName.OMG
     data_type       = BenchmarkType.VQA
     label_type      = None
-    qa_data_path    = "/root/LILaC/datasets/MP-DocVQA/QAs_dev.json"
-    retrieval_result_path = "/root/LILaC/algorithm_results/VisRAG/MP-DocVQA/retrieval/colpali/colpali.json"
+    qa_data_path    = "/workspace/LILaC/datasets/InfoVQA/QAs_test.json"
+    retrieval_result_path = "/workspace/LILaC/algorithm_results/LILaC/InfoVQA/retrieval/mmembed_0809_copy/mmembed_0809_copy.jsonl"
     k = 10
     
     accuracy_dict = evaluate_retrieval_accuracy(
