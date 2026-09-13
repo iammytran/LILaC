@@ -297,11 +297,11 @@ class Generator:
         if type(top_gcids[0]) == str:
             
             # image_components is read from datasets/<DS>/ (input); image_summaries are pipeline artifacts.
-            self.images_dir = os.path.join(dataset_root(self._metadata_config, self.target_dataset), self.images_subpath, "dev")
+            self.images_dir = os.path.join(dataset_root(self._metadata_config, self.target_dataset), self.images_subpath, "test")
             ds_meta = self._metadata_config["dataset_metadata"][self.target_dataset]
             has_page_summaries = ds_meta.get("has_page_summaries", False)
             if has_page_summaries:
-                self.summaries_path = artifact_subpath(self._metadata_config, self.target_dataset, "image_summaries_dirname", "dev")
+                self.summaries_path = artifact_subpath(self._metadata_config, self.target_dataset, "image_summaries_dirname", "test")
 
             # only one component
             text_prompt = ""
